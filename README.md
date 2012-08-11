@@ -24,12 +24,9 @@ The following things are assumed:
 
 
 # Research Needed
-## Puppet
-
-* We require a provider shutdown function to compliment self.prefetch, that will only be executed once, after all packages have been run
-* Ability to add newparam()'s to Puppet Providers and overwrite existing ones, without overwriting the entire type
+* __Puppet:__ We require a provider shutdown function to compliment self.prefetch, that will only be executed once, after all packages have been run
+* __Puppet:__ Ability to add newparam()'s to Puppet Providers and overwrite existing ones, without overwriting the entire type
     * __NOTE:__ this should be done in a flattened manner, not using install_options like the MSI Provider.
-* Way to create proper resources for self.prefetch when passed from Rspec tests. We currently don't test this thoroughly enough.
 
 
 # Roadmap
