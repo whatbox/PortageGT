@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<eixdump version="6">
+	<category name="net-p2p">
+		<package name="transmission">
+			<description>A Fast, Easy and Free BitTorrent client</description>
+			<homepage>http://www.transmissionbt.com/</homepage>
+			<licenses>GPL-2 MIT</licenses>
+			<version id="9999" installed="1" installDate="{{TIMESTAMP}}">
+				<mask type="missing_keyword" />
+				<unmask type="package_keywords" />
+				<iuse>xfs</iuse>
+				<use enabled="0">xfs</use>
+			</version>
+		</package>
+	</category>
+</eixdump>

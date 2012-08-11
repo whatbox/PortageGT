@@ -1,0 +1,159 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<eixdump version="6">
+	<category name="dev-db">
+		<package name="mysql">
+			<description>A fast, multi-threaded, multi-user SQL database server.</description>
+			<homepage>http://www.mysql.com/</homepage>
+			<licenses>GPL-2</licenses>
+			<version id="4.0.27-r1">
+				<mask type="hard" />
+				<iuse>berkdb big-tables debug embedded minimal perl raid selinux ssl static test</iuse>
+			</version>
+			<version id="4.1.22-r1">
+				<mask type="hard" />
+				<iuse>berkdb big-tables cluster debug embedded extraengine latin1 minimal perl raid selinux ssl static test</iuse>
+			</version>
+			<version id="5.0.91">
+				<mask type="hard" />
+				<iuse>berkdb big-tables cluster debug embedded extraengine latin1 max-idx-128 minimal profiling selinux ssl static test</iuse>
+				<iuse default="1">community perl</iuse>
+			</version>
+			<version id="5.0.92">
+				<mask type="hard" />
+				<mask type="keyword" />
+				<iuse>berkdb big-tables cluster debug embedded extraengine latin1 max-idx-128 minimal profiling selinux ssl static test</iuse>
+				<iuse default="1">community perl</iuse>
+			</version>
+			<version id="5.0.96">
+				<mask type="hard" />
+				<mask type="keyword" />
+				<iuse>berkdb big-tables cluster debug embedded extraengine latin1 max-idx-128 minimal profiling selinux ssl static test</iuse>
+				<iuse default="1">community perl</iuse>
+			</version>
+			<version id="5.1.51">
+				<mask type="hard" />
+				<iuse>big-tables cluster debug embedded extraengine latin1 max-idx-128 minimal pbxt profiling selinux ssl static test xtradb</iuse>
+				<iuse default="1">community perl</iuse>
+			</version>
+			<version id="5.1.52">
+				<mask type="hard" />
+				<mask type="keyword" />
+				<iuse>big-tables cluster debug embedded extraengine latin1 max-idx-128 minimal pbxt profiling selinux ssl static test xtradb</iuse>
+				<iuse default="1">community perl</iuse>
+			</version>
+			<version id="5.1.52-r1">
+				<mask type="hard" />
+				<mask type="keyword" />
+				<iuse>big-tables cluster debug embedded extraengine latin1 max-idx-128 minimal pbxt profiling selinux ssl static test xtradb</iuse>
+				<iuse default="1">community perl</iuse>
+			</version>
+			<version id="5.1.53">
+				<mask type="hard" />
+				<mask type="keyword" />
+				<iuse>big-tables cluster debug embedded extraengine latin1 max-idx-128 minimal pbxt profiling selinux ssl static test xtradb</iuse>
+				<iuse default="1">community perl</iuse>
+			</version>
+			<version id="5.1.56">
+				<iuse>big-tables cluster debug embedded extraengine latin1 max-idx-128 minimal pbxt profiling selinux ssl static test xtradb</iuse>
+				<iuse default="1">community perl</iuse>
+			</version>
+			<version id="5.1.56-r1">
+				<mask type="keyword" />
+				<iuse>berkdb big-tables cluster debug embedded extraengine latin1 max-idx-128 minimal pbxt profiling selinux ssl static test xtradb</iuse>
+				<iuse default="1">community perl</iuse>
+			</version>
+			<version id="5.1.57">
+				<mask type="keyword" />
+				<iuse>berkdb big-tables cluster debug embedded extraengine latin1 max-idx-128 minimal pbxt profiling selinux ssl static test xtradb</iuse>
+				<iuse default="1">community perl</iuse>
+			</version>
+			<version id="5.1.58-r1">
+				<mask type="keyword" />
+				<iuse>berkdb big-tables cluster debug embedded extraengine latin1 max-idx-128 minimal pbxt profiling selinux ssl static test xtradb</iuse>
+				<iuse default="1">community perl</iuse>
+			</version>
+			<version id="5.1.59">
+				<mask type="keyword" />
+				<iuse>berkdb big-tables cluster debug embedded extraengine latin1 max-idx-128 minimal pbxt profiling selinux ssl static test xtradb</iuse>
+				<iuse default="1">community perl</iuse>
+			</version>
+			<version id="5.1.61">
+				<iuse>berkdb big-tables cluster debug embedded extraengine latin1 max-idx-128 minimal pbxt profiling selinux ssl static test xtradb</iuse>
+				<iuse default="1">community perl</iuse>
+			</version>
+			<version id="5.1.62">
+				<mask type="keyword" />
+				<iuse>berkdb big-tables cluster debug embedded extraengine latin1 max-idx-128 minimal pbxt profiling selinux ssl static test xtradb</iuse>
+				<iuse default="1">community perl</iuse>
+			</version>
+			<version id="5.1.62-r1">
+				<iuse>berkdb big-tables cluster debug embedded extraengine latin1 max-idx-128 minimal pbxt profiling selinux ssl static test xtradb</iuse>
+				<iuse default="1">community perl</iuse>
+			</version>
+			<version id="5.5.19">
+				<mask type="hard" />
+				<mask type="keyword" />
+				<iuse>berkdb cluster debug embedded extraengine latin1 max-idx-128 minimal profiling selinux ssl static systemtap test</iuse>
+				<iuse default="1">community perl</iuse>
+			</version>
+			<version id="5.5.20">
+				<mask type="hard" />
+				<mask type="keyword" />
+				<iuse>berkdb cluster debug embedded extraengine latin1 max-idx-128 minimal profiling selinux ssl static systemtap test</iuse>
+				<iuse default="1">community perl</iuse>
+			</version>
+			<version id="5.5.21">
+				<mask type="hard" />
+				<mask type="keyword" />
+				<iuse>berkdb cluster debug embedded extraengine latin1 max-idx-128 minimal profiling selinux ssl static systemtap test</iuse>
+				<iuse default="1">community perl</iuse>
+			</version>
+			<version id="5.5.22">
+				<mask type="hard" />
+				<mask type="keyword" />
+				<iuse>berkdb cluster debug embedded extraengine latin1 max-idx-128 minimal profiling selinux ssl static systemtap test</iuse>
+				<iuse default="1">community perl</iuse>
+			</version>
+			<version id="5.5.22-r1">
+				<mask type="hard" />
+				<mask type="keyword" />
+				<iuse>berkdb cluster debug embedded extraengine latin1 max-idx-128 minimal profiling selinux ssl static systemtap test</iuse>
+				<iuse default="1">community perl</iuse>
+			</version>
+		</package>
+	</category>
+	<category name="virtual">
+		<package name="mysql">
+			<description>Virtual for MySQL client or database</description>
+			<homepage></homepage>
+			<licenses></licenses>
+			<version id="4.0">
+				<mask type="hard" />
+			</version>
+			<version id="4.1">
+				<mask type="hard" />
+			</version>
+			<version id="5.0">
+				<mask type="hard" />
+			</version>
+			<version id="5.1">
+				<iuse>embedded minimal static</iuse>
+			</version>
+			<version id="5.2">
+				<mask type="hard" />
+				<mask type="keyword" />
+				<iuse>embedded minimal static</iuse>
+			</version>
+			<version id="5.3">
+				<mask type="hard" />
+				<mask type="keyword" />
+				<iuse>embedded minimal static</iuse>
+			</version>
+			<version id="5.5">
+				<mask type="hard" />
+				<mask type="keyword" />
+				<iuse>embedded minimal static</iuse>
+			</version>
+		</package>
+	</category>
+</eixdump>
