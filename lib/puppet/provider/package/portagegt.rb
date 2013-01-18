@@ -520,6 +520,11 @@ Puppet::Type.type(:package).provide(
         #define a slot for this version
         if !v.attributes["slot"].nil?
           slot = v.attributes["slot"]
+
+          # Ignore subslots, because they don't impact us (currently)
+          if slot.count('/') == 1
+            slot = slot.split('/')[0]
+          end
         else
           slot = CONFIG[:defaultSlot]
         end
