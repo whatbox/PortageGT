@@ -155,8 +155,10 @@ Puppet::Type.type(:package).provide(
 
 
       # We cannot specify these attributes unless we have a category as well
-      if category.nil? && optFlags.length != 0
-        Puppet.warning("Cannot apply #{funcName} for Package[#{name}] without a category")
+      if category.nil? 
+        if optFlags.length != 0
+          Puppet.warning("Cannot apply #{funcName} for Package[#{name}] without a category")
+        end
         next
       end
 
