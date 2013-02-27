@@ -16,6 +16,9 @@ module Puppet
 			desc "Package keywords"
 		end
 
+		newparam(:environment) do
+			desc "Package Environment"
+		end
 
 		# attributes with validation
 		newparam(:interval) do

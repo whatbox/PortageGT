@@ -50,6 +50,14 @@ Using PortageGT should be pretty familiar to anyone already using puppet on Gent
 		ensure   => "2.00";
 	}
 
+# Custom Environment variables
+
+	package { "dev-db/mongodb":
+		keywords => "~amd64",
+		environment => "EPYTHON=python2.7",
+		ensure   => "2.2.2-r1";
+	}
+
 # Use flags
 ## String
 
