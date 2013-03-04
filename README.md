@@ -48,4 +48,4 @@ These are features we're not implementing at this time
 * package mask
     * using puppet `ensure => :held`
 * package unmask
-* `CONFIG[:useChange]` does not trigger a recompile if global use flags defined in `/etc/make.conf` change.
+* `CONFIG[:useChange]` does not trigger a recompile if global use flags defined in `/etc/portage/make.conf` change.
