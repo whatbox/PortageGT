@@ -1,3 +1,8 @@
+# Due to limitations in puppet, it is currently necessary to copy some code 
+# directly from puppet itself, rather than simply adding the pieces we need
+#
+# Please see the LICENSE file for proper rights to this file
+
 module Puppet
 	newtype(:package) do
 		@doc = "Overwrites the standard Package provider"
