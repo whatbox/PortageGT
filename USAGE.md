@@ -58,6 +58,14 @@ Using PortageGT should be pretty familiar to anyone already using puppet on Gent
 		ensure   => "2.2.2-r1";
 	}
 
+# Repository/Overlay
+Specify the latest version of a specific overlay available on your systems, to ensure you don't accidentally build code from the wrong overlay.
+
+	package { "www-servers/nginx":
+		repository => "company-overlay",
+		ensure => latest;
+	}
+
 # Use flags
 ## String
 

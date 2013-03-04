@@ -25,14 +25,12 @@ The following things are assumed:
 
 # Research Needed
 * __Puppet:__ We require a provider shutdown function to compliment self.prefetch, that will only be executed once, after all packages have been run
-* __Puppet:__ Ability to add newparam()'s to Puppet Providers and overwrite existing ones, without overwriting the entire type
-    * __NOTE:__ this should be done in a flattened manner, not using install_options like the MSI Provider.
-
 
 # Roadmap
 
-* Remove package type overwrite (see Research Needed > Puppet)
-* "repository" option, to specify the exact overlay to be used
+* Remove package type overwrite ([Puppet #19561](http://projects.puppetlabs.com/issues/19561))
+* Continuous integration / build status
+* Cleaner solution for unit testing file-system operations
 
 
 # Roadmap (Undecided)

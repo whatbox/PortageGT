@@ -38,6 +38,7 @@ Puppet::Type.type(:package).provide(
 
     # Relatively static options, you'll probably want the defaults
     :defaultSlot => "0",
+    :defaultRepository => "gentoo",
     :devVersion => "9999",
     :eixDumpVersion => [6,7,8],
     :useDir => "/etc/portage/package.use",
@@ -236,7 +237,7 @@ Puppet::Type.type(:package).provide(
 
       out = "#{out} #{optFlags.join(' ')}\n"
 
-      debug("#{funcName}: Testing #{out}")
+      debug("#{funcName}: Testing #{out}".rstrip)
 
       # Create file
       if !File.file?(optFile) || File.read(optFile) != out
@@ -369,6 +370,16 @@ Puppet::Type.type(:package).provide(
     return slot
   end
 
+  #string (void)
+  def package_repository
+    if @resource[:repository]
+      return @resource[:repository]
+    end
+
+    return nil
+  end
+
+
   #string[] (void)
   def package_use
     resourceTok(@resource[:use])
@@ -435,10 +446,24 @@ Puppet::Type.type(:package).provide(
         # Install a specific slot
         name = "#{name}:#{package_slot}"
       end
+
+      if package_repository
+        # Install from a specific source
+        name = "#{name}::#{package_repository}"
+      end
+
     else
       # We must install a specific version
       name = "=#{name}-#{should}"
+      
+      # A specific version can't have multiple slots, so no need to specify
+
+      if package_repository
+        # Install from a specific source
+        name = "#{name}::#{package_repository}"
+      end
     end
+
     if envlist = @resource[:environment]
       envlist = [envlist] unless envlist.is_a? Array
       envlist.each do |setting|
@@ -465,6 +490,10 @@ Puppet::Type.type(:package).provide(
 
     if !package_slot.nil?
       name = "#{name}:#{package_slot}"
+    end
+
+    if !package_repository.nil?
+      name = "#{name}::#{package_repository}"
     end
 
     emerge "--unmerge", name
@@ -504,6 +533,7 @@ Puppet::Type.type(:package).provide(
 
 
     slots = {}
+    repositories = []
     packageCount = 0
     xml.elements.each('eixdump/category/package') { |p|
       packageCount += 1
@@ -530,6 +560,19 @@ Puppet::Type.type(:package).provide(
           end
         end
 
+        # repository constraints to skip candidates
+        if !package_repository.nil?
+          if package_repository == CONFIG[:defaultRepository]
+            if !v.attributes["repository"].nil?
+              next
+            end
+          else
+            if v.attributes["repository"] != package_repository
+              next
+            end
+          end
+        end
+
 
         #define a slot for this version
         if !v.attributes["slot"].nil?
@@ -544,6 +587,14 @@ Puppet::Type.type(:package).provide(
         end
 
 
+        #define a repository for this version
+        if !v.attributes["repository"].nil?
+          repository = v.attributes["repository"]
+        else
+          repository = CONFIG[:defaultRepository]
+        end
+
+
         #if this slot isn't yet defined in the slots hash, define it with the defaults
         if !slots.has_key?(slot)
           slots[slot] = {
@@ -552,8 +603,14 @@ Puppet::Type.type(:package).provide(
             :name => p.attributes["name"],
             :ensure => :absent,
             :slot => package_slot,
+            :repository => package_repository,
             :maxVersion => :absent,
           }
+        end
+
+        #if this repository isn't yet defined, make a note of it's presence for this package
+        if !repositories.include?(repository)
+          repositories.push(repository)
         end
 
 
@@ -656,8 +713,24 @@ Puppet::Type.type(:package).provide(
         slot = slots.keys[0]
       else
         slotsAvail = slots.keys.join(" ")
-        raise Puppet::Error.new("Multiple slots [#{slotsAvail}] available for package [#{search_value}] in slot [#{package_slot}]")
+        raise Puppet::Error.new("Multiple slots [#{slotsAvail}] available for package [#{search_value}]")
     end
+
+    # Disambiguation error (repository)
+    case repositories.length
+      when 0
+        if !package_repository.nil?
+          raise Puppet::Error.new("No package found with the specified name [#{search_value}] in repository [#{package_repository}]")
+        else
+          raise Puppet::Error.new("No package found with the specified name [#{search_value}]")
+        end
+      when 1
+        # Correct number, we're done here
+      else
+        reposAvail = repositories.join(" ")
+        raise Puppet::Error.new("Multiple repositories [#{reposAvail}] available for package [#{search_value}]")
+    end
+
 
 
     return slots[slot]

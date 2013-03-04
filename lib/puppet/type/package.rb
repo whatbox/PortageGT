@@ -13,6 +13,10 @@ module Puppet
 			desc "Package slot"
 		end
 
+		newparam(:repository) do
+			desc "Package repository"
+		end
+
 		newparam(:use) do
 			desc "Package use flags"
 		end

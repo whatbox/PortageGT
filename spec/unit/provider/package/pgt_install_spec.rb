@@ -66,6 +66,27 @@ describe provider_class do
 		end
 	end
 
+	describe 'installing from repository' do
+		it 'latest version' do
+			provider = provider_class.new(pkg({ :name => "dev-db/mysql", :repository => "company-overlay" }))
+			provider.expects(:emerge).with('dev-db/mysql::company-overlay')
+			provider.install
+		end
+
+		it 'with slot' do
+			provider = provider_class.new(pkg({ :name => "dev-db/mysql", :slot => 2, :repository => "company-overlay" }))
+			provider.expects(:emerge).with('dev-db/mysql:2::company-overlay')
+			provider.install
+		end
+
+		it 'exact version' do
+			provider = provider_class.new(pkg({ :name => "mysql", :repository => "other-overlay", :category => "floomba", :ensure => "7.0.2" }))
+			provider.expects(:emerge).with('=floomba/mysql-7.0.2::other-overlay')
+			provider.install
+		end
+	end
+
+
 	describe 'installing with category mismatch' do
 		it 'plain' do
 			proc {
