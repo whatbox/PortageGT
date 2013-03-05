@@ -1,0 +1,6 @@
+source "https://rubygems.org"
+gem "bundler"
+gem "rspec"
+gem "xml-simple"
+gem "puppet"
+gem "puppetlabs_spec_helper"
