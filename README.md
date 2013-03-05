@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/whatbox/PortageGT.png?branch=master)](https://travis-ci.org/whatbox/PortageGT)
+
 # About
 
 Portage GT (short for "Portage using Gentoo") is a replacement Package Provider for Puppet. It was written by [Whatbox Inc.](http://whatbox.ca/) to improve server management, and released as on Open Source project under the MIT, BSD & GPL licenses. Patches and bug reports are welcome, please see our [CLA](http://whatbox.ca/policies/contributions).
