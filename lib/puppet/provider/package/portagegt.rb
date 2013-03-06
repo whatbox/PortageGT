@@ -464,10 +464,9 @@ Puppet::Type.type(:package).provide(
       end
     end
 
+    ENV.replace({})
     if @resource[:environment].is_a? Hash
-      @resource[:environment].each do |env_name, value|
-          ENV[env_name] = value
-      end
+      ENV.replace(@resource[:environment])
     end
 
     emerge name
