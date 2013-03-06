@@ -464,16 +464,9 @@ Puppet::Type.type(:package).provide(
       end
     end
 
-    if envlist = @resource[:environment]
-      envlist = [envlist] unless envlist.is_a? Array
-      envlist.each do |setting|
-        if setting =~ /^(\w+)=((.|\n)+)$/
-          env_name = $1
-          value = $2
+    if @resource[:environment].is_a? Hash
+      @resource[:environment].each do |env_name, value|
           ENV[env_name] = value
-        else
-          warning "Cannot understand environment setting #{setting.inspect}"
-        end
       end
     end
 

@@ -54,7 +54,9 @@ Using PortageGT should be pretty familiar to anyone already using puppet on Gent
 
 	package { "dev-db/mongodb":
 		keywords => "~amd64",
-		environment => "EPYTHON=python2.7",
+		environment => {
+			"EPYTHON" => "python2.7",
+		},
 		ensure   => "2.2.2-r1";
 	}
 
