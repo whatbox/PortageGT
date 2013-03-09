@@ -43,7 +43,7 @@ describe provider_class do
 			fh.close()
 
 			proc {
-				provider_class.stubs(:eix).with("--xml", "--pure-packages", "--stable", "--exact", "--name", "mysql").returns(mysql_loose)
+				provider_class.stubs(:eix).with("--xml", "--pure-packages", "--exact", "--name", "mysql").returns(mysql_loose)
 
 				provider = provider_class.new(pkg({ :name => "mysql", :ensure => :latest }))
 				provider.query
@@ -55,7 +55,7 @@ describe provider_class do
 			mysql = fh.read
 			fh.close()
 
-			provider_class.stubs(:eix).with("--xml", "--pure-packages", "--stable", "--exact", "--category-name", "dev-db/mysql").returns(mysql)
+			provider_class.stubs(:eix).with("--xml", "--pure-packages", "--exact", "--category-name", "dev-db/mysql").returns(mysql)
 
 			provider = provider_class.new(pkg({ :name => "dev-db/mysql", :ensure => :latest }))
 
@@ -76,7 +76,7 @@ describe provider_class do
 			time = Time.now.to_i - 10000 - provider_class.cfg(:devInterval)
 			transmission["{{TIMESTAMP}}"]= "#{time}"
 
-			provider_class.stubs(:eix).with("--xml", "--pure-packages", "--stable", "--exact", "--category-name", "net-p2p/transmission").returns(transmission)
+			provider_class.stubs(:eix).with("--xml", "--pure-packages", "--exact", "--category-name", "net-p2p/transmission").returns(transmission)
 
 			provider = provider_class.new(pkg({ :name => "net-p2p/transmission", :ensure => "9999" }))
 
@@ -97,7 +97,7 @@ describe provider_class do
 			time = Time.now.to_i - provider_class.cfg(:devInterval) + 5
 			transmission["{{TIMESTAMP}}"]= "#{time}"
 
-			provider_class.stubs(:eix).with("--xml", "--pure-packages", "--stable", "--exact", "--category-name", "net-p2p/transmission").returns(transmission)
+			provider_class.stubs(:eix).with("--xml", "--pure-packages", "--exact", "--category-name", "net-p2p/transmission").returns(transmission)
 
 			provider = provider_class.new(pkg({ :name => "net-p2p/transmission", :ensure => "9999" }))
 
@@ -118,7 +118,7 @@ describe provider_class do
 			time = Time.now.to_i - 215
 			transmission["{{TIMESTAMP}}"]= "#{time}"
 
-			provider_class.stubs(:eix).with("--xml", "--pure-packages", "--stable", "--exact", "--category-name", "net-p2p/transmission").returns(transmission)
+			provider_class.stubs(:eix).with("--xml", "--pure-packages", "--exact", "--category-name", "net-p2p/transmission").returns(transmission)
 
 			provider = provider_class.new(pkg({ :name => "net-p2p/transmission", :ensure => "9999", :interval => 214 }))
 
@@ -139,7 +139,7 @@ describe provider_class do
 			time = Time.now.to_i - 6
 			transmission["{{TIMESTAMP}}"]= "#{time}"
 
-			provider_class.stubs(:eix).with("--xml", "--pure-packages", "--stable", "--exact", "--category-name", "net-p2p/transmission").returns(transmission)
+			provider_class.stubs(:eix).with("--xml", "--pure-packages", "--exact", "--category-name", "net-p2p/transmission").returns(transmission)
 
 			provider = provider_class.new(pkg({ :name => "net-p2p/transmission", :ensure => "9999", :interval => 8 }))
 

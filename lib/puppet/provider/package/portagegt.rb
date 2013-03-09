@@ -513,7 +513,7 @@ Puppet::Type.type(:package).provide(
 
     #Get eix data
     begin
-      eixout = eix("--xml", "--pure-packages", "--stable", "--exact", search_field, search_value)
+      eixout = eix("--xml", "--pure-packages", "--exact", search_field, search_value)
     rescue Puppet::ExecutionFailure => detail
       raise Puppet::Error.new(detail)
     end
