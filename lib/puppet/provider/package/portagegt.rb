@@ -1,5 +1,5 @@
 #
-# Portage GT (Puppet Package Provider)
+# PortageGT (Puppet Package Provider)
 #
 # Copyright 2012, Whatbox Inc.
 #
