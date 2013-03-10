@@ -466,12 +466,14 @@ Puppet::Type.type(:package).provide(
       end
     end
 
-    ENV.replace({})
+    env_hold = ENV.to_hash
     if @resource[:environment].is_a? Hash
-      ENV.replace(@resource[:environment])
+      ENV.replace(env_hold.merge(@resource[:environment]))
     end
 
     emerge name
+
+    ENV.replace(env_hold)
   end
 
   #void (void)
