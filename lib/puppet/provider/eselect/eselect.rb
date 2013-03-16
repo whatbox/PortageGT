@@ -115,7 +115,7 @@ Puppet::Type.type(:eselect).provide(:eselect) do
 
 			next if option[0] !~ /\[\d+\]/
 
-			if option.length == 3 && option[2] == '*'
+			if option[option.length-1] == '*'
 				raise Puppet::Error.new("Multiple selected versions for eselect[#{@resource[:name]}]") if !selected.nil?
 
 				selected = option[1]
