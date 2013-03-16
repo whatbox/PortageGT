@@ -115,7 +115,7 @@ eselect is useful when selecting specific versions from between several slots
 		ensure => "ruby19";
 	}
 
-# Python
+## Python
 
 	eselect { "python":
 		ensure => "python3.2";
@@ -133,7 +133,7 @@ eselect is useful when selecting specific versions from between several slots
 		ensure => "python3.2";
 	}
 
-# Profile
+## Profile
 
 	eselect { "profile":
 		ensure => "default/linux/amd64/13.0";
