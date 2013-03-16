@@ -7,5 +7,5 @@ Copy `lib/puppet/provider/package/portagegt.rb` & `lib/puppet/type/package.rb` i
 Update the global package definition to use portagegt as the default provider for your Gentoo system.
 
 	Package {
-		provider => "portagegt";
+		provider => "portagegt"
 	}

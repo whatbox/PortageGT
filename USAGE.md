@@ -89,3 +89,64 @@ Specify the latest version of a specific overlay available on your systems, to e
 # Tuning behavior
 
 A `CONFIG` variable found in lib/puppet/provider/package/portagegt.rb alows tuning of some basic variables. It has been pre-populated with sensible defaults for most cases, but may be customized easily.
+
+# eselect
+eselect is useful when selecting specific versions from between several slots
+
+## PHP
+
+	eselect { "php-fpm":
+		module => "php",
+		submodule => "fpm",
+		ensure => "php5.4";
+	}
+
+## GCC
+
+	eselect { "gcc":
+		listcmd => "gcc-config -l",
+		setcmd => "gcc-config",
+		ensure => "x86_64-pc-linux-gnu-4.5.3";
+	}
+
+## Ruby
+
+	eselect { "ruby":
+		ensure => "ruby19";
+	}
+
+# Python
+
+	eselect { "python":
+		ensure => "python3.2";
+	}
+
+	eselect { "python2":
+		module => "python",
+		submodule => "--python2",
+		ensure => "python2.7";
+	}
+
+	eselect { "python3":
+		module => "python",
+		submodule => "--python3",
+		ensure => "python3.2";
+	}
+
+# Profile
+
+	eselect { "profile":
+		ensure => "default/linux/amd64/13.0";
+	}
+
+
+## kernel (/usr/src/linux)
+	eselect { "kernel":
+		ensure => "linux-3.7.0-hardened";
+	}
+
+## locale
+
+	eselect { "locale":
+		ensure => "en_US.UTF-8";
+	}
