@@ -1,11 +1,5 @@
 module Puppet
 	newtype(:eselect) do
-
-		autorequire(:package) do
-			["app-admin/puppet"]
-		end
-
-
 		newparam(:name) do
 			desc "identifier for use throughout puppet manifests"
 			isnamevar

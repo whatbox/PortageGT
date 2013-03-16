@@ -7,11 +7,6 @@ module Puppet
 	newtype(:package) do
 		@doc = "Overwrites the standard Package provider"
 
-		# make.conf should always be changed / verified  before we start emerging packages
-		autorequire(:file) do
-			["/etc/portage/make.conf"]
-		end
-
 		# attributes not currently validated
 		newparam(:slot) do
 			desc "Package slot"
