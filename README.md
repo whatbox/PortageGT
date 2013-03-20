@@ -23,10 +23,6 @@ The following things are assumed:
 * __WARNING:__ Folders contained within either of these will be automatically removed by this plugin
 
 
-## Research Needed
-* __Puppet:__ We require a provider shutdown function to compliment self.prefetch, that will only be executed once, after all packages have been run
-
-
 ## Roadmap
 * Remove package type overwrite ([Puppet #19561](http://projects.puppetlabs.com/issues/19561))
 * Clean up unit testing
@@ -37,7 +33,6 @@ The following things are assumed:
     * __Pro:__ No editing the code
     * __Pro:__ The current most likely don't update when puppet is daemonized
     * __Con:__ Assuming file is managed by puppet, it will take two runs for changes to take effect
-* `revdep-rebuild` implemented via shutdown function (see Research Needed > Puppet)
 
 
 ## Features Omitted
