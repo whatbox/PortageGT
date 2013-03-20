@@ -9,7 +9,7 @@ I will also warn you that this module is not completely compatible with the exis
 
 ## Dependencies
 The following packages are necessary for this module.
-* `app-admin/puppet`
+* `app-admin/puppet >= 3.0.0`
 * `sys-apps/portage`
 * `app-portage/eix`
 * `dev-ruby/xml-simple`
