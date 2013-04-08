@@ -102,12 +102,18 @@ Puppet::Type.type(:package).provide(
 
 
 	commands :emerge => "/usr/bin/emerge"
+
 	has_command(:eix, "/usr/bin/eix") do
 		environment :EIXRC => "/etc/eixrc"
 	end
-	commands :eix_update => "/usr/bin/eix-update"
-	commands :eix_sync => "/usr/bin/eix-sync"
 
+	has_command(:eix_update, "/usr/bin/eix-update") do
+		environment :EIXRC => "/etc/eixrc"
+	end
+
+	has_command(:eix_sync, "/usr/bin/eix-sync") do
+		environment :EIXRC => "/etc/eixrc"
+	end
 
 	######################
 	# Custom self.* APIs #
