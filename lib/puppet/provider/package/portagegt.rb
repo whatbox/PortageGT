@@ -405,6 +405,7 @@ Puppet::Type.type(:package).provide(
 			x[1..-1]
 		}.each { |x|
 			next if !valid.include?(x)
+			debug("Recopmiling #{package_category}/#{package_name} for USE=\"-#{x}\"")
 			return true if have.include?(x)
 		}
 
@@ -413,7 +414,7 @@ Puppet::Type.type(:package).provide(
 			x[0,1] != '-'
 		}.each { |x|
 			next if !valid.include?(x)
-			debug()
+			debug("Recopmiling #{package_category}/#{package_name} for USE=\"#{x}\"")
 			return true if !have.include?(x)
 		}
 
