@@ -7,6 +7,11 @@ unless Kernel.respond_to?(:require_relative)
   end
 end
 
+require 'fakefs/spec_helpers'
+RSpec.configure do |config|
+  config.include FakeFS::SpecHelpers, fakefs: true
+end
+
 require 'rubygems'
 require 'puppetlabs_spec_helper/module_spec_helper'
 require_relative '../lib/puppet/provider/package/portagegt'

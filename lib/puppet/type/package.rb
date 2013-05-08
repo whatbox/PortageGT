@@ -28,14 +28,6 @@ module Puppet
 			desc "Package Environment"
 		end
 
-		# attributes with validation
-		newparam(:interval) do
-			validate do |value|
-				raise Puppet::Error, "interval must be an integer" if !value.is_a? Integer
-				raise Puppet::Error, "interval must be a positive integer" if value <  0
-			end
-		end
-
 		newparam(:name) do
 			desc "The package name."
 			isnamevar

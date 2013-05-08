@@ -14,7 +14,7 @@ describe Puppet::Type.type(:package) do
 
 
 	describe "when validating attributes" do
-		[:name, :provider, :use, :keywords, :category, :slot, :interval].each do |param|
+		[:name, :provider, :use, :keywords, :category, :slot].each do |param|
 			it "should have a #{param} parameter" do
 				described_class.attrtype(param).should == :param
 			end
@@ -121,33 +121,6 @@ describe Puppet::Type.type(:package) do
 				proc { @class.new(:name => "foo", :ensure => "1.2.4-r2") }.should_not raise_error
 			end
 		end #ensure
-
-		describe "interval" do
-			it "it accepts integers" do
-				proc { @class.new(:name => "foo", :interval => 1, :ensure => :present) }.should_not raise_error
-				proc { @class.new(:name => "foo", :interval => 0, :ensure => :present) }.should_not raise_error
-			end
-
-			# Not sure I want to make this fuzzy, so for now, this test is disabled, as is the code that would allow it
-			# it "it accepts integer strings" do
-			# 	proc { @class.new(:name => "foo", :interval => "54", :ensure => :present) }.should_not raise_error
-			# end
-
-			it "it rejects other types" do
-				proc { described_class.new(:name => "foo", :interval => [1,2], :ensure => :present) }.should raise_error(Puppet::Error, /interval must be an integer/)
-				proc { described_class.new(:name => "foo", :interval => 1.2, :ensure => :present) }.should raise_error(Puppet::Error, /interval must be an integer/)
-				proc { described_class.new(:name => "foo", :interval => 1.0, :ensure => :present) }.should raise_error(Puppet::Error, /interval must be an integer/)
-				proc { described_class.new(:name => "foo", :interval => "abcd", :ensure => :present) }.should raise_error(Puppet::Error, /interval must be an integer/)
-			end
-
-			it "it rejects negative numbers" do
-				proc { described_class.new(:name => "foo", :interval => -5, :ensure => :present) }.should raise_error(Puppet::Error, /interval must be a positive integer/)
-			end
-
-			it "it allows array values" do
-				proc { @class.new(:name => "foo", :keywords => ["*","-blah"], :ensure => :present) }.should_not raise_error
-			end
-		end #keywords
 	end #
 
 

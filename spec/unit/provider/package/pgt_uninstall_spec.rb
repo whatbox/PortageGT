@@ -5,64 +5,67 @@ require 'spec_helper'
 provider_class = Puppet::Type.type(:package).provider(:portagegt)
 
 describe provider_class do
-	def pkg(args = {})
-		defaults = { :provider => 'portagegt' }
-		Puppet::Type.type(:package).new(defaults.merge(args))
-	end
-
 	before :each do
-		# Stub some provider methods to avoid needing the actual software
-		# installed, so we can test on whatever platform we want.
 		provider_class.stubs(:command).with(:emerge).returns('/usr/bin/emerge')
 
 		Puppet.expects(:warning).never
 	end
 
-	describe 'uninstalling plain' do
-		it 'plain package' do
-			provider = provider_class.new(pkg({ :name => "mysql" }))
-			provider.expects(:emerge).with('--unmerge','mysql')
-			provider.uninstall
-		end
+	def pkg(args = {})
+		defaults = { :provider => 'portagegt' }
+		Puppet::Type.type(:package).new(defaults.merge(args))
 	end
 
-	describe 'uninstalling plain with slot' do
-		it 'in name' do
-			provider = provider_class.new(pkg({ :name => "mysql:2" }))
-			provider.expects(:emerge).with('--unmerge','mysql:2')
-			provider.uninstall
+	# We have skipped testing disambiugation because that should be handled at the package 
+	# level, if there's an ambiguous case, it will never make it to the uninstall function
+
+	describe '#uninstall' do
+		context "when using a package name with no category" do
+			it {
+				provider = provider_class.new(pkg({ :name => "mysql" }))
+				provider.expects(:emerge).with('--unmerge','mysql')
+				provider.uninstall
+			}
 		end
 
-		it 'attribute' do
-			provider = provider_class.new(pkg({ :name => "mysql", :slot => "2" }))
-			provider.expects(:emerge).with('--unmerge','mysql:2')
-			provider.uninstall
+		context 'when using a package name with no category and a slot' do
+			it {
+				provider = provider_class.new(pkg({ :name => "mysql:2" }))
+				provider.expects(:emerge).with('--unmerge','mysql:2')
+				provider.uninstall
+			}
+
+			it {
+				provider = provider_class.new(pkg({ :name => "mysql", :slot => "2" }))
+				provider.expects(:emerge).with('--unmerge','mysql:2')
+				provider.uninstall
+			}
+
+			it {
+				provider = provider_class.new(pkg({ :name => "mysql:2", :slot => "2" }))
+				provider.expects(:emerge).with('--unmerge','mysql:2')
+				provider.uninstall
+			}
 		end
 
-		it 'in name & attribute' do
-			provider = provider_class.new(pkg({ :name => "mysql:2", :slot => "2" }))
-			provider.expects(:emerge).with('--unmerge','mysql:2')
-			provider.uninstall
-		end
-	end
+		context "when using a category/name for the package" do
+			it {
+				provider = provider_class.new(pkg({ :name => "dev-db/mysql" }))
+				provider.expects(:emerge).with('--unmerge','dev-db/mysql')
+				provider.uninstall
+			}
 
-	describe 'uninstalling with category' do
-		it 'in name' do
-			provider = provider_class.new(pkg({ :name => "dev-db/mysql" }))
-			provider.expects(:emerge).with('--unmerge','dev-db/mysql')
-			provider.uninstall
-		end
+			it {
+				provider = provider_class.new(pkg({ :name => "mysql", :category => "floomba" }))
+				provider.expects(:emerge).with('--unmerge','floomba/mysql')
+				provider.uninstall
+			}
 
-		it 'attribute' do
-			provider = provider_class.new(pkg({ :name => "mysql", :category => "floomba" }))
-			provider.expects(:emerge).with('--unmerge','floomba/mysql')
-			provider.uninstall
-		end
-
-		it 'in name & attribute' do
-			provider = provider_class.new(pkg({ :name => "bumbling/fool", :category => "bumbling" }))
-			provider.expects(:emerge).with('--unmerge','bumbling/fool')
-			provider.uninstall
+			it {
+				provider = provider_class.new(pkg({ :name => "bumbling/fool", :category => "bumbling" }))
+				provider.expects(:emerge).with('--unmerge','bumbling/fool')
+				provider.uninstall
+			}
 		end
 	end
 
