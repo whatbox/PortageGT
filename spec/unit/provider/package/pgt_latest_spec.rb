@@ -101,5 +101,32 @@ describe provider_class do
 			}
 		end
 
+
+		context "when packages are masked in different ways (alien_unstable)" do
+			it {
+				fh = File.open("spec/unit/provider/package/eix/portage_alien_unstable.xml", "rb")
+				portage = fh.read
+				fh.close()
+
+				provider_class.stubs(:eix).with("--xml", "--pure-packages", "--exact", "--category-name", "sys-apps/portage").returns(portage)
+
+				provider = provider_class.new(pkg({ :name => "sys-apps/portage", :ensure => :latest }))
+				provider.latest.should == "2.1.11.63"
+			}
+		end
+
+		context "when packages are masked in different ways (missing_keyword)" do
+			it {
+				fh = File.open("spec/unit/provider/package/eix/file_missing_keyword.xml", "rb")
+				file = fh.read
+				fh.close()
+
+				provider_class.stubs(:eix).with("--xml", "--pure-packages", "--exact", "--category-name", "sys-apps/file").returns(file)
+
+				provider = provider_class.new(pkg({ :name => "sys-apps/file", :ensure => :latest }))
+				provider.latest.should == "5.12-r1"
+			}
+		end
+
 	end #xml parse check
 end

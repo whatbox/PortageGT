@@ -701,7 +701,22 @@ Puppet::Type.type(:package).provide(
 				# to make the if statements bellow easier to follow
 				installed = (v.attributes["installed"] && v.attributes["installed"] == "1")
 				dev = v.attributes["id"] == CONFIG[:devVersion]
-				hard_masked = (v.elements["mask[@type='hard']"] && !v.elements["unmask[@type='package_unmask']"])
+
+
+				# http://docs.dvo.ru/eix-0.25.5/html/eix-xml.html
+				# <mask type=" [..] " />
+				# Possible values for the type are:
+				# profile
+				# hard
+				# package_mask
+				# keyword
+				# missing_keyword
+				# alien_stable
+				# alien_unstable
+				# minus_unstable
+				# minus_asterisk
+				# minus_keyword
+				hard_masked = (v.elements["mask[@type!='keyword']"] && !v.elements["unmask[@type='package_unmask']"])
 				keyword_masked = (v.elements["mask[@type='keyword']"] && !v.elements["unmask[@type='package_keywords']"])
 
 
