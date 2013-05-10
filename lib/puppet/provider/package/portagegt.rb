@@ -701,7 +701,8 @@ Puppet::Type.type(:package).provide(
 				# to make the if statements bellow easier to follow
 				installed = (v.attributes["installed"] && v.attributes["installed"] == "1")
 				dev = v.attributes["id"] == CONFIG[:devVersion]
-				unmasked = (!v.elements["mask"] || v.elements["unmask"])
+				hard_masked = (v.elements["mask[@type='hard']"] && !v.elements["unmask[@type='package_unmask']"])
+				keyword_masked = (v.elements["mask[@type='keyword']"] && !v.elements["unmask[@type='package_keywords']"])
 
 
 				# Currently installed packages should always be valid candidates for staying installed
@@ -717,7 +718,7 @@ Puppet::Type.type(:package).provide(
 
 
 				# Check package masks
-				if unmasked
+				if !hard_masked && !keyword_masked
 					slots[slot] = v.attributes['id']
 					next
 				end

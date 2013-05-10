@@ -48,5 +48,58 @@ describe provider_class do
 				provider.latest.should == "5.1.62-r1"
 			}
 		end
+
+		context "when hard and keyword are masked and only keyword is unmasked" do
+			it {
+				fh = File.open("spec/unit/provider/package/eix/boost_multi_mask.xml", "rb")
+				boost = fh.read
+				fh.close()
+
+				provider_class.stubs(:eix).with("--xml", "--pure-packages", "--exact", "--category-name", "dev-libs/boost").returns(boost)
+
+				provider = provider_class.new(pkg({ :name => "dev-libs/boost", :ensure => :latest }))
+				provider.latest.should == "1.52.0-r6"
+			}
+		end
+
+		context "when hard and keyword are masked and both are unmasked" do
+			it {
+				fh = File.open("spec/unit/provider/package/eix/boost_full_unmasked.xml", "rb")
+				boost = fh.read
+				fh.close()
+
+				provider_class.stubs(:eix).with("--xml", "--pure-packages", "--exact", "--category-name", "dev-libs/boost").returns(boost)
+
+				provider = provider_class.new(pkg({ :name => "dev-libs/boost", :ensure => :latest }))
+				provider.latest.should == "1.53.0"
+			}
+		end
+
+		context "when hard and keyword are masked and only hard is unmasked" do
+			it {
+				fh = File.open("spec/unit/provider/package/eix/boost_unmasked_keyworded.xml", "rb")
+				boost = fh.read
+				fh.close()
+
+				provider_class.stubs(:eix).with("--xml", "--pure-packages", "--exact", "--category-name", "dev-libs/boost").returns(boost)
+
+				provider = provider_class.new(pkg({ :name => "dev-libs/boost", :ensure => :latest }))
+				provider.latest.should == "1.49.0-r2"
+			}
+		end
+
+		context "when hard and keyword are masked and only hard is unmasked but a keyworded package is already installed" do
+			it {
+				fh = File.open("spec/unit/provider/package/eix/boost_unmasked_keyworded_installed.xml", "rb")
+				boost = fh.read
+				fh.close()
+
+				provider_class.stubs(:eix).with("--xml", "--pure-packages", "--exact", "--category-name", "dev-libs/boost").returns(boost)
+
+				provider = provider_class.new(pkg({ :name => "dev-libs/boost", :ensure => :latest }))
+				provider.latest.should == "1.52.0-r6"
+			}
+		end
+
 	end #xml parse check
 end

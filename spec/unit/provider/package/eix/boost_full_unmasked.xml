@@ -1,0 +1,35 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<eixdump version="10">
+	<category name="dev-libs">
+		<package name="boost">
+			<description>Boost Libraries for C++</description>
+			<homepage>http://www.boost.org/</homepage>
+			<licenses>Boost-1.0</licenses>
+			<version id="1.49.0-r2">
+				<iuse>debug doc icu mpi python static-libs tools</iuse>
+				<depend>icu? ( &gt;=dev-libs/icu-3.3 ) mpi? ( || ( sys-cluster/openmpi[cxx] sys-cluster/mpich2[cxx,threads] ) ) sys-libs/zlib !app-admin/eselect-boost elibc_glibc? ( &lt;sys-libs/glibc-2.16 ) =dev-util/boost-build-1.49* python? ( dev-lang/python )</depend>
+				<rdepend>icu? ( &gt;=dev-libs/icu-3.3 ) mpi? ( || ( sys-cluster/openmpi[cxx] sys-cluster/mpich2[cxx,threads] ) ) sys-libs/zlib !app-admin/eselect-boost elibc_glibc? ( &lt;sys-libs/glibc-2.16 ) python? ( dev-lang/python )</rdepend>
+			</version>
+			<version id="1.52.0-r6" slot="0/1.52">
+				<mask type="keyword" />
+				<unmask type="package_keywords" />
+				<iuse>debug doc icu mpi python python_targets_python2_5 python_targets_python2_6 python_targets_python2_7 python_targets_python3_1 python_targets_python3_2 python_targets_python3_3 static-libs tools</iuse>
+				<iuse default="1">nls threads</iuse>
+				<use enabled="0">debug doc icu mpi python python_targets_python2_5 python_targets_python2_6 python_targets_python3_1 python_targets_python3_3 static-libs tools</use>
+				<use enabled="1">nls python_targets_python2_7 python_targets_python3_2 threads</use>
+				<depend>icu? ( &gt;=dev-libs/icu-3.6:= ) !icu? ( virtual/libiconv ) mpi? ( || ( sys-cluster/openmpi[cxx] sys-cluster/mpich2[cxx,threads] ) ) python? ( python_targets_python2_5? ( dev-lang/python:2.5 ) python_targets_python2_6? ( dev-lang/python:2.6 ) python_targets_python2_7? ( dev-lang/python:2.7 ) python_targets_python3_1? ( dev-lang/python:3.1 ) python_targets_python3_2? ( dev-lang/python:3.2 ) python_targets_python3_3? ( dev-lang/python:3.3 ) dev-python/python-exec[python_targets_python2_5(-)?,python_targets_python2_6(-)?,python_targets_python2_7(-)?,python_targets_python3_1(-)?,python_targets_python3_2(-)?,python_targets_python3_3(-)?,-python_single_target_python2_5(-),-python_single_target_python2_6(-),-python_single_target_python2_7(-),-python_single_target_python3_1(-),-python_single_target_python3_2(-),-python_single_target_python3_3(-)] ) sys-libs/zlib !app-admin/eselect-boost =dev-util/boost-build-1.52.0-r1</depend>
+				<rdepend>icu? ( &gt;=dev-libs/icu-3.6:= ) !icu? ( virtual/libiconv ) mpi? ( || ( sys-cluster/openmpi[cxx] sys-cluster/mpich2[cxx,threads] ) ) python? ( python_targets_python2_5? ( dev-lang/python:2.5 ) python_targets_python2_6? ( dev-lang/python:2.6 ) python_targets_python2_7? ( dev-lang/python:2.7 ) python_targets_python3_1? ( dev-lang/python:3.1 ) python_targets_python3_2? ( dev-lang/python:3.2 ) python_targets_python3_3? ( dev-lang/python:3.3 ) dev-python/python-exec[python_targets_python2_5(-)?,python_targets_python2_6(-)?,python_targets_python2_7(-)?,python_targets_python3_1(-)?,python_targets_python3_2(-)?,python_targets_python3_3(-)?,-python_single_target_python2_5(-),-python_single_target_python2_6(-),-python_single_target_python2_7(-),-python_single_target_python3_1(-),-python_single_target_python3_2(-),-python_single_target_python3_3(-)] ) sys-libs/zlib !app-admin/eselect-boost</rdepend>
+			</version>
+			<version id="1.53.0" slot="0/1.53">
+				<mask type="hard" />
+				<mask type="keyword" />
+				<unmask type="package_unmask" />
+				<unmask type="package_keywords" />
+				<iuse>debug doc icu mpi python python_targets_python2_5 python_targets_python2_6 python_targets_python2_7 python_targets_python3_1 python_targets_python3_2 python_targets_python3_3 static-libs tools</iuse>
+				<iuse default="1">nls threads</iuse>
+				<depend>icu? ( &gt;=dev-libs/icu-3.6:= ) !icu? ( virtual/libiconv ) mpi? ( || ( sys-cluster/openmpi[cxx] sys-cluster/mpich2[cxx,threads] ) ) python? ( python_targets_python2_5? ( dev-lang/python:2.5 ) python_targets_python2_6? ( dev-lang/python:2.6 ) python_targets_python2_7? ( dev-lang/python:2.7 ) python_targets_python3_1? ( dev-lang/python:3.1 ) python_targets_python3_2? ( dev-lang/python:3.2 ) python_targets_python3_3? ( dev-lang/python:3.3 ) dev-python/python-exec[python_targets_python2_5(-)?,python_targets_python2_6(-)?,python_targets_python2_7(-)?,python_targets_python3_1(-)?,python_targets_python3_2(-)?,python_targets_python3_3(-)?,-python_single_target_python2_5(-),-python_single_target_python2_6(-),-python_single_target_python2_7(-),-python_single_target_python3_1(-),-python_single_target_python3_2(-),-python_single_target_python3_3(-)] ) sys-libs/zlib !app-admin/eselect-boost =dev-util/boost-build-1.53*</depend>
+				<rdepend>icu? ( &gt;=dev-libs/icu-3.6:= ) !icu? ( virtual/libiconv ) mpi? ( || ( sys-cluster/openmpi[cxx] sys-cluster/mpich2[cxx,threads] ) ) python? ( python_targets_python2_5? ( dev-lang/python:2.5 ) python_targets_python2_6? ( dev-lang/python:2.6 ) python_targets_python2_7? ( dev-lang/python:2.7 ) python_targets_python3_1? ( dev-lang/python:3.1 ) python_targets_python3_2? ( dev-lang/python:3.2 ) python_targets_python3_3? ( dev-lang/python:3.3 ) dev-python/python-exec[python_targets_python2_5(-)?,python_targets_python2_6(-)?,python_targets_python2_7(-)?,python_targets_python3_1(-)?,python_targets_python3_2(-)?,python_targets_python3_3(-)?,-python_single_target_python2_5(-),-python_single_target_python2_6(-),-python_single_target_python2_7(-),-python_single_target_python3_1(-),-python_single_target_python3_2(-),-python_single_target_python3_3(-)] ) sys-libs/zlib !app-admin/eselect-boost</rdepend>
+			</version>
+		</package>
+	</category>
+</eixdump>
