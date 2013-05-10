@@ -1,8 +1,5 @@
 source "https://rubygems.org"
 
-require "rubygems"
-require "bundler/setup"
-
 puppetversion = ENV['PUPPET_VERSION']
 gem 'puppet', puppetversion
 
