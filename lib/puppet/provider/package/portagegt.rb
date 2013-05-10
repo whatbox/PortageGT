@@ -37,7 +37,7 @@ Puppet::Type.type(:package).provide(
 		:defaultSlot => "0",
 		:defaultRepository => "gentoo",
 		:devVersion => "9999",
-		:eixDumpVersion => [6,7,8],
+		:eixDumpVersion => [6,7,8,9,10],
 		:useDir => "/etc/portage/package.use",
 		:keywordsDir => "/etc/portage/package.keywords",
 		:packageDB => "/var/db/pkg",
