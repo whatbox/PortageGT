@@ -1,0 +1,100 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<eixdump version="10">
+	<category name="sys-apps">
+		<package name="file">
+			<description>identify a file&apos;s format by scanning binary data for patterns</description>
+			<homepage>http://www.darwinsys.com/file/</homepage>
+			<licenses>BSD-2</licenses>
+			<version id="5.05">
+				<iuse>python static-libs</iuse>
+				<depend>python? ( dev-lang/python )</depend>
+				<rdepend>python? ( dev-lang/python )</rdepend>
+			</version>
+			<version id="5.06">
+				<mask type="keyword" />
+				<unmask type="package_keywords" />
+				<iuse>python static-libs</iuse>
+				<depend>python? ( dev-lang/python )</depend>
+				<rdepend>python? ( dev-lang/python )</rdepend>
+			</version>
+			<version id="5.07">
+				<mask type="keyword" />
+				<unmask type="package_keywords" />
+				<iuse>python static-libs</iuse>
+				<depend>python? ( dev-lang/python )</depend>
+				<rdepend>python? ( dev-lang/python )</rdepend>
+			</version>
+			<version id="5.07-r1">
+				<mask type="keyword" />
+				<unmask type="package_keywords" />
+				<iuse>python static-libs</iuse>
+				<depend>python? ( dev-lang/python )</depend>
+				<rdepend>python? ( dev-lang/python )</rdepend>
+			</version>
+			<version id="5.07-r2">
+				<mask type="keyword" />
+				<unmask type="package_keywords" />
+				<iuse>python static-libs zlib</iuse>
+				<depend>zlib? ( sys-libs/zlib ) python? ( dev-lang/python )</depend>
+				<rdepend>zlib? ( sys-libs/zlib ) python? ( dev-lang/python )</rdepend>
+			</version>
+			<version id="5.07-r3">
+				<iuse>python static-libs zlib</iuse>
+				<depend>zlib? ( sys-libs/zlib ) python? ( dev-lang/python )</depend>
+				<rdepend>zlib? ( sys-libs/zlib ) python? ( dev-lang/python )</rdepend>
+			</version>
+			<version id="5.08">
+				<mask type="keyword" />
+				<unmask type="package_keywords" />
+				<iuse>python static-libs zlib</iuse>
+				<depend>zlib? ( sys-libs/zlib ) python? ( dev-lang/python )</depend>
+				<rdepend>zlib? ( sys-libs/zlib ) python? ( dev-lang/python )</rdepend>
+			</version>
+			<version id="5.09">
+				<iuse>python static-libs zlib</iuse>
+				<depend>zlib? ( sys-libs/zlib ) python? ( dev-lang/python )</depend>
+				<rdepend>zlib? ( sys-libs/zlib ) python? ( dev-lang/python )</rdepend>
+			</version>
+			<version id="5.10">
+				<mask type="keyword" />
+				<unmask type="package_keywords" />
+				<iuse>python static-libs zlib</iuse>
+				<depend>zlib? ( sys-libs/zlib ) python? ( dev-lang/python )</depend>
+				<rdepend>zlib? ( sys-libs/zlib ) python? ( dev-lang/python )</rdepend>
+			</version>
+			<version id="5.11">
+				<iuse>python static-libs zlib</iuse>
+				<depend>zlib? ( sys-libs/zlib ) python? ( dev-lang/python )</depend>
+				<rdepend>zlib? ( sys-libs/zlib ) python? ( dev-lang/python )</rdepend>
+			</version>
+			<version id="5.12">
+				<mask type="keyword" />
+				<unmask type="package_keywords" />
+				<iuse>python static-libs zlib</iuse>
+				<depend>zlib? ( sys-libs/zlib ) python? ( dev-lang/python )</depend>
+				<rdepend>zlib? ( sys-libs/zlib ) python? ( dev-lang/python )</rdepend>
+			</version>
+			<version id="5.12-r1" installed="1" installDate="1368203806">
+				<mask type="keyword" />
+				<unmask type="package_keywords" />
+				<iuse>python static-libs zlib</iuse>
+				<use enabled="0">python static-libs</use>
+				<use enabled="1">zlib</use>
+				<depend>zlib? ( sys-libs/zlib ) python? ( dev-lang/python )</depend>
+				<rdepend>zlib? ( sys-libs/zlib ) python? ( dev-lang/python )</rdepend>
+			</version>
+			<version id="5.14">
+				<mask type="missing_keyword" />
+				<iuse>python static-libs zlib</iuse>
+				<depend>zlib? ( sys-libs/zlib ) python? ( dev-lang/python )</depend>
+				<rdepend>zlib? ( sys-libs/zlib ) python? ( dev-lang/python )</rdepend>
+			</version>
+			<version id="9999">
+				<mask type="missing_keyword" />
+				<iuse>python static-libs zlib</iuse>
+				<depend>zlib? ( sys-libs/zlib ) python? ( dev-lang/python ) || ( &gt;=sys-devel/automake-1.12:1.12 &gt;=sys-devel/automake-1.13:1.13 ) &gt;=sys-devel/autoconf-2.68 sys-devel/libtool dev-vcs/git</depend>
+				<rdepend>zlib? ( sys-libs/zlib ) python? ( dev-lang/python )</rdepend>
+			</version>
+		</package>
+	</category>
+</eixdump>
