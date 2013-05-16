@@ -128,5 +128,18 @@ describe provider_class do
 			}
 		end
 
+		context "when several versions are masked and some are unmasked by keywords" do
+			it {
+				fh = File.open("spec/unit/provider/package/eix/gnome_themes_standard.xml", "rb")
+				file = fh.read
+				fh.close()
+
+				provider_class.stubs(:eix).with("--xml", "--pure-packages", "--exact", "--category-name", "x11-themes/gnome-themes-standard").returns(file)
+
+				provider = provider_class.new(pkg({ :name => "x11-themes/gnome-themes-standard", :ensure => :latest }))
+				provider.latest.should == "3.6.5"
+			}
+		end
+
 	end #xml parse check
 end

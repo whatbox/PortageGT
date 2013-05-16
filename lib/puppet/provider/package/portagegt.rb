@@ -36,7 +36,6 @@ Puppet::Type.type(:package).provide(
 		# Relatively static options, you'll probably want the defaults
 		:defaultSlot => "0",
 		:defaultRepository => "gentoo",
-		:devVersion => "9999",
 		:eixDumpVersion => [6,7,8,9,10],
 		:useDir => "/etc/portage/package.use",
 		:keywordsDir => "/etc/portage/package.keywords",
@@ -509,7 +508,7 @@ Puppet::Type.type(:package).provide(
 		end
 		Dir.glob("#{CONFIG[:packageDB]}/#{glob_value}-[0-9]*").each { |directory|
 
-			['SLOT','PF','CATEGORY','BUILD_TIME','USE'].each { |expected|
+			['SLOT','PF','CATEGORY','USE'].each { |expected|
 				if !File.exists?("#{directory}/#{expected}")
 					raise Puppet::Error.new("The metadata file \"#{expected}\" was not found in #{directory}")
 				end
@@ -700,7 +699,7 @@ Puppet::Type.type(:package).provide(
 
 				# to make the if statements bellow easier to follow
 				installed = (v.attributes["installed"] && v.attributes["installed"] == "1")
-				dev = v.attributes["id"] == CONFIG[:devVersion]
+				dev = v.attributes["id"] =~ /^9+$/
 
 
 				# http://docs.dvo.ru/eix-0.25.5/html/eix-xml.html
