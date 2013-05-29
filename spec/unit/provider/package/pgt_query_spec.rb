@@ -5,7 +5,7 @@ require 'spec_helper'
 
 provider_class = Puppet::Type.type(:package).provider(:portagegt)
 
-describe provider_class, fakefs: true do
+describe provider_class, :fakefs => true do
 	def pkg(args = {})
 		defaults = { :provider => 'portagegt' }
 		Puppet::Type.type(:package).new(defaults.merge(args))
