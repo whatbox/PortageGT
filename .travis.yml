@@ -17,10 +17,10 @@ matrix:
   #     env: PUPPET_VERSION="~> 2.7.21"
   exclude:
     - rvm: 2.0.0
-      env: 
-        - PUPPET_VERSION="~> 3.0.2"
-        - PUPPET_VERSION="~> 3.1.1"
+      env: PUPPET_VERSION="~> 3.0.2"
+    - rvm: 2.0.0
+      env: PUPPET_VERSION="~> 3.1.1"
     - rvm: ruby-head
-      env: 
-        - PUPPET_VERSION="~> 3.0.2"
-        - PUPPET_VERSION="~> 3.1.1"
+      env: PUPPET_VERSION="~> 3.0.2"
+    - rvm: ruby-head
+      env: PUPPET_VERSION="~> 3.1.1"
