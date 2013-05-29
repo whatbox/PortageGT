@@ -1,4 +1,5 @@
 #!/usr/bin/env rspec
+# Encoding: utf-8
 
 require 'yaml'
 require 'spec_helper'

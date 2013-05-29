@@ -1,4 +1,5 @@
 #!/usr/bin/env rspec
+# Encoding: utf-8
 
 require 'yaml'
 require 'spec_helper'
@@ -19,127 +20,124 @@ describe provider_class do
 		Puppet::Type.type(:package).new(defaults.merge(args))
 	end
 
-
 	describe '#latest' do
-		context "when multiple categories avaliable and a package definition is ambiguous" do
+		context 'when multiple categories avaliable and a package definition is ambiguous' do
 			it {
-				fh = File.open("spec/unit/provider/package/eix/mysql_loose.xml", "rb")
+				fh = File.open('spec/unit/provider/package/eix/mysql_loose.xml', 'rb')
 				mysql_loose = fh.read
 				fh.close()
 
 				proc {
-					provider_class.stubs(:eix).with("--xml", "--pure-packages", "--exact", "--name", "mysql").returns(mysql_loose)
+					provider_class.stubs(:eix).with('--xml', '--pure-packages', '--exact', '--name', 'mysql').returns(mysql_loose)
 
-					provider = provider_class.new(pkg({ :name => "mysql", :ensure => :latest }))
+					provider = provider_class.new(pkg({ :name => 'mysql', :ensure => :latest }))
 					provider.latest
 				}.should raise_error(Puppet::Error, /Multiple categories .* available for package .*/)
 			}
 		end
 
-		context "when package is specified explicitly" do
+		context 'when package is specified explicitly' do
 			it {
-				fh = File.open("spec/unit/provider/package/eix/mysql.xml", "rb")
+				fh = File.open('spec/unit/provider/package/eix/mysql.xml', 'rb')
 				mysql = fh.read
 				fh.close()
 
-				provider_class.stubs(:eix).with("--xml", "--pure-packages", "--exact", "--category-name", "dev-db/mysql").returns(mysql)
+				provider_class.stubs(:eix).with('--xml', '--pure-packages', '--exact', '--category-name', 'dev-db/mysql').returns(mysql)
 
-				provider = provider_class.new(pkg({ :name => "dev-db/mysql", :ensure => :latest }))
-				provider.latest.should == "5.1.62-r1"
+				provider = provider_class.new(pkg({ :name => 'dev-db/mysql', :ensure => :latest }))
+				provider.latest.should == '5.1.62-r1'
 			}
 		end
 
-		context "when hard and keyword are masked and only keyword is unmasked" do
+		context 'when hard and keyword are masked and only keyword is unmasked' do
 			it {
-				fh = File.open("spec/unit/provider/package/eix/boost_multi_mask.xml", "rb")
+				fh = File.open('spec/unit/provider/package/eix/boost_multi_mask.xml', 'rb')
 				boost = fh.read
 				fh.close()
 
-				provider_class.stubs(:eix).with("--xml", "--pure-packages", "--exact", "--category-name", "dev-libs/boost").returns(boost)
+				provider_class.stubs(:eix).with('--xml', '--pure-packages', '--exact', '--category-name', 'dev-libs/boost').returns(boost)
 
-				provider = provider_class.new(pkg({ :name => "dev-libs/boost", :ensure => :latest }))
-				provider.latest.should == "1.52.0-r6"
+				provider = provider_class.new(pkg({ :name => 'dev-libs/boost', :ensure => :latest }))
+				provider.latest.should == '1.52.0-r6'
 			}
 		end
 
-		context "when hard and keyword are masked and both are unmasked" do
+		context 'when hard and keyword are masked and both are unmasked' do
 			it {
-				fh = File.open("spec/unit/provider/package/eix/boost_full_unmasked.xml", "rb")
+				fh = File.open('spec/unit/provider/package/eix/boost_full_unmasked.xml', 'rb')
 				boost = fh.read
 				fh.close()
 
-				provider_class.stubs(:eix).with("--xml", "--pure-packages", "--exact", "--category-name", "dev-libs/boost").returns(boost)
+				provider_class.stubs(:eix).with('--xml', '--pure-packages', '--exact', '--category-name', 'dev-libs/boost').returns(boost)
 
-				provider = provider_class.new(pkg({ :name => "dev-libs/boost", :ensure => :latest }))
-				provider.latest.should == "1.53.0"
+				provider = provider_class.new(pkg({ :name => 'dev-libs/boost', :ensure => :latest }))
+				provider.latest.should == '1.53.0'
 			}
 		end
 
-		context "when hard and keyword are masked and only hard is unmasked" do
+		context 'when hard and keyword are masked and only hard is unmasked' do
 			it {
-				fh = File.open("spec/unit/provider/package/eix/boost_unmasked_keyworded.xml", "rb")
+				fh = File.open('spec/unit/provider/package/eix/boost_unmasked_keyworded.xml', 'rb')
 				boost = fh.read
 				fh.close()
 
-				provider_class.stubs(:eix).with("--xml", "--pure-packages", "--exact", "--category-name", "dev-libs/boost").returns(boost)
+				provider_class.stubs(:eix).with('--xml', '--pure-packages', '--exact', '--category-name', 'dev-libs/boost').returns(boost)
 
-				provider = provider_class.new(pkg({ :name => "dev-libs/boost", :ensure => :latest }))
-				provider.latest.should == "1.49.0-r2"
+				provider = provider_class.new(pkg({ :name => 'dev-libs/boost', :ensure => :latest }))
+				provider.latest.should == '1.49.0-r2'
 			}
 		end
 
-		context "when hard and keyword are masked and only hard is unmasked but a keyworded package is already installed" do
+		context 'when hard and keyword are masked and only hard is unmasked but a keyworded package is already installed' do
 			it {
-				fh = File.open("spec/unit/provider/package/eix/boost_unmasked_keyworded_installed.xml", "rb")
+				fh = File.open('spec/unit/provider/package/eix/boost_unmasked_keyworded_installed.xml', 'rb')
 				boost = fh.read
 				fh.close()
 
-				provider_class.stubs(:eix).with("--xml", "--pure-packages", "--exact", "--category-name", "dev-libs/boost").returns(boost)
+				provider_class.stubs(:eix).with('--xml', '--pure-packages', '--exact', '--category-name', 'dev-libs/boost').returns(boost)
 
-				provider = provider_class.new(pkg({ :name => "dev-libs/boost", :ensure => :latest }))
-				provider.latest.should == "1.52.0-r6"
+				provider = provider_class.new(pkg({ :name => 'dev-libs/boost', :ensure => :latest }))
+				provider.latest.should == '1.52.0-r6'
 			}
 		end
 
-
-		context "when packages are masked in different ways (alien_unstable)" do
+		context 'when packages are masked in different ways (alien_unstable)' do
 			it {
-				fh = File.open("spec/unit/provider/package/eix/portage_alien_unstable.xml", "rb")
+				fh = File.open('spec/unit/provider/package/eix/portage_alien_unstable.xml', 'rb')
 				portage = fh.read
 				fh.close()
 
-				provider_class.stubs(:eix).with("--xml", "--pure-packages", "--exact", "--category-name", "sys-apps/portage").returns(portage)
+				provider_class.stubs(:eix).with('--xml', '--pure-packages', '--exact', '--category-name', 'sys-apps/portage').returns(portage)
 
-				provider = provider_class.new(pkg({ :name => "sys-apps/portage", :ensure => :latest }))
-				provider.latest.should == "2.1.11.63"
+				provider = provider_class.new(pkg({ :name => 'sys-apps/portage', :ensure => :latest }))
+				provider.latest.should == '2.1.11.63'
 			}
 		end
 
-		context "when packages are masked in different ways (missing_keyword)" do
+		context 'when packages are masked in different ways (missing_keyword)' do
 			it {
-				fh = File.open("spec/unit/provider/package/eix/file_missing_keyword.xml", "rb")
+				fh = File.open('spec/unit/provider/package/eix/file_missing_keyword.xml', 'rb')
 				file = fh.read
 				fh.close()
 
-				provider_class.stubs(:eix).with("--xml", "--pure-packages", "--exact", "--category-name", "sys-apps/file").returns(file)
+				provider_class.stubs(:eix).with('--xml', '--pure-packages', '--exact', '--category-name', 'sys-apps/file').returns(file)
 
-				provider = provider_class.new(pkg({ :name => "sys-apps/file", :ensure => :latest }))
-				provider.latest.should == "5.12-r1"
+				provider = provider_class.new(pkg({ :name => 'sys-apps/file', :ensure => :latest }))
+				provider.latest.should == '5.12-r1'
 			}
 		end
 
-		context "when several versions are masked and some are unmasked by keywords" do
+		context 'when several versions are masked and some are unmasked by keywords' do
 			it {
-				fh = File.open("spec/unit/provider/package/eix/gnome_themes_standard.xml", "rb")
+				fh = File.open('spec/unit/provider/package/eix/gnome_themes_standard.xml', 'rb')
 				file = fh.read
 				fh.close()
 
-				provider_class.stubs(:eix).with("--xml", "--pure-packages", "--exact", "--category-name", "x11-themes/gnome-themes-standard").returns(file)
+				provider_class.stubs(:eix).with('--xml', '--pure-packages', '--exact', '--category-name', 'x11-themes/gnome-themes-standard').returns(file)
 
-				provider = provider_class.new(pkg({ :name => "x11-themes/gnome-themes-standard", :ensure => :latest }))
-				provider.latest.should == "3.6.5"
+				provider = provider_class.new(pkg({ :name => 'x11-themes/gnome-themes-standard', :ensure => :latest }))
+				provider.latest.should == '3.6.5'
 			}
 		end
-
-	end #xml parse check
+	end # xml parse check
 end

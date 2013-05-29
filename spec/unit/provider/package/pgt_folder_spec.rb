@@ -1,4 +1,5 @@
 #!/usr/bin/env rspec
+# Encoding: utf-8
 
 require 'spec_helper'
 
@@ -10,7 +11,7 @@ describe provider_class, :fakefs => true do
 		FileUtils.mkdir_p('/etc/portage/package.use')
 	end
 
-	describe ".setPortage" do
+	describe '.setPortage' do
 		def package_stub_mysql
 			provider = stub 'provider'
 			provider.stubs(:package_name).returns("mysql")
@@ -41,7 +42,7 @@ describe provider_class, :fakefs => true do
 		end
 
 
-		context "when package.use should be empty, and is empty" do
+		context 'when package.use should be empty, and is empty' do
 			it {
 				provider_class.setPortage({}, '/etc/portage/package.use', 'package_use')
 
@@ -49,7 +50,7 @@ describe provider_class, :fakefs => true do
 			}
 		end
 
-		context "when package.use should have files, and is empty" do
+		context 'when package.use should have files, and is empty' do
 			it {
 				provider_class.setPortage(package_stub_mysql, '/etc/portage/package.use', 'package_use')
 
@@ -57,7 +58,7 @@ describe provider_class, :fakefs => true do
 			}
 		end
 
-		context "when package.use has files, and should be empty" do
+		context 'when package.use has files, and should be empty' do
 			it {
 				FileUtils.mkdir_p('/etc/portage/package.use/dev-db')
 				File.open('/etc/portage/package.use/dev-db/mysql','w') do |fh|
@@ -70,7 +71,7 @@ describe provider_class, :fakefs => true do
 			}
 		end
 
-		context "when package.use has files and no changes are needed" do
+		context 'when package.use has files and no changes are needed' do
 			it {
 				FileUtils.mkdir_p('/etc/portage/package.use/dev-db')
 				File.open('/etc/portage/package.use/dev-db/mysql','w') do |fh|
@@ -83,7 +84,7 @@ describe provider_class, :fakefs => true do
 			}
 		end
 
-		context "when package.use has correct files but incorrect contents" do
+		context 'when package.use has correct files but incorrect contents' do
 			it {
 				FileUtils.mkdir_p('/etc/portage/package.use/dev-db')
 				File.open('/etc/portage/package.use/dev-db/mysql','w') do |fh|
@@ -96,7 +97,7 @@ describe provider_class, :fakefs => true do
 			}
 		end
 
-		context "when package.use has category folders but should be empty" do
+		context 'when package.use has category folders but should be empty' do
 			it {
 				FileUtils.mkdir_p('/etc/portage/package.use/fooblah')
 				FileUtils.mkdir_p('/etc/portage/package.use/random')
@@ -107,7 +108,7 @@ describe provider_class, :fakefs => true do
 			}
 		end
 
-		context "when package.use has files (in the wrong place) but should be empty" do
+		context 'when package.use has files (in the wrong place) but should be empty' do
 			it {
 				File.open('/etc/portage/package.use/somefile','w') do |fh|
 					fh.write("irrelevant contents\n")
@@ -119,7 +120,7 @@ describe provider_class, :fakefs => true do
 			}
 		end
 
-		context "when package.use has files but should be empty" do
+		context 'when package.use has files but should be empty' do
 			it {
 				FileUtils.mkdir_p('/etc/portage/package.use/foo')
 				File.open('/etc/portage/package.use/foo/bar','w') do |fh|
@@ -132,7 +133,7 @@ describe provider_class, :fakefs => true do
 			}
 		end
 
-		context "when package.use has a mix of correct and incorrect files" do
+		context 'when package.use has a mix of correct and incorrect files' do
 			it {
 				FileUtils.mkdir_p('/etc/portage/package.use/dev-db')
 				File.open('/etc/portage/package.use/dev-db/mysql','w') do |fh|
@@ -150,43 +151,43 @@ describe provider_class, :fakefs => true do
 			}
 		end
 
-		context "when separate slots have different options" do
+		context 'when separate slots have different options' do
 			it {
 				provider53 = stub 'provider'
-				provider53.stubs(:package_name).returns("php")
-				provider53.stubs(:package_category).returns("dev-lang")
-				provider53.stubs(:package_slot).returns("5.3")
-				provider53.stubs(:package_use).returns(['something','-without'])
+				provider53.stubs(:package_name).returns('php')
+				provider53.stubs(:package_category).returns('dev-lang')
+				provider53.stubs(:package_slot).returns('5.3')
+				provider53.stubs(:package_use).returns(['something', '-without'])
 
 				resource53 = stub 'resource'
 				resource53.stubs(:provider).returns(provider53)
 
 				provider54 = stub 'provider'
-				provider54.stubs(:package_name).returns("php")
-				provider54.stubs(:package_category).returns("dev-lang")
-				provider54.stubs(:package_slot).returns("5.4")
-				provider54.stubs(:package_use).returns(['-bar','-seven'])
+				provider54.stubs(:package_name).returns('php')
+				provider54.stubs(:package_category).returns('dev-lang')
+				provider54.stubs(:package_slot).returns('5.4')
+				provider54.stubs(:package_use).returns(['-bar', '-seven'])
 
 				resource54 = stub 'resource'
 				resource54.stubs(:provider).returns(provider54)
 
 				resources = {
-					"dev-lang/php:5.3" => resource53,
-					"dev-lang/php:5.4" => resource54,
+					'dev-lang/php:5.3' => resource53,
+					'dev-lang/php:5.4' => resource54,
 				}
 
 				provider_class.setPortage(resources, '/etc/portage/package.use', 'package_use')
 
 				Dir.chdir('/etc/portage/package.use') do
 					Dir.glob('*').should == ['dev-lang']
-					Dir.glob('dev-lang/*').should == ['dev-lang/php:5.3','dev-lang/php:5.4']
+					Dir.glob('dev-lang/*').should == ['dev-lang/php:5.3', 'dev-lang/php:5.4']
 					File.read('dev-lang/php:5.3').should == "dev-lang/php:5.3 something -without\n"
 					File.read('dev-lang/php:5.4').should == "dev-lang/php:5.4 -bar -seven\n"
 				end
 			}
 		end
 
-		context "when attempting to use it without a category" do
+		context 'when attempting to use it without a category' do
 			it {
 				provider = stub 'provider'
 				provider.stubs(:package_name).returns("mysql")
@@ -208,7 +209,7 @@ describe provider_class, :fakefs => true do
 			}
 		end
 
-		context "when attempting to use it without a category, and other files still need creation" do
+		context 'when attempting to use it without a category, and other files still need creation' do
 			it {
 				provider53 = stub 'provider'
 				provider53.stubs(:package_name).returns("php")

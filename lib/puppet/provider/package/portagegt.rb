@@ -1,3 +1,4 @@
+# Encoding: utf-8
 #
 # PortageGT (Puppet Package Provider)
 #
@@ -16,7 +17,7 @@ include REXML
 
 Puppet::Type.type(:package).provide(
 	:portagegt,
-	:parent => Puppet::Provider::Package 
+	:parent => Puppet::Provider::Package
 ) do
 
 	##################
@@ -34,30 +35,28 @@ Puppet::Type.type(:package).provide(
 		:useChange => true,
 
 		# Relatively static options, you'll probably want the defaults
-		:defaultSlot => "0",
-		:defaultRepository => "gentoo",
-		:eixDumpVersion => [6,7,8,9,10],
-		:useDir => "/etc/portage/package.use",
-		:keywordsDir => "/etc/portage/package.keywords",
-		:packageDB => "/var/db/pkg",
+		:defaultSlot => '0',
+		:defaultRepository => 'gentoo',
+		:eixDumpVersion => [6, 7, 8, 9, 10],
+		:useDir => '/etc/portage/package.use',
+		:keywordsDir => '/etc/portage/package.keywords',
+		:packageDB => '/var/db/pkg',
 	}
 
 	#######################
 	# Internal Structures #
 	#######################
 
-	#package {
+	# package {
+	#  :provider
+	#  A self reference to this class
 	#
-	# :provider,
-	# A self reference to this class
+	#  :name
+	#  Package name within category
 	#
-	# :name
-	# Package name within category
-	#
-	# :ensure
-	# Absent or "version string"
-	#
-	#}
+	#  :ensure
+	#  Absent or "version string"
+	# }
 
 
 	################
@@ -68,7 +67,7 @@ Puppet::Type.type(:package).provide(
 	confine :operatingsystem => :gentoo
 
 
-	# It turns out has_features automatically determines what's available from 
+	# It turns out has_features automatically determines what's available from
 	# the definitions in this file, so the following lines probably aren't
 	# necessary, regardless, I wanted to document this for my own purposes
 
@@ -111,12 +110,12 @@ Puppet::Type.type(:package).provide(
 		return CONFIG[param]
 	end
 
-	#void (void)
+	# void (void)
 	def self.runEix
 
 		if !CONFIG[:eixRunUpdate]
 			 if CONFIG[:eixRunSync]
-				raise Puppet::Error.new("eixRunUpdate must be true if eixRunSync is true")
+				raise Puppet::Error.new('eixRunUpdate must be true if eixRunSync is true')
 			 end
 			return
 		end
@@ -133,11 +132,11 @@ Puppet::Type.type(:package).provide(
 		end
 	end
 
-	#void (package[], string dir, string opts, string funcName)
+	# void (package[], string dir, string opts, string funcName)
 	def self.setPortage(packages, dir, funcName)
 		oldCats = Dir.entries(dir).select { |entry|
 			#File.directory?(File.join(dir,entry)) and #for old legacy compatibility
-			!(entry =='.' || entry == '..')
+			!(entry == '.' || entry == '..')
 		}
 
 		newCats = []
@@ -254,7 +253,7 @@ Puppet::Type.type(:package).provide(
 		# Remove stray entries from categories
 		newCats.each { |cat|
 			oldEntries = Dir.entries(File.join(dir,cat)).select { |entry|
-				!(entry =='.' || entry == '..')
+				!(entry == '.' || entry == '..')
 			}
 
 			removeEntries = oldEntries - newEntries[cat]
@@ -282,7 +281,7 @@ Puppet::Type.type(:package).provide(
 	# Utility classes (not for use in self.*) #
 	###########################################
 
-	#string (string)
+	# string (string)
 	def _strip_subslot(slot)
 		if slot.count('/') == 1
 			return slot.split('/')[0]
@@ -291,8 +290,8 @@ Puppet::Type.type(:package).provide(
 		return slot
 	end
 
-	#string[] (string)
-	#string[] (string[])
+	# string[] (string)
+	# string[] (string[])
 	def resourceTok(string)
 		if string.nil?
 			return []
@@ -313,7 +312,7 @@ Puppet::Type.type(:package).provide(
 		end
 	end
 
-	#string (void)
+	# string (void)
 	def package_name
 		name = @resource[:name]
 
@@ -328,7 +327,7 @@ Puppet::Type.type(:package).provide(
 		return name
 	end
 
-	#string (void)
+	# string (void)
 	def package_category
 		name = @resource[:name]
 
@@ -351,7 +350,7 @@ Puppet::Type.type(:package).provide(
 		return category
 	end
 
-	#string (void)
+	# string (void)
 	def package_slot
 		name = @resource[:name]
 
@@ -374,7 +373,7 @@ Puppet::Type.type(:package).provide(
 		return slot
 	end
 
-	#string (void)
+	# string (void)
 	def package_repository
 		if @resource[:repository]
 			return @resource[:repository]
@@ -384,17 +383,17 @@ Puppet::Type.type(:package).provide(
 	end
 
 
-	#string[] (void)
+	# string[] (void)
 	def package_use
 		resourceTok(@resource[:use])
 	end
 
-	#string[] (void)
+	# string[] (void)
 	def package_keywords
 		resourceTok(@resource[:keywords])
 	end
 
-	#bool (string have[], string valid[], string want[])
+	# bool (string have[], string valid[], string want[])
 	def useChanged(have, valid, want)
 
 		# Negative flags
@@ -425,7 +424,7 @@ Puppet::Type.type(:package).provide(
 	# Implement required APIs #
 	###########################
 
-	#void (void)
+	# void (void)
 	def install
 		should = @resource.should(:ensure)
 
@@ -468,7 +467,7 @@ Puppet::Type.type(:package).provide(
 		ENV.replace(env_hold)
 	end
 
-	#void (void)
+	# void (void)
 	def uninstall
 		name = package_name
 
@@ -487,13 +486,13 @@ Puppet::Type.type(:package).provide(
 		emerge "--unmerge", name
 	end
 
-	#void (void)
+	# void (void)
 	def update
 		install
 	end
 
 	# Returns what is currently installed
-	#package[] (void)
+	# package[] (void)
 	def query
 		slots = {}
 		repositories = []
@@ -600,7 +599,7 @@ Puppet::Type.type(:package).provide(
 	end
 
 	# Returns the string for the newest version of a package available
-	#string (void)
+	# string (void)
 	def latest
 		slots = {}
 		repositories = []
@@ -624,7 +623,7 @@ Puppet::Type.type(:package).provide(
 		xml = REXML::Document.new(eixout)
 
 
-		if !CONFIG[:eixDumpVersion].include?(Integer(xml.root.attributes["version"]))
+		if !CONFIG[:eixDumpVersion].include?(Integer(xml.root.attributes['version']))
 			warnonce("eixdump version is not in [#{CONFIG[:eixDumpVersion].join(', ')}].")
 		end
 
@@ -645,11 +644,11 @@ Puppet::Type.type(:package).provide(
 				# Skip based on specific constraints
 				if !package_slot.nil?
 					if package_slot == CONFIG[:defaultSlot]
-						if !v.attributes["slot"].nil?
+						if !v.attributes['slot'].nil?
 							next
 						end
 					else
-						if v.attributes["slot"] != package_slot
+						if v.attributes['slot'] != package_slot
 							next
 						end
 					end
@@ -657,11 +656,11 @@ Puppet::Type.type(:package).provide(
 
 				if !package_repository.nil?
 					if package_repository == CONFIG[:defaultRepository]
-						if !v.attributes["repository"].nil?
+						if !v.attributes['repository'].nil?
 							next
 						end
 					else
-						if v.attributes["repository"] != package_repository
+						if v.attributes['repository'] != package_repository
 							next
 						end
 					end
@@ -669,14 +668,14 @@ Puppet::Type.type(:package).provide(
 
 
 				# Establish variables for reuse
-				if !v.attributes["slot"].nil?
-					slot = _strip_subslot(v.attributes["slot"])
+				if !v.attributes['slot'].nil?
+					slot = _strip_subslot(v.attributes['slot'])
 				else
 					slot = CONFIG[:defaultSlot]
 				end
 
-				if !v.attributes["repository"].nil?
-					repository = v.attributes["repository"]
+				if !v.attributes['repository'].nil?
+					repository = v.attributes['repository']
 				else
 					repository = CONFIG[:defaultRepository]
 				end
@@ -698,8 +697,8 @@ Puppet::Type.type(:package).provide(
 				end
 
 				# to make the if statements bellow easier to follow
-				installed = (v.attributes["installed"] && v.attributes["installed"] == "1")
-				dev = v.attributes["id"] =~ /^9+$/
+				installed = (v.attributes['installed'] && v.attributes['installed'] == '1')
+				dev = v.attributes['id'] =~ /^9+$/
 
 
 				# http://docs.dvo.ru/eix-0.25.5/html/eix-xml.html
@@ -715,8 +714,8 @@ Puppet::Type.type(:package).provide(
 				# minus_unstable
 				# minus_asterisk
 				# minus_keyword
-				hard_masked = (v.elements["mask[@type!='keyword']"] && !v.elements["unmask[@type='package_unmask']"])
-				keyword_masked = (v.elements["mask[@type='keyword']"] && !v.elements["unmask[@type='package_keywords']"])
+				hard_masked = (v.elements['mask[@type!=\'keyword\']'] && !v.elements['unmask[@type=\'package_unmask\']'])
+				keyword_masked = (v.elements['mask[@type=\'keyword\']'] && !v.elements['unmask[@type=\'package_keywords\']'])
 
 
 				# Currently installed packages should always be valid candidates for staying installed

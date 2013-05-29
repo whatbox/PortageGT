@@ -2,44 +2,45 @@
 # directly from puppet itself, rather than simply adding the pieces we need
 #
 # Please see the LICENSE file for proper rights to this file
+# Encoding: utf-8
 
 module Puppet
 	newtype(:package) do
-		@doc = "Overwrites the standard Package provider"
+		@doc = 'Overwrites the standard Package provider'
 
 		# attributes not currently validated
 		newparam(:slot) do
-			desc "Package slot"
+			desc 'Package slot'
 		end
 
 		newparam(:repository) do
-			desc "Package repository"
+			desc 'Package repository'
 		end
 
 		newparam(:use) do
-			desc "Package use flags"
+			desc 'Package use flags'
 		end
 
 		newparam(:keywords) do
-			desc "Package keywords"
+			desc 'Package keywords'
 		end
 
 		newparam(:environment) do
-			desc "Package Environment"
+			desc 'Package Environment'
 		end
 
 		newparam(:name) do
-			desc "The package name."
+			desc 'The package name.'
 			isnamevar
 
 			validate do |value|
-				raise Puppet::Error, "name may not contain whitespace" if value =~ /\s/
-				raise Puppet::Error, "name may not end with category boundary" if value =~ /\/$/
-				raise Puppet::Error, "name may not start with category boundary" if value =~ /^\//
-				raise Puppet::Error, "name may not contain multiple category boundaries" if value.count('/') > 1
-				raise Puppet::Error, "name may not end with slot boundary" if value =~ /:$/
-				raise Puppet::Error, "name may not start with slot boundary" if value =~ /^:/
-				raise Puppet::Error, "name may not contain multiple slot boundaries" if value.count(':') > 1
+				raise Puppet::Error, 'name may not contain whitespace' if value =~ /\s/
+				raise Puppet::Error, 'name may not end with category boundary' if value =~ /\/$/
+				raise Puppet::Error, 'name may not start with category boundary' if value =~ /^\//
+				raise Puppet::Error, 'name may not contain multiple category boundaries' if value.count('/') > 1
+				raise Puppet::Error, 'name may not end with slot boundary' if value =~ /:$/
+				raise Puppet::Error, 'name may not start with slot boundary' if value =~ /^:/
+				raise Puppet::Error, 'name may not contain multiple slot boundaries' if value.count(':') > 1
 			end
 		end
 
@@ -50,22 +51,22 @@ module Puppet
 
 
 		# Features
-		feature :installable, "Can install packages.",
+		feature :installable, 'Can install packages.',
 			:methods => [:install]
-		feature :uninstallable, "Can remove packages.",
+		feature :uninstallable, 'Can remove packages.',
 			:methods => [:uninstall]
-		feature :upgradeable, "Can update packages",
+		feature :upgradeable, 'Can update packages',
 			:methods => [:update, :latest]
-		feature :purgeable, "Can purge packages, configuration and all.",
+		feature :purgeable, 'Can purge packages, configuration and all.',
 			:methods => [:purge]
-		feature :versionable, "Knows versions, can install exact versions."
-		feature :holdable, "Can prevent a package from being installed as a result of other package dependencies.",
+		feature :versionable, 'Knows versions, can install exact versions.'
+		feature :holdable, 'Can prevent a package from being installed as a result of other package dependencies.',
 			:methods => [:hold]
 
 
 		# Ensure
 		ensurable do
-			desc "Specify the state the package should be in when done"
+			desc 'Specify the state the package should be in when done'
 			
 			attr_accessor :latest
 
@@ -90,7 +91,7 @@ module Puppet
 
 			newvalue(:latest, :required_features => :upgradeable) do
 				# Because yum always exits with a 0 exit code, there's a retrieve
-				# in the "install" method.  So, check the current state now,
+				# in the 'install' method.  So, check the current state now,
 				# to compare against later.
 				current = self.retrieve
 				begin
@@ -139,7 +140,7 @@ module Puppet
 
 						# Don't run 'latest' more than about every 5 minutes
 						if @latest and ((Time.now.to_i - @lateststamp) / 60) < 5
-							#self.debug "Skipping latest check"
+							#self.debug 'Skipping latest check'
 						else
 							begin
 								@latest = provider.latest
@@ -195,18 +196,18 @@ module Puppet
 		end
 
 		newparam(:instance) do
-			desc "A read-only parameter set by the package."
+			desc 'A read-only parameter set by the package.'
 		end
 
 		newparam(:status) do
-			desc "A read-only parameter set by the package."
+			desc 'A read-only parameter set by the package.'
 		end
 
 		newparam(:category) do
-			desc "A read-only parameter set by the package."
+			desc 'A read-only parameter set by the package.'
 		end
 		newparam(:platform) do
-			desc "A read-only parameter set by the package."
+			desc 'A read-only parameter set by the package.'
 		end
 
 		# The 'query' method returns a hash of info if the package

@@ -1,3 +1,5 @@
+# Encoding: utf-8
+
 Puppet::Type.type(:eselect).provide(:eselect) do
 	include Puppet::Util::Execution
 
@@ -19,7 +21,7 @@ Puppet::Type.type(:eselect).provide(:eselect) do
 	def self.prefetch(packages)
 	end
 
-	#string (void)
+	# string (void)
 	def eselect_module
 		if @resource[:name] =~ /^[a-z]+$/
 			emodule = @resource[:name]
@@ -32,23 +34,23 @@ Puppet::Type.type(:eselect).provide(:eselect) do
 			end
 
 			emodule = @resource[:module]
-		end 
+		end
 
 		return emodule
 	end
 
-	#string (void)
+	# string (void)
 	def eselect_submodule
 		submodule = nil
 
 		if @resource[:submodule]
 			submodule = @resource[:submodule]
-		end 
+		end
 
 		return submodule
 	end
 
-	#string (void)
+	# string (void)
 	def eselect_list
 		if @resource[:listcmd]
 			if @resource[:module]
@@ -73,7 +75,7 @@ Puppet::Type.type(:eselect).provide(:eselect) do
 		end
 	end
 
-	#string (void)
+	# string (void)
 	def eselect_set
 		if @resource[:setcmd]
 			if @resource[:module]
@@ -98,7 +100,7 @@ Puppet::Type.type(:eselect).provide(:eselect) do
 		end
 	end
 
-	#string (void)
+	# string (void)
 	def ensure
 		should = @resource.should(:ensure)
 
@@ -115,8 +117,8 @@ Puppet::Type.type(:eselect).provide(:eselect) do
 
 			next if option[0] !~ /\[\d+\]/
 
-			if option[option.length-1] == '*'
-				raise Puppet::Error.new("Multiple selected versions for eselect[#{@resource[:name]}]") if !selected.nil?
+			if option[option.length - 1] == '*'
+				raise Puppet::Error.new("Multiple selected versions for eselect[#{@resource[:name]}]") unless selected.nil?
 
 				selected = option[1]
 			end
@@ -124,15 +126,15 @@ Puppet::Type.type(:eselect).provide(:eselect) do
 			options.push(option[1])
 		}
 
-		if !options.include? should
-			availableOptions = options.join(" ")
+		unless options.include? should
+			availableOptions = options.join(' ')
 			raise Puppet::Error.new("Invalid option \"#{should}\", should be one of [#{availableOptions}] for eselect[#{@resource[:name]}]")
 		end
 
 		return selected
 	end
 
-	#void (string)
+	# void (string)
 	def ensure=(target)
 		begin
 			Puppet::Util::Execution.execute("#{eselect_set} #{target}")

@@ -1,3 +1,5 @@
+# Encoding: utf-8
+
 module Puppet
 	newtype(:eselect) do
 		newparam(:name) do
