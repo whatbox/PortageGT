@@ -62,7 +62,7 @@ describe Puppet::Type.type(:package) do
 			it 'it enforces sensible slots' do
 				proc { described_class.new(:name => 'foo:', :ensure => :present) }.should raise_error(Puppet::Error, /name may not end with slot boundary/)
 				proc { described_class.new(:name => ':foo', :ensure => :present) }.should raise_error(Puppet::Error, /name may not start with slot boundary/)
-				proc { described_class.new(:name => 'bar::2', :ensure => :present) }.should raise_error(Puppet::Error, /name may not contain multiple slot boundaries/)
+				proc { described_class.new(:name => 'bar::2', :ensure => :present) }.should raise_error(Puppet::Error, /name may not contain repository/)
 				proc { described_class.new(:name => 'bar:blah:foo', :ensure => :present) }.should raise_error(Puppet::Error, /name may not contain multiple slot boundaries/)
 			end
 

@@ -21,119 +21,112 @@ describe provider_class do
 	# level, if there's an ambiguous case, it will never make it to the uninstall function
 
 	describe '#uninstall' do
-		context 'when using a package name with no category' do
-			it {
-				provider = provider_class.new(pkg({ :name => 'mysql' }))
-				provider.expects(:emerge).with('--unmerge', 'mysql')
-				provider.uninstall
-			}
+		it "with no paremeters" do
+			provider = provider_class.new(pkg({ :name => 'mysql' }))
+			provider.expects(:emerge).with('--unmerge', 'mysql')
+			provider.uninstall
 		end
 
-		context 'when using a package name with no category and a slot' do
-			it {
+		context 'with slot parameter' do
+			it 'in the name' do
 				provider = provider_class.new(pkg({ :name => 'mysql:2' }))
 				provider.expects(:emerge).with('--unmerge', 'mysql:2')
 				provider.uninstall
-			}
+			end
 
-			it {
+			it 'in the params' do
 				provider = provider_class.new(pkg({ :name => 'mysql', :slot => '2' }))
 				provider.expects(:emerge).with('--unmerge', 'mysql:2')
 				provider.uninstall
-			}
+			end
 
-			it {
+			it 'in the name & params' do
 				provider = provider_class.new(pkg({ :name => 'mysql:2', :slot => '2' }))
 				provider.expects(:emerge).with('--unmerge', 'mysql:2')
 				provider.uninstall
-			}
+			end
+
+			it 'mismatched between the name & params' do
+				provider = provider_class.new(pkg({ :name => 'dev-db/mysql:2', :slot => '3' }))
+				proc { provider.uninstall }.should raise_error(Puppet::Error, /Slot disagreement on Package.*, please check the definition/)
+			end
 		end
 
-		context 'when using a category/name for the package' do
-			it {
+		context 'with category parameter' do
+			it 'in the name' do
 				provider = provider_class.new(pkg({ :name => 'dev-db/mysql' }))
 				provider.expects(:emerge).with('--unmerge', 'dev-db/mysql')
 				provider.uninstall
-			}
+			end
 
-			it {
-				provider = provider_class.new(pkg({ :name => 'mysql', :category => 'floomba' }))
-				provider.expects(:emerge).with('--unmerge', 'floomba/mysql')
+			it 'in the params' do
+				provider = provider_class.new(pkg({ :name => 'mysql', :category => 'dev-db' }))
+				provider.expects(:emerge).with('--unmerge', 'dev-db/mysql')
 				provider.uninstall
-			}
+			end
 
-			it {
-				provider = provider_class.new(pkg({ :name => 'bumbling/fool', :category => 'bumbling' }))
-				provider.expects(:emerge).with('--unmerge', 'bumbling/fool')
+			it 'in the name & params' do
+				provider = provider_class.new(pkg({ :name => 'foobar/mysql', :category => 'foobar' }))
+				provider.expects(:emerge).with('--unmerge', 'foobar/mysql')
 				provider.uninstall
-			}
-		end
-	end
+			end
 
-	describe 'uninstalling with category mismatch' do
-		it 'plain' do
-			proc {
-				provider = provider_class.new(pkg({ :name => 'dev-db/mysql', :category => 'foobar' }))
-				provider.uninstall
-			}.should raise_error(Puppet::Error, /Category disagreement on Package.*, please check the definition/)
+			it 'mismatched between the name & params' do
+				provider = provider_class.new(pkg({ :name => 'dev-db/mysql', :category => 'nope' }))
+				proc { provider.uninstall }.should raise_error(Puppet::Error, /Category disagreement on Package.*, please check the definition/)
+			end
 		end
 
-		it 'with name slot' do
-			proc {
-				provider = provider_class.new(pkg({ :name => 'dev-db/mysql:2', :category => 'foobar' }))
+		context 'with repository parameter' do
+			it 'in the params' do
+				provider = provider_class.new(pkg({ :name => 'mysql', :repository => 'awesome-overlay' }))
+				provider.expects(:emerge).with('--unmerge', 'mysql::awesome-overlay')
 				provider.uninstall
-			}.should raise_error(Puppet::Error, /Category disagreement on Package.*, please check the definition/)
+			end
 		end
 
-		it 'with attr slot' do
-			proc {
-				provider = provider_class.new(pkg({ :name => 'dev-db/mysql', :category => 'foobar', :slot => '2' }))
+		context 'with category & slot' do
+			it 'in the name' do
+				provider = provider_class.new(pkg({ :name => 'dev-db/mysql:2' }))
+				provider.expects(:emerge).with('--unmerge', 'dev-db/mysql:2')
 				provider.uninstall
-			}.should raise_error(Puppet::Error, /Category disagreement on Package.*, please check the definition/)
+			end
+
+			it 'in the params' do
+				provider = provider_class.new(pkg({ :name => 'mysql', :category => 'dev-db', :slot => '5.5' }))
+				provider.expects(:emerge).with('--unmerge', 'dev-db/mysql:5.5')
+				provider.uninstall
+			end
+
+			it 'in the name & params' do
+				provider = provider_class.new(pkg({ :name => 'foo/bar:baz', :category => 'foo', :slot => 'baz' }))
+				provider.expects(:emerge).with('--unmerge', 'foo/bar:baz')
+				provider.uninstall
+			end
 		end
 
-		it 'with name & attribute slot' do
-			proc {
-				provider = provider_class.new(pkg({ :name => 'dev-db/mysql:2', :category => 'foobar', :slot => '2' }))
+		context 'with category & repository' do
+			it 'in the params' do
+				provider = provider_class.new(pkg({ :name => 'php', :category => 'dev-lang', :repository => 'internal' }))
+				provider.expects(:emerge).with('--unmerge', 'dev-lang/php::internal')
 				provider.uninstall
-			}.should raise_error(Puppet::Error, /Category disagreement on Package.*, please check the definition/)
-		end
-	end
-
-	describe 'uninstalling with slot mismatch' do
-		it 'plain' do
-			proc {
-				provider = provider_class.new(pkg({ :name => 'mysql:2', :slot => '3' }))
-				provider.uninstall
-			}.should raise_error(Puppet::Error, /Slot disagreement on Package.*, please check the definition/)
+			end
 		end
 
-		it 'name category' do
-			proc {
-				provider = provider_class.new(pkg({ :name => 'dev-db/mysql:2', :slot => '3' }))
+		context 'with slot & repository' do
+			it 'in the params' do
+				provider = provider_class.new(pkg({ :name => 'program', :slot => 'ruby18', :repository => 'internal' }))
+				provider.expects(:emerge).with('--unmerge', 'program:ruby18::internal')
 				provider.uninstall
-			}.should raise_error(Puppet::Error, /Slot disagreement on Package.*, please check the definition/)
-		end
-		it 'name category' do
-			proc {
-				provider = provider_class.new(pkg({ :name => 'dev-db/mysql:2', :slot => '3', :category => 'dev-db' }))
-				provider.uninstall
-			}.should raise_error(Puppet::Error, /Slot disagreement on Package.*, please check the definition/)
+			end
 		end
 
-		it 'attribute category' do
-			proc {
-				provider = provider_class.new(pkg({ :name => 'mysql:2', :category => 'dev-db', :slot => '3' }))
+		context 'with category, slot & repository' do
+			it 'in the params' do
+				provider = provider_class.new(pkg({ :name => 'python', :category => "dev-lang", :slot => '3.3', :repository => 'gentoo' }))
+				provider.expects(:emerge).with('--unmerge', 'dev-lang/python:3.3::gentoo')
 				provider.uninstall
-			}.should raise_error(Puppet::Error, /Slot disagreement on Package.*, please check the definition/)
-		end
-	end
-
-	describe 'deluxe install' do
-		it 'plain package' do
-			provider = provider_class.new(pkg({ :name => 'dev-db/mysql', :slot => '2' }))
-			provider.expects(:emerge).with('--unmerge', 'dev-db/mysql:2')
-			provider.uninstall
+			end
 		end
 	end
 end

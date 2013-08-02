@@ -1,0 +1,20 @@
+AllCops:
+  Excludes:
+    # Excluded because it's still largely code copied out of puppet
+    - lib/puppet/type/package.rb
+    # Temporarily disabled until unit test cleanup is closer to complete
+    - spec/*
+
+LineLength:
+  Enabled: false
+
+MethodLength:
+  Enabled: false
+
+Tab:
+  Enabled: false
+
+
+# Allow the ruby 1.8 hash syntax until we drop ruby 1.8 support
+HashSyntax:
+  Enabled: false

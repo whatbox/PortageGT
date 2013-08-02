@@ -1,8 +1,8 @@
+# Encoding: utf-8
 # Due to limitations in puppet, it is currently necessary to copy some code 
 # directly from puppet itself, rather than simply adding the pieces we need
 #
 # Please see the LICENSE file for proper rights to this file
-# Encoding: utf-8
 
 module Puppet
 	newtype(:package) do
@@ -40,15 +40,14 @@ module Puppet
 				raise Puppet::Error, 'name may not contain multiple category boundaries' if value.count('/') > 1
 				raise Puppet::Error, 'name may not end with slot boundary' if value =~ /:$/
 				raise Puppet::Error, 'name may not start with slot boundary' if value =~ /^:/
+				raise Puppet::Error, 'name may not contain repository' if value.include?('::')
 				raise Puppet::Error, 'name may not contain multiple slot boundaries' if value.count(':') > 1
 			end
 		end
 
-
 		##################################################
 		# Everything bellow here is virtually unmodified #
 		##################################################
-
 
 		# Features
 		feature :installable, 'Can install packages.',

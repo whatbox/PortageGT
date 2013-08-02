@@ -1,40 +1,29 @@
 #!/usr/bin/env rspec
 # Encoding: utf-8
 
-require 'yaml'
-require 'spec_helper'
+# TODO: rewrite
 
-provider_class = Puppet::Type.type(:package).provider(:portagegt)
+# require 'yaml'
+# require 'spec_helper'
 
-describe provider_class, :fakefs => true do
-	def pkg(args = {})
-		defaults = { :provider => 'portagegt' }
-		Puppet::Type.type(:package).new(defaults.merge(args))
-	end
+# provider_class = Puppet::Type.type(:package).provider(:portagegt)
 
-	describe '#query' do
-		context 'when removing a package no longer in the portage tree' do
-			it  {
-				Puppet.expects(:warning).never
-				FileUtils.mkdir_p('/var/db/pkg/sys-apps/slocate')
-				Dir.chdir('/var/db/pkg/sys-apps/slocate') do
-					File.open('repository', 'w') do |fh|
-						fh.write("gentoo\n")
-					end
-					File.open('PF', 'w') do |fh|
-						fh.write("slocate-3.1-r1\n")
-					end
-					File.open('SLOT', 'w') do |fh|
-						fh.write("0\n")
-					end
-					File.open('CATEGORY', 'w') do |fh|
-						fh.write("sys-apps\n")
-					end
-				end
-				provider_class.stubs(:command).with(:emerge).returns('/usr/bin/emerge')
+# describe provider_class, :fakefs => true do
+# 	def pkg(args = {})
+# 		defaults = { :provider => 'portagegt' }
+# 		Puppet::Type.type(:package).new(defaults.merge(args))
+# 	end
 
-				# TODO: finish this
-			}
-		end
-	end
-end
+# 	it 'when removing a package no longer in the portage tree' do
+# 		Puppet.expects(:warning).never
+# 		FileUtils.mkdir_p('/var/db/pkg/sys-apps/slocate')
+# 		Dir.chdir('/var/db/pkg/sys-apps/slocate') do
+# 			File.open('repository', 'w') { |fh| fh.write("gentoo\n") }
+# 			File.open('PF', 'w') { |fh| fh.write("slocate-3.1-r1\n") }
+# 			File.open('SLOT', 'w') { |fh| fh.write("0\n") }
+# 			File.open('CATEGORY', 'w') { |fh| fh.write("sys-apps\n") }
+# 		end
+# 		provider = provider_class.new(pkg({ :name => 'slocate' }))
+# 		provider.query
+# 	end
+# end

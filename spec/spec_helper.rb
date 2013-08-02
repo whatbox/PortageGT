@@ -1,3 +1,5 @@
+# Encoding: utf-8
+
 # Fix ruby 1.8
 unless Kernel.respond_to?(:require_relative)
   module Kernel
@@ -14,6 +16,6 @@ end
 
 require 'rubygems'
 require 'puppetlabs_spec_helper/module_spec_helper'
-require_relative '../lib/puppet/provider/package/portagegt'
-require_relative '../lib/puppet/type/package'
 
+require_relative '../lib/puppet/type/package'
+require_relative '../lib/puppet/provider/package/portagegt'

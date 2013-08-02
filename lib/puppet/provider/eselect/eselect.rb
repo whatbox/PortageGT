@@ -25,29 +25,27 @@ Puppet::Type.type(:eselect).provide(:eselect) do
 	def eselect_module
 		if @resource[:name] =~ /^[a-z]+$/
 			emodule = @resource[:name]
-			nameModule = true
+			name_module = true
 		end
 
 		if @resource[:module]
-			if nameModule && emodule != @resource[:module]
+			if name_module && emodule != @resource[:module]
 				raise Puppet::Error.new("Module disagreement on eselect[#{name}], please check the definition")
 			end
 
 			emodule = @resource[:module]
 		end
 
-		return emodule
+		emodule
 	end
 
 	# string (void)
 	def eselect_submodule
 		submodule = nil
 
-		if @resource[:submodule]
-			submodule = @resource[:submodule]
-		end
+		submodule = @resource[:submodule] if @resource[:submodule]
 
-		return submodule
+		submodule
 	end
 
 	# string (void)
@@ -112,8 +110,8 @@ Puppet::Type.type(:eselect).provide(:eselect) do
 
 		selected = nil
 		options = []
-		output.split(/\r?\n/).each { |line|
-			option = line.strip().split(/\s+/)
+		output.split(/\r?\n/).each do |line|
+			option = line.strip.split(/\s+/)
 
 			next if option[0] !~ /\[\d+\]/
 
@@ -124,22 +122,20 @@ Puppet::Type.type(:eselect).provide(:eselect) do
 			end
 
 			options.push(option[1])
-		}
-
-		unless options.include? should
-			availableOptions = options.join(' ')
-			raise Puppet::Error.new("Invalid option \"#{should}\", should be one of [#{availableOptions}] for eselect[#{@resource[:name]}]")
 		end
 
-		return selected
+		unless options.include? should
+			available_options = options.join(' ')
+			raise Puppet::Error.new("Invalid option \"#{should}\", should be one of [#{available_options}] for eselect[#{@resource[:name]}]")
+		end
+
+		selected
 	end
 
 	# void (string)
 	def ensure=(target)
-		begin
-			Puppet::Util::Execution.execute("#{eselect_set} #{target}")
-		rescue Puppet::ExecutionFailure => detail
-			raise Puppet::Error.new(detail)
-		end
+		Puppet::Util::Execution.execute("#{eselect_set} #{target}")
+	rescue Puppet::ExecutionFailure => detail
+		raise Puppet::Error.new(detail)
 	end
 end

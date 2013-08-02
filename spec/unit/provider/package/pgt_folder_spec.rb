@@ -11,7 +11,7 @@ describe provider_class, :fakefs => true do
 		FileUtils.mkdir_p('/etc/portage/package.use')
 	end
 
-	describe '.setPortage' do
+	describe '.set_portage' do
 		def package_stub_mysql
 			provider = stub 'provider'
 			provider.stubs(:package_name).returns("mysql")
@@ -44,7 +44,7 @@ describe provider_class, :fakefs => true do
 
 		context 'when package.use should be empty, and is empty' do
 			it {
-				provider_class.setPortage({}, '/etc/portage/package.use', 'package_use')
+				provider_class.set_portage({}, '/etc/portage/package.use', 'package_use')
 
 				validate_empty_structure
 			}
@@ -52,7 +52,7 @@ describe provider_class, :fakefs => true do
 
 		context 'when package.use should have files, and is empty' do
 			it {
-				provider_class.setPortage(package_stub_mysql, '/etc/portage/package.use', 'package_use')
+				provider_class.set_portage(package_stub_mysql, '/etc/portage/package.use', 'package_use')
 
 				validate_structure_mysql
 			}
@@ -65,7 +65,7 @@ describe provider_class, :fakefs => true do
 					fh.write("dev-db/mysql bar baz foo\n")
 				end
 
-				provider_class.setPortage({}, '/etc/portage/package.use', 'package_use')
+				provider_class.set_portage({}, '/etc/portage/package.use', 'package_use')
 
 				validate_empty_structure
 			}
@@ -78,7 +78,7 @@ describe provider_class, :fakefs => true do
 					fh.write("dev-db/mysql bar baz foo\n")
 				end
 
-				provider_class.setPortage(package_stub_mysql, '/etc/portage/package.use', 'package_use')
+				provider_class.set_portage(package_stub_mysql, '/etc/portage/package.use', 'package_use')
 
 				validate_structure_mysql
 			}
@@ -91,7 +91,7 @@ describe provider_class, :fakefs => true do
 					fh.write("dev-db/mysql bar\n")
 				end
 
-				provider_class.setPortage(package_stub_mysql, '/etc/portage/package.use', 'package_use')
+				provider_class.set_portage(package_stub_mysql, '/etc/portage/package.use', 'package_use')
 
 				validate_structure_mysql
 			}
@@ -102,7 +102,7 @@ describe provider_class, :fakefs => true do
 				FileUtils.mkdir_p('/etc/portage/package.use/fooblah')
 				FileUtils.mkdir_p('/etc/portage/package.use/random')
 
-				provider_class.setPortage({}, '/etc/portage/package.use', 'package_use')
+				provider_class.set_portage({}, '/etc/portage/package.use', 'package_use')
 
 				validate_empty_structure
 			}
@@ -114,7 +114,7 @@ describe provider_class, :fakefs => true do
 					fh.write("irrelevant contents\n")
 				end
 
-				provider_class.setPortage({}, '/etc/portage/package.use', 'package_use')
+				provider_class.set_portage({}, '/etc/portage/package.use', 'package_use')
 
 				validate_empty_structure
 			}
@@ -127,7 +127,7 @@ describe provider_class, :fakefs => true do
 					fh.write("irrelevant contents\n")
 				end
 
-				provider_class.setPortage({}, '/etc/portage/package.use', 'package_use')
+				provider_class.set_portage({}, '/etc/portage/package.use', 'package_use')
 
 				validate_empty_structure
 			}
@@ -145,7 +145,7 @@ describe provider_class, :fakefs => true do
 					fh.write("irrelevant contents\n")
 				end
 
-				provider_class.setPortage(package_stub_mysql, '/etc/portage/package.use', 'package_use')
+				provider_class.set_portage(package_stub_mysql, '/etc/portage/package.use', 'package_use')
 
 				validate_structure_mysql
 			}
@@ -176,7 +176,7 @@ describe provider_class, :fakefs => true do
 					'dev-lang/php:5.4' => resource54,
 				}
 
-				provider_class.setPortage(resources, '/etc/portage/package.use', 'package_use')
+				provider_class.set_portage(resources, '/etc/portage/package.use', 'package_use')
 
 				Dir.chdir('/etc/portage/package.use') do
 					Dir.glob('*').should == ['dev-lang']
@@ -203,7 +203,7 @@ describe provider_class, :fakefs => true do
 
 				Puppet.expects(:warning).with('Cannot apply package_use for Package[mysql] without a category').once
 
-				provider_class.setPortage(resources, '/etc/portage/package.use', 'package_use')
+				provider_class.set_portage(resources, '/etc/portage/package.use', 'package_use')
 
 				validate_empty_structure
 			}
@@ -235,7 +235,7 @@ describe provider_class, :fakefs => true do
 
 				Puppet.expects(:warning).with('Cannot apply package_use for Package[mysql] without a category').once
 
-				provider_class.setPortage(resources, '/etc/portage/package.use', 'package_use')
+				provider_class.set_portage(resources, '/etc/portage/package.use', 'package_use')
 
 				Dir.chdir('/etc/portage/package.use') do
 					Dir.glob('*').should == ['dev-lang']

@@ -21,32 +21,28 @@ describe provider_class do
 	end
 
 	describe '#latest' do
-		context 'when multiple categories avaliable and a package definition is ambiguous' do
-			it {
-				fh = File.open('spec/unit/provider/package/eix/mysql_loose.xml', 'rb')
-				mysql_loose = fh.read
-				fh.close
+		it 'when multiple categories avaliable and a package definition is ambiguous' do
+			fh = File.open('spec/unit/provider/package/eix/mysql_loose.xml', 'rb')
+			mysql_loose = fh.read
+			fh.close
 
-				proc {
-					provider_class.stubs(:eix).with('--xml', '--pure-packages', '--exact', '--name', 'mysql').returns(mysql_loose)
+			proc {
+				provider_class.stubs(:eix).with('--xml', '--pure-packages', '--exact', '--name', 'mysql').returns(mysql_loose)
 
-					provider = provider_class.new(pkg({ :name => 'mysql', :ensure => :latest }))
-					provider.latest
-				}.should raise_error(Puppet::Error, /Multiple categories .* available for package .*/)
-			}
+				provider = provider_class.new(pkg({ :name => 'mysql', :ensure => :latest }))
+				provider.latest
+			}.should raise_error(Puppet::Error, /Multiple categories .* available for package .*/)
 		end
 
-		context 'when package is specified explicitly' do
-			it {
-				fh = File.open('spec/unit/provider/package/eix/mysql.xml', 'rb')
-				mysql = fh.read
-				fh.close
+		it 'when package is specified explicitly' do
+			fh = File.open('spec/unit/provider/package/eix/mysql.xml', 'rb')
+			mysql = fh.read
+			fh.close
 
-				provider_class.stubs(:eix).with('--xml', '--pure-packages', '--exact', '--category-name', 'dev-db/mysql').returns(mysql)
+			provider_class.stubs(:eix).with('--xml', '--pure-packages', '--exact', '--category-name', 'dev-db/mysql').returns(mysql)
 
-				provider = provider_class.new(pkg({ :name => 'dev-db/mysql', :ensure => :latest }))
-				provider.latest.should == '5.1.62-r1'
-			}
+			provider = provider_class.new(pkg({ :name => 'dev-db/mysql', :ensure => :latest }))
+			provider.latest.should == '5.1.62-r1'
 		end
 
 		context 'when hard and keyword are masked and only keyword is unmasked' do
