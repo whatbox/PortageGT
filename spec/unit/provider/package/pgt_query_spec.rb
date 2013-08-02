@@ -17,7 +17,7 @@ describe provider_class, :fakefs => true do
 			it  {
 				Puppet.expects(:warning).never
 				FileUtils.mkdir_p('/var/db/pkg/sys-apps/slocate')
-				Dir.chdir('/var/db/pkg/sys-apps/slocate') do |fh|
+				Dir.chdir('/var/db/pkg/sys-apps/slocate') do
 					File.open('repository', 'w') do |fh|
 						fh.write("gentoo\n")
 					end
@@ -33,7 +33,7 @@ describe provider_class, :fakefs => true do
 				end
 				provider_class.stubs(:command).with(:emerge).returns('/usr/bin/emerge')
 
-				#TODO: finish this
+				# TODO: finish this
 			}
 		end
 	end

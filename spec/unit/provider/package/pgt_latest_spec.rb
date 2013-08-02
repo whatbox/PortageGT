@@ -25,7 +25,7 @@ describe provider_class do
 			it {
 				fh = File.open('spec/unit/provider/package/eix/mysql_loose.xml', 'rb')
 				mysql_loose = fh.read
-				fh.close()
+				fh.close
 
 				proc {
 					provider_class.stubs(:eix).with('--xml', '--pure-packages', '--exact', '--name', 'mysql').returns(mysql_loose)
@@ -40,7 +40,7 @@ describe provider_class do
 			it {
 				fh = File.open('spec/unit/provider/package/eix/mysql.xml', 'rb')
 				mysql = fh.read
-				fh.close()
+				fh.close
 
 				provider_class.stubs(:eix).with('--xml', '--pure-packages', '--exact', '--category-name', 'dev-db/mysql').returns(mysql)
 
@@ -53,7 +53,7 @@ describe provider_class do
 			it {
 				fh = File.open('spec/unit/provider/package/eix/boost_multi_mask.xml', 'rb')
 				boost = fh.read
-				fh.close()
+				fh.close
 
 				provider_class.stubs(:eix).with('--xml', '--pure-packages', '--exact', '--category-name', 'dev-libs/boost').returns(boost)
 
@@ -66,7 +66,7 @@ describe provider_class do
 			it {
 				fh = File.open('spec/unit/provider/package/eix/boost_full_unmasked.xml', 'rb')
 				boost = fh.read
-				fh.close()
+				fh.close
 
 				provider_class.stubs(:eix).with('--xml', '--pure-packages', '--exact', '--category-name', 'dev-libs/boost').returns(boost)
 
@@ -79,7 +79,7 @@ describe provider_class do
 			it {
 				fh = File.open('spec/unit/provider/package/eix/boost_unmasked_keyworded.xml', 'rb')
 				boost = fh.read
-				fh.close()
+				fh.close
 
 				provider_class.stubs(:eix).with('--xml', '--pure-packages', '--exact', '--category-name', 'dev-libs/boost').returns(boost)
 
@@ -92,7 +92,7 @@ describe provider_class do
 			it {
 				fh = File.open('spec/unit/provider/package/eix/boost_unmasked_keyworded_installed.xml', 'rb')
 				boost = fh.read
-				fh.close()
+				fh.close
 
 				provider_class.stubs(:eix).with('--xml', '--pure-packages', '--exact', '--category-name', 'dev-libs/boost').returns(boost)
 
@@ -105,7 +105,7 @@ describe provider_class do
 			it {
 				fh = File.open('spec/unit/provider/package/eix/portage_alien_unstable.xml', 'rb')
 				portage = fh.read
-				fh.close()
+				fh.close
 
 				provider_class.stubs(:eix).with('--xml', '--pure-packages', '--exact', '--category-name', 'sys-apps/portage').returns(portage)
 
@@ -118,7 +118,7 @@ describe provider_class do
 			it {
 				fh = File.open('spec/unit/provider/package/eix/file_missing_keyword.xml', 'rb')
 				file = fh.read
-				fh.close()
+				fh.close
 
 				provider_class.stubs(:eix).with('--xml', '--pure-packages', '--exact', '--category-name', 'sys-apps/file').returns(file)
 
@@ -131,7 +131,7 @@ describe provider_class do
 			it {
 				fh = File.open('spec/unit/provider/package/eix/gnome_themes_standard.xml', 'rb')
 				file = fh.read
-				fh.close()
+				fh.close
 
 				provider_class.stubs(:eix).with('--xml', '--pure-packages', '--exact', '--category-name', 'x11-themes/gnome-themes-standard').returns(file)
 

@@ -87,7 +87,6 @@ describe provider_class do
 		end
 	end
 
-
 	describe 'installing with category mismatch' do
 		it 'plain' do
 			proc {
@@ -118,7 +117,6 @@ describe provider_class do
 				provider.install
 			}.should raise_error(Puppet::Error, /Category disagreement on Package.*, please check the definition/)
 		end
-
 	end
 
 	describe 'installing with slot mismatch' do

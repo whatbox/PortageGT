@@ -394,7 +394,7 @@ Puppet::Type.type(:package).provide(
 	end
 
 	# bool (string have[], string valid[], string want[])
-	def useChanged(have, valid, want)
+	def use_changed(have, valid, want)
 
 		# Negative flags
 		want.find_all { |x|
@@ -403,8 +403,10 @@ Puppet::Type.type(:package).provide(
 			x[1..-1]
 		}.each { |x|
 			next if !valid.include?(x)
-			debug("Recopmiling #{package_category}/#{package_name} for USE=\"-#{x}\"")
-			return true if have.include?(x)
+			if have.include?(x)
+				debug("Recompiling #{package_category}/#{package_name} for USE=\"-#{x}\"")
+				return true 
+			end
 		}
 
 		# Positive flags
@@ -412,8 +414,10 @@ Puppet::Type.type(:package).provide(
 			x[0,1] != '-'
 		}.each { |x|
 			next if !valid.include?(x)
-			debug("Recopmiling #{package_category}/#{package_name} for USE=\"#{x}\"")
-			return true if !have.include?(x)
+			if !have.include?(x)
+				debug("Recompiling #{package_category}/#{package_name} for USE=\"#{x}\"")
+				return true
+			end
 		}
 
 		return false
@@ -557,7 +561,7 @@ Puppet::Type.type(:package).provide(
 					x
 				}
 
-				if useChanged(resourceTok(use), valid, package_use)
+				if use_changed(resourceTok(use), valid, package_use)
 
 					#Recompile lie, 0 -> current
 					slots[slot][:ensure] = "0"
