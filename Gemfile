@@ -9,4 +9,5 @@ gem "xml-simple"
 gem "puppetlabs_spec_helper"
 gem 'fakefs'
 
-gem "rubocop"
+# Not strictly required so we can still build on ruby 1.8
+gem "rubocop", :require => false
