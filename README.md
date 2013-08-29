@@ -31,7 +31,7 @@ The following things are assumed:
 ## Roadmap (Undecided)
 * Use an external config file
     * __Pro:__ No editing the code
-    * __Pro:__ The current most likely don't update when puppet is daemonized
+    * __Pro:__ The current most likely doesn't update when puppet is daemonized
     * __Con:__ Assuming file is managed by puppet, it will take two runs for changes to take effect
 
 
