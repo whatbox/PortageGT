@@ -11,9 +11,8 @@ LineLength:
 MethodLength:
   Enabled: false
 
-Tab:
+Documentation:
   Enabled: false
-
 
 # Allow the ruby 1.8 hash syntax until we drop ruby 1.8 support
 HashSyntax:
