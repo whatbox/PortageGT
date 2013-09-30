@@ -2,8 +2,6 @@ AllCops:
   Excludes:
     # Excluded because it's still largely code copied out of puppet
     - lib/puppet/type/package.rb
-    # Temporarily disabled until unit test cleanup is closer to complete
-    - spec/*
 
 LineLength:
   Enabled: false

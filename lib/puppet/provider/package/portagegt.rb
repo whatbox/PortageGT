@@ -331,7 +331,7 @@ Puppet::Type.type(:package).provide(
     end
 
     if @resource[:slot]
-      if name_slot && slot != @resource[:slot]
+      if name_slot && slot != @resource[:slot].to_s
         raise Puppet::Error.new("Slot disagreement on Package[#{name}], please check the definition")
       end
 

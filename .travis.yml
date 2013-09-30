@@ -4,7 +4,8 @@ rvm:
   - 2.0.0
   - ruby-head
 script:
-  - bundle exec rspec
+  - bundle exec facter
+  - bundle exec rspec --color --format documentation
   - bundle exec rubocop
 env:
   - PUPPET_VERSION="~> 3.0.2"

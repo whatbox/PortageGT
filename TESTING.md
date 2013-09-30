@@ -1,5 +1,6 @@
 #Dependencies (Gentoo)
 
+* `app-portage/eix` (Puppet can fail to setup correctly on a Gentoo system without it)
 * `dev-ruby/bundler`
 * `dev-ruby/rspec`
 * `dev-ruby/fakefs`
