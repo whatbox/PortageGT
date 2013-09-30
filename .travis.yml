@@ -4,7 +4,6 @@ rvm:
   - 2.0.0
   - ruby-head
 script:
-  - bundle exec facter
   - bundle exec rspec --color --format documentation
   - bundle exec rubocop
 env:
