@@ -30,7 +30,7 @@ Puppet::Type.type(:eselect).provide(:eselect) do
 
     if @resource[:module]
       if name_module && emodule != @resource[:module]
-        raise Puppet::Error.new("Module disagreement on eselect[#{name}], please check the definition")
+        fail Puppet::Error, "Module disagreement on eselect[#{name}], please check the definition"
       end
 
       emodule = @resource[:module]
@@ -52,15 +52,15 @@ Puppet::Type.type(:eselect).provide(:eselect) do
   def eselect_list
     if @resource[:listcmd]
       if @resource[:module]
-        raise Puppet::Error.new("module should not be specified if listcmd is in eselect[#{@resource[:name]}], please check the definition")
+        fail Puppet::Error, "module should not be specified if listcmd is in eselect[#{@resource[:name]}], please check the definition"
       end
 
       if @resource[:submodule]
-        raise Puppet::Error.new("submodule should not be specified if listcmd is in eselect[#{@resource[:name]}], please check the definition")
+        fail Puppet::Error, "submodule should not be specified if listcmd is in eselect[#{@resource[:name]}], please check the definition"
       end
 
       if @resource[:setcmd].nil?
-        raise Puppet::Error.new("listcmd is specified but setcmd is not in eselect[#{@resource[:name]}], please check the definition")
+        fail Puppet::Error, "listcmd is specified but setcmd is not in eselect[#{@resource[:name]}], please check the definition"
       end
 
       return @resource[:listcmd]
@@ -77,15 +77,15 @@ Puppet::Type.type(:eselect).provide(:eselect) do
   def eselect_set
     if @resource[:setcmd]
       if @resource[:module]
-        raise Puppet::Error.new("module should not be specified if setcmd is in eselect[#{@resource[:name]}], please check the definition")
+        fail Puppet::Error, "module should not be specified if setcmd is in eselect[#{@resource[:name]}], please check the definition"
       end
 
       if @resource[:submodule]
-        raise Puppet::Error.new("submodule should not be specified if setcmd is in eselect[#{@resource[:name]}], please check the definition")
+        fail Puppet::Error, "submodule should not be specified if setcmd is in eselect[#{@resource[:name]}], please check the definition"
       end
 
       if @resource[:listcmd].nil?
-        raise Puppet::Error.new("setcmd is specified but listcmd is not in eselect[#{@resource[:name]}], please check the definition")
+        fail Puppet::Error, "setcmd is specified but listcmd is not in eselect[#{@resource[:name]}], please check the definition"
       end
 
       return @resource[:setcmd]
@@ -102,11 +102,7 @@ Puppet::Type.type(:eselect).provide(:eselect) do
   def ensure
     should = @resource.should(:ensure)
 
-    begin
-      output = Puppet::Util::Execution.execute(eselect_list)
-    rescue Puppet::ExecutionFailure => detail
-      raise Puppet::Error.new(detail)
-    end
+    output = Puppet::Util::Execution.execute(eselect_list)
 
     selected = nil
     options = []
@@ -116,7 +112,7 @@ Puppet::Type.type(:eselect).provide(:eselect) do
       next if option[0] !~ /\[\d+\]/
 
       if option[option.length - 1] == '*'
-        raise Puppet::Error.new("Multiple selected versions for eselect[#{@resource[:name]}]") unless selected.nil?
+        fail Puppet::Error, "Multiple selected versions for eselect[#{@resource[:name]}]" unless selected.nil?
 
         selected = option[1]
       end
@@ -126,7 +122,7 @@ Puppet::Type.type(:eselect).provide(:eselect) do
 
     unless options.include? should
       available_options = options.join(' ')
-      raise Puppet::Error.new("Invalid option \"#{should}\", should be one of [#{available_options}] for eselect[#{@resource[:name]}]")
+      fail Puppet::Error, "Invalid option \"#{should}\", should be one of [#{available_options}] for eselect[#{@resource[:name]}]"
     end
 
     selected
@@ -135,7 +131,5 @@ Puppet::Type.type(:eselect).provide(:eselect) do
   # void (string)
   def ensure=(target)
     Puppet::Util::Execution.execute("#{eselect_set} #{target}")
-  rescue Puppet::ExecutionFailure => detail
-    raise Puppet::Error.new(detail)
   end
 end

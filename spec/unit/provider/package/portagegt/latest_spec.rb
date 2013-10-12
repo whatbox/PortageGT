@@ -33,7 +33,7 @@ describe provider_class do
 
       provider_class.stubs(:eix).with('--xml', '--pure-packages', '--exact', '--name', 'mysql').returns(mysql_loose)
 
-      provider = provider_class.new(pkg({ :name => 'mysql', :ensure => :latest }))
+      provider = provider_class.new(pkg(:name => 'mysql', :ensure => :latest))
       expect { provider.latest }.to raise_error(Puppet::Error, /Multiple categories .* available for package .*/)
     end
 
@@ -44,7 +44,7 @@ describe provider_class do
 
       provider_class.stubs(:eix).with('--xml', '--pure-packages', '--exact', '--category-name', 'dev-db/mysql').returns(mysql)
 
-      provider = provider_class.new(pkg({ :name => 'dev-db/mysql', :ensure => :latest }))
+      provider = provider_class.new(pkg(:name => 'dev-db/mysql', :ensure => :latest))
       provider.latest.should be == '5.1.62-r1'
     end
 
@@ -55,7 +55,7 @@ describe provider_class do
 
       provider_class.stubs(:eix).with('--xml', '--pure-packages', '--exact', '--category-name', 'dev-libs/boost').returns(boost)
 
-      provider = provider_class.new(pkg({ :name => 'dev-libs/boost', :ensure => :latest }))
+      provider = provider_class.new(pkg(:name => 'dev-libs/boost', :ensure => :latest))
       provider.latest.should == '1.52.0-r6'
     end
 
@@ -66,7 +66,7 @@ describe provider_class do
 
       provider_class.stubs(:eix).with('--xml', '--pure-packages', '--exact', '--category-name', 'dev-libs/boost').returns(boost)
 
-      provider = provider_class.new(pkg({ :name => 'dev-libs/boost', :ensure => :latest }))
+      provider = provider_class.new(pkg(:name => 'dev-libs/boost', :ensure => :latest))
       provider.latest.should == '1.53.0'
     end
 
@@ -77,7 +77,7 @@ describe provider_class do
 
       provider_class.stubs(:eix).with('--xml', '--pure-packages', '--exact', '--category-name', 'dev-libs/boost').returns(boost)
 
-      provider = provider_class.new(pkg({ :name => 'dev-libs/boost', :ensure => :latest }))
+      provider = provider_class.new(pkg(:name => 'dev-libs/boost', :ensure => :latest))
       provider.latest.should == '1.49.0-r2'
     end
 
@@ -88,7 +88,7 @@ describe provider_class do
 
       provider_class.stubs(:eix).with('--xml', '--pure-packages', '--exact', '--category-name', 'dev-libs/boost').returns(boost)
 
-      provider = provider_class.new(pkg({ :name => 'dev-libs/boost', :ensure => :latest }))
+      provider = provider_class.new(pkg(:name => 'dev-libs/boost', :ensure => :latest))
       provider.latest.should == '1.52.0-r6'
     end
 
@@ -99,7 +99,7 @@ describe provider_class do
 
       provider_class.stubs(:eix).with('--xml', '--pure-packages', '--exact', '--category-name', 'sys-apps/portage').returns(portage)
 
-      provider = provider_class.new(pkg({ :name => 'sys-apps/portage', :ensure => :latest }))
+      provider = provider_class.new(pkg(:name => 'sys-apps/portage', :ensure => :latest))
       provider.latest.should == '2.1.11.63'
     end
 
@@ -110,7 +110,7 @@ describe provider_class do
 
       provider_class.stubs(:eix).with('--xml', '--pure-packages', '--exact', '--category-name', 'sys-apps/file').returns(file)
 
-      provider = provider_class.new(pkg({ :name => 'sys-apps/file', :ensure => :latest }))
+      provider = provider_class.new(pkg(:name => 'sys-apps/file', :ensure => :latest))
       provider.latest.should == '5.12-r1'
     end
 
@@ -121,7 +121,7 @@ describe provider_class do
 
       provider_class.stubs(:eix).with('--xml', '--pure-packages', '--exact', '--category-name', 'x11-themes/gnome-themes-standard').returns(file)
 
-      provider = provider_class.new(pkg({ :name => 'x11-themes/gnome-themes-standard', :ensure => :latest }))
+      provider = provider_class.new(pkg(:name => 'x11-themes/gnome-themes-standard', :ensure => :latest))
       provider.latest.should == '3.6.5'
     end
   end # xml parse check

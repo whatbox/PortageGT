@@ -107,20 +107,15 @@ Puppet::Type.type(:package).provide(
 
     unless EIX_RUN_UPDATE
       if EIX_RUN_SYNC >= 0
-        raise Puppet::Error.new('EIX_RUN_UPDATE must be true if EIX_RUN_SYNC is not -1')
+        fail Puppet::Error, 'EIX_RUN_UPDATE must be true if EIX_RUN_SYNC is not -1'
       end
       return
     end
 
-    begin
-      if EIX_RUN_SYNC >= 0 && File.mtime(TIMESTAMP_FILE)+EIX_RUN_SYNC < Time.now
-        eix_sync
-      else
-        eix_update
-      end
-
-    rescue Puppet::ExecutionFailure => detail
-      raise Puppet::Error.new(detail)
+    if EIX_RUN_SYNC >= 0 && File.mtime(TIMESTAMP_FILE)+EIX_RUN_SYNC < Time.now
+      eix_sync
+    else
+      eix_update
     end
   end
 
@@ -197,7 +192,7 @@ Puppet::Type.type(:package).provide(
           if File.file?(opt_dir)
             File.unlink(opt_dir)
           else
-            raise Puppet::Error.new("Unexpected file type: #{opt_dir}")
+            fail Puppet::Error, "Unexpected file type: #{opt_dir}"
           end
         end
 
@@ -313,7 +308,7 @@ Puppet::Type.type(:package).provide(
 
     if @resource[:category]
       if name_category && category != @resource[:category]
-        raise Puppet::Error.new("Category disagreement on Package[#{name}], please check the definition")
+        fail Puppet::Error, "Category disagreement on Package[#{name}], please check the definition"
       end
 
       category = @resource[:category]
@@ -336,7 +331,7 @@ Puppet::Type.type(:package).provide(
 
     if @resource[:slot]
       if name_slot && slot != @resource[:slot].to_s
-        raise Puppet::Error.new("Slot disagreement on Package[#{name}], please check the definition")
+        fail Puppet::Error, "Slot disagreement on Package[#{name}], please check the definition"
       end
 
       slot = @resource[:slot]
@@ -442,7 +437,7 @@ Puppet::Type.type(:package).provide(
 
       %w(SLOT PF CATEGORY USE).each do |expected|
         unless File.exists?("#{directory}/#{expected}")
-          raise Puppet::Error.new("The metadata file \"#{expected}\" was not found in #{directory}")
+          fail Puppet::Error, "The metadata file \"#{expected}\" was not found in #{directory}"
         end
       end
 
@@ -493,8 +488,8 @@ Puppet::Type.type(:package).provide(
     end
 
     if @resource[:ensure] == :absent && slots.length == 0
-      raise 'Faulty assumption: categories empty when slots empty' unless categories.length == 0
-      raise 'Faulty assumption: repositories empty when slots empty' unless repositories.length == 0
+      fail 'Faulty assumption: categories empty when slots empty' unless categories.length == 0
+      fail 'Faulty assumption: repositories empty when slots empty' unless repositories.length == 0
       return nil
     end
 
@@ -506,7 +501,7 @@ Puppet::Type.type(:package).provide(
       # Correct number, we're done here
     else
       categories_available = categories.join(' ')
-      raise Puppet::Error.new("Multiple categories [#{categories_available}] available for package [#{search_value}]")
+      fail Puppet::Error, "Multiple categories [#{categories_available}] available for package [#{search_value}]"
     end
 
     case slots.length
@@ -516,7 +511,7 @@ Puppet::Type.type(:package).provide(
       # Correct number, we're done here
     else
       slots_available = slots.keys.join(' ')
-      raise Puppet::Error.new("Multiple slots [#{slots_available}] available for package [#{search_value}]")
+      fail Puppet::Error, "Multiple slots [#{slots_available}] available for package [#{search_value}]"
     end
 
     slot = slots.keys[0]
@@ -539,11 +534,7 @@ Puppet::Type.type(:package).provide(
       search_value = "#{package_category}/#{package_name}"
     end
 
-    begin
-      eixout = eix('--xml', '--pure-packages', '--exact', search_field, search_value)
-    rescue Puppet::ExecutionFailure => detail
-      raise Puppet::Error.new(detail)
-    end
+    eixout = eix('--xml', '--pure-packages', '--exact', search_field, search_value)
 
     xml = REXML::Document.new(eixout)
 
@@ -560,7 +551,7 @@ Puppet::Type.type(:package).provide(
         # Throw an error if slot & ensure do not match up
         # if !package_slot.nil? && v.attributes['id'] == @resource[:ensure]
         #   if v.attributes['slot'] != package_slot
-        #     raise Puppet::Error.new("Explicit version for Package[#{search_value}] \"#{v.attributes['id']}\" not in slot \"#{package_slot}\".")
+        #     fail Puppet::Error, "Explicit version for Package[#{search_value}] \"#{v.attributes['id']}\" not in slot \"#{package_slot}\"."
         #   end
         # end
 
@@ -643,43 +634,43 @@ Puppet::Type.type(:package).provide(
     case categories.length
     when 0
       if !package_category.nil?
-        raise Puppet::Error.new("No package found with the specified name [#{search_value}] in category [#{package_category}]")
+        fail Puppet::Error, "No package found with the specified name [#{search_value}] in category [#{package_category}]"
       else
-        raise Puppet::Error.new("No package found with the specified name [#{search_value}]")
+        fail Puppet::Error, "No package found with the specified name [#{search_value}]"
       end
     when 1
       # Correct number, we're done here
     else
       categories_available = categories.join(' ')
-      raise Puppet::Error.new("Multiple categories [#{categories_available}] available for package [#{search_value}]")
+      fail Puppet::Error, "Multiple categories [#{categories_available}] available for package [#{search_value}]"
     end
 
     case slots.length
     when 0
       if !package_slot.nil?
-        raise Puppet::Error.new("No package found with the specified name [#{search_value}] in slot [#{package_slot}]")
+        fail Puppet::Error, "No package found with the specified name [#{search_value}] in slot [#{package_slot}]"
       else
-        raise Puppet::Error.new('Faulty assumption: 1 category and 0 slots with no slot specified')
+        fail Puppet::Error, 'Faulty assumption: 1 category and 0 slots with no slot specified'
       end
     when 1
       # Correct number, we're done here
     else
       slots_available = slots.keys.join(' ')
-      raise Puppet::Error.new("Multiple slots [#{slots_available}] available for package [#{search_value}]")
+      fail Puppet::Error, "Multiple slots [#{slots_available}] available for package [#{search_value}]"
     end
 
     case repositories.length
     when 0
       if !package_repository.nil?
-        raise Puppet::Error.new("No package found with the specified name [#{search_value}] in repository [#{package_repository}]")
+        fail Puppet::Error, "No package found with the specified name [#{search_value}] in repository [#{package_repository}]"
       else
-        raise Puppet::Error.new('Faulty assumption: 1 category, 1 slot, and 0 repositories with no repository specified')
+        fail Puppet::Error, 'Faulty assumption: 1 category, 1 slot, and 0 repositories with no repository specified'
       end
     when 1
       # Correct number, we're done here
     else
       repos_available = repositories.join(' ')
-      raise Puppet::Error.new("Multiple repositories [#{repos_available}] available for package [#{search_value}]")
+      fail Puppet::Error, "Multiple repositories [#{repos_available}] available for package [#{search_value}]"
     end
 
     slot = slots.keys[0]

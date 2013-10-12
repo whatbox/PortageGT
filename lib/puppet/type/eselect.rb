@@ -13,7 +13,7 @@ module Puppet
       desc 'eselect module'
 
       validate do |value|
-        raise Puppet::Error, 'module may not contain whitespace' if value =~ /\s/
+        fail Puppet::Error, 'module may not contain whitespace' if value =~ /\s/
       end
     end
 
@@ -21,7 +21,7 @@ module Puppet
       desc 'eselect submodule'
 
       validate do |value|
-        raise Puppet::Error, 'submodule may not contain whitespace' if value =~ /\s/
+        fail Puppet::Error, 'submodule may not contain whitespace' if value =~ /\s/
       end
     end
 
