@@ -34,14 +34,14 @@ module Puppet
 			isnamevar
 
 			validate do |value|
-				raise Puppet::Error, 'name may not contain whitespace' if value =~ /\s/
-				raise Puppet::Error, 'name may not end with category boundary' if value =~ /\/$/
-				raise Puppet::Error, 'name may not start with category boundary' if value =~ /^\//
-				raise Puppet::Error, 'name may not contain multiple category boundaries' if value.count('/') > 1
-				raise Puppet::Error, 'name may not end with slot boundary' if value =~ /:$/
-				raise Puppet::Error, 'name may not start with slot boundary' if value =~ /^:/
-				raise Puppet::Error, 'name may not contain repository' if value.include?('::')
-				raise Puppet::Error, 'name may not contain multiple slot boundaries' if value.count(':') > 1
+				fail Puppet::Error, 'name may not contain whitespace' if value =~ /\s/
+				fail Puppet::Error, 'name may not end with category boundary' if value =~ /\/$/
+				fail Puppet::Error, 'name may not start with category boundary' if value =~ /^\//
+				fail Puppet::Error, 'name may not contain multiple category boundaries' if value.count('/') > 1
+				fail Puppet::Error, 'name may not end with slot boundary' if value =~ /:$/
+				fail Puppet::Error, 'name may not start with slot boundary' if value =~ /^:/
+				fail Puppet::Error, 'name may not contain repository' if value.include?('::')
+				fail Puppet::Error, 'name may not contain multiple slot boundaries' if value.count(':') > 1
 			end
 		end
 
