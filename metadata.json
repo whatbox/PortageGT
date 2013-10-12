@@ -1,5 +1,5 @@
 {
-	"name": "Whatbox/PortageGT",
+	"name": "Whatbox/portagegt",
 	"version": "1.0.0",
     "summary": "Package provider for Gentoo that supports use flags, keywords and slots",
     "source": "git@github.com:whatbox/PortageGT.git",
