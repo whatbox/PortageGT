@@ -27,8 +27,11 @@ Puppet::Type.type(:package).provide(
   # Update eix database before each run
   EIX_RUN_UPDATE = true
 
-  # Run emerge --sync before each run
-  EIX_RUN_SYNC = true
+  # Minimum age of local portage tree, in seconds,
+  # before re-syncing. -1 to never run eix-sync.
+  # Consider increasing if puppet is run multiple
+  # times per day to prevent rsync server bans.
+  EIX_RUN_SYNC = 0
 
   # Recompile package if use flags change
   RECOMPILE_USE_CHANGE = true
@@ -40,6 +43,7 @@ Puppet::Type.type(:package).provide(
   USE_DIR = '/etc/portage/package.use'
   KEYWORDS_DIR = '/etc/portage/package.keywords'
   PACKAGE_STATE_DIR = '/var/db/pkg'
+  TIMESTAMP_FILE = '/usr/portage/metadata/timestamp'
 
   #######################
   # Internal Structures #
@@ -102,13 +106,13 @@ Puppet::Type.type(:package).provide(
   def self.run_eix
 
     unless EIX_RUN_UPDATE
-      if EIX_RUN_SYNC
-        fail Puppet::Error, 'EIX_RUN_UPDATE must be true if EIX_RUN_SYNC is true'
+      if EIX_RUN_SYNC >= 0
+        fail Puppet::Error, 'EIX_RUN_UPDATE must be true if EIX_RUN_SYNC is not -1'
       end
       return
     end
 
-    if EIX_RUN_SYNC
+    if EIX_RUN_SYNC >= 0 && File.mtime(TIMESTAMP_FILE) + EIX_RUN_SYNC < Time.now
       eix_sync
     else
       eix_update
