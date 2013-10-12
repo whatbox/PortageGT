@@ -27,7 +27,7 @@ Puppet::Type.type(:package).provide(
   # Update eix database before each run
   EIX_RUN_UPDATE = true
 
-  # Minimum age of local portage tree, in seconds, 
+  # Minimum age of local portage tree, in seconds,
   # before re-syncing. -1 to never run eix-sync.
   # Consider increasing if puppet is run multiple
   # times per day to prevent rsync server bans.
@@ -112,7 +112,7 @@ Puppet::Type.type(:package).provide(
       return
     end
 
-    if EIX_RUN_SYNC >= 0 && File.mtime(TIMESTAMP_FILE)+EIX_RUN_SYNC < Time.now
+    if EIX_RUN_SYNC >= 0 && File.mtime(TIMESTAMP_FILE) + EIX_RUN_SYNC < Time.now
       eix_sync
     else
       eix_update
