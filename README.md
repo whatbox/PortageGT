@@ -182,6 +182,7 @@ Some configuration opetions can be found near the start of lib/puppet/provider/p
 
 To install dependencies necessary for running the tests use `bundle install`, tests can be run with `bundle exec rspec`. This project attempts to adhere to the [Ruby Stile Guide](https://github.com/bbatsov/ruby-style-guide/blob/master/README.md), you can verify your changes are in adhere to this guide using `bundle exec rubocop`.
 
+**Note:** eix *must* be installed to test successfully on Gentoo, this is not necessary when running tests from other operating systems.
 
 ## Roadmap
 * Remove package type overwrite ([Puppet #19561](http://projects.puppetlabs.com/issues/19561))
