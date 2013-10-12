@@ -31,7 +31,7 @@ Puppet::Type.type(:package).provide(
   # before re-syncing. -1 to never run eix-sync.
   # Consider increasing if puppet is run multiple
   # times per day to prevent rsync server bans.
-  EIX_RUN_SYNC = 0
+  EIX_RUN_SYNC = 48 * 3600
 
   # Recompile package if use flags change
   RECOMPILE_USE_CHANGE = true
@@ -112,8 +112,8 @@ Puppet::Type.type(:package).provide(
       return
     end
 
-    if EIX_RUN_SYNC >= 0 && File.mtime(TIMESTAMP_FILE) + EIX_RUN_SYNC < Time.now
-      eix_sync
+    if EIX_RUN_SYNC >= 0
+      eix_sync if File.mtime(TIMESTAMP_FILE) + EIX_RUN_SYNC < Time.now
     else
       eix_update
     end
