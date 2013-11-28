@@ -104,7 +104,6 @@ Puppet::Type.type(:package).provide(
 
   # void (void)
   def self.run_eix
-
     unless EIX_RUN_UPDATE
       if EIX_RUN_SYNC >= 0
         fail Puppet::Error, 'EIX_RUN_UPDATE must be true if EIX_RUN_SYNC is not -1'
@@ -374,22 +373,15 @@ Puppet::Type.type(:package).provide(
         # Install a specific slot
         name = "#{name}:#{package_slot}"
       end
-
-      if package_repository
-        # Install from a specific source
-        name = "#{name}::#{package_repository}"
-      end
     else
       # We must install a specific version
       name = "=#{name}-#{should}"
 
       # A specific version can't have multiple slots, so no need to specify
-
-      if package_repository
-        # Install from a specific source
-        name = "#{name}::#{package_repository}"
-      end
     end
+
+    # Install from a specific source
+    name = "#{name}::#{package_repository}" if package_repository
 
     env_hold = ENV.to_hash
     if @resource[:environment].is_a? Hash
@@ -678,6 +670,7 @@ Puppet::Type.type(:package).provide(
   end
 
   private
+
   # string[] (string[])
   def use_filter_positive(everything)
     everything.select do |x|
@@ -686,6 +679,7 @@ Puppet::Type.type(:package).provide(
   end
 
   private
+
   # string[] (string[])
   def use_filter_negative(everything)
     filtered = everything.select do |x|
@@ -698,9 +692,9 @@ Puppet::Type.type(:package).provide(
   end
 
   private
+
   # bool (string have[], string valid[], string want[])
   def use_changed(have, valid, want)
-
     # Negative flags
     use_filter_negative(want).each do |x|
       next unless valid.include?(x)

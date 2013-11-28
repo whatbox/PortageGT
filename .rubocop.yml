@@ -3,12 +3,13 @@ AllCops:
     # Excluded because it's still largely code copied out of puppet
     - lib/puppet/type/package.rb
 
+# It would be nice to enable these someday
 LineLength:
   Enabled: false
-
 MethodLength:
   Enabled: false
-
+CyclomaticComplexity:
+  Enabled: false
 Documentation:
   Enabled: false
 
