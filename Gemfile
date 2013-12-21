@@ -1,7 +1,6 @@
 source "https://rubygems.org"
 
-puppetversion = ENV['PUPPET_VERSION']
-gem 'puppet', puppetversion
+gem 'puppet', ENV['PUPPET_VERSION']
 
 gem "bundler"
 gem "rspec"
