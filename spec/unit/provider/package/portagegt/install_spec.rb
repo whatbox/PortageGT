@@ -7,7 +7,7 @@ provider_class = Puppet::Type.type(:package).provider(:portagegt)
 
 describe provider_class do
   def pkg(args = {})
-    defaults = { :provider => 'portagegt' }
+    defaults = { provider: 'portagegt' }
     Puppet::Type.type(:package).new(defaults.merge(args))
   end
 
@@ -28,90 +28,90 @@ describe provider_class do
     Case = Struct.new(:hash, :expected)
     success = [
       Case.new(
-        { :name => 'mysql' },
+        { name: 'mysql' },
         'mysql'
       ),
       Case.new(
-        { :name => 'mysql:2' },
+        { name: 'mysql:2' },
         'mysql:2'
       ),
       Case.new(
-        { :name => 'mysql', :slot => '2' },
+        { name: 'mysql', slot: '2' },
         'mysql:2'
       ),
       Case.new(
-        { :name => 'mysql', :slot => 2 },
+        { name: 'mysql', slot: 2 },
         'mysql:2'
       ),
       Case.new(
-        { :name => 'mysql', :slot => 2.2 },
+        { name: 'mysql', slot: 2.2 },
         'mysql:2.2'
       ),
       Case.new(
-        { :name => 'mysql:2', :slot => 2 },
+        { name: 'mysql:2', slot: 2 },
         'mysql:2'
       ),
       Case.new(
-        { :name => 'mysql:2.2', :slot => 2.2 },
+        { name: 'mysql:2.2', slot: 2.2 },
         'mysql:2.2'
       ),
       Case.new(
-        { :name => 'mysql', :slot => 'word' },
+        { name: 'mysql', slot: 'word' },
         'mysql:word'
       ),
       Case.new(
-        { :name => 'dev-db/mysql' },
+        { name: 'dev-db/mysql' },
         'dev-db/mysql'
       ),
       Case.new(
-        { :name => 'mysql', :category => 'floomba' },
+        { name: 'mysql', category: 'floomba' },
         'floomba/mysql'
       ),
       Case.new(
-        { :name => 'bumbling/fool', :category => 'bumbling' },
+        { name: 'bumbling/fool', category: 'bumbling' },
         'bumbling/fool'
       ),
       Case.new(
-        { :name => 'dev-db/mysql', :repository => 'company-overlay' },
+        { name: 'dev-db/mysql', repository: 'company-overlay' },
         'dev-db/mysql::company-overlay'
       ),
       Case.new(
-        { :name => 'dev-db/mysql', :slot => 2, :repository => 'company-overlay' },
+        { name: 'dev-db/mysql', slot: 2, repository: 'company-overlay' },
         'dev-db/mysql:2::company-overlay'
       ),
       Case.new(
-        { :name => 'mysql', :repository => 'other-overlay', :category => 'floomba', :ensure => '7.0.2' },
+        { name: 'mysql', repository: 'other-overlay', category: 'floomba', ensure: '7.0.2' },
         '=floomba/mysql-7.0.2::other-overlay'
       ),
     ]
 
     failure = [
       Case.new(
-        { :name => 'dev-db/mysql', :category => 'foobar' },
+        { name: 'dev-db/mysql', category: 'foobar' },
         /Category disagreement on Package.*, please check the definition/
       ),
       Case.new(
-        { :name => 'dev-db/mysql:2', :category => 'foobar' },
+        { name: 'dev-db/mysql:2', category: 'foobar' },
         /Category disagreement on Package.*, please check the definition/
       ),
       Case.new(
-        { :name => 'dev-db/mysql', :category => 'foobar', :slot => '2' },
+        { name: 'dev-db/mysql', category: 'foobar', slot: '2' },
         /Category disagreement on Package.*, please check the definition/
       ),
       Case.new(
-        { :name => 'dev-db/mysql:2', :category => 'foobar', :slot => '2' },
+        { name: 'dev-db/mysql:2', category: 'foobar', slot: '2' },
         /Category disagreement on Package.*, please check the definition/
       ),
       Case.new(
-        { :name => 'mysql:2', :slot => '3' },
+        { name: 'mysql:2', slot: '3' },
         /Slot disagreement on Package.*, please check the definition/
       ),
       Case.new(
-        { :name => 'dev-db/mysql:2', :slot => '3', :category => 'dev-db' },
+        { name: 'dev-db/mysql:2', slot: '3', category: 'dev-db' },
         /Slot disagreement on Package.*, please check the definition/
       ),
       Case.new(
-        { :name => 'mysql:2', :category => 'dev-db', :slot => '3' },
+        { name: 'mysql:2', category: 'dev-db', slot: '3' },
         /Slot disagreement on Package.*, please check the definition/
       ),
     ]

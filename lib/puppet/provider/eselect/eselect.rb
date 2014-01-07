@@ -8,7 +8,7 @@ Puppet::Type.type(:eselect).provide(:eselect) do
   ################
 
   desc "Provides support for Gentoo's eselect system."
-  confine :operatingsystem => :gentoo
+  confine operatingsystem: :gentoo
 
   # Because we allow custom list / set commands, it's cleaner not to use this
   # commands :eselect => '/usr/bin/eselect'

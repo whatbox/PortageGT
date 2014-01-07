@@ -5,7 +5,7 @@ require 'spec_helper'
 
 provider_class = Puppet::Type.type(:package).provider(:portagegt)
 
-describe provider_class, :fakefs => true do
+describe provider_class, fakefs: true do
   before :each do
     Puppet.expects(:warning).never
     FileUtils.mkdir_p('/etc/portage/package.use')

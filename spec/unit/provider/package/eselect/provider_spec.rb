@@ -11,7 +11,7 @@ describe provider_class do
   end
 
   def pkg(args = {})
-    defaults = { :provider => 'eselect' }
+    defaults = { provider: 'eselect' }
     Puppet::Type.type(:eselect).new(defaults.merge(args))
   end
 

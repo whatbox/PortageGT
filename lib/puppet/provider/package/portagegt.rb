@@ -17,7 +17,7 @@ include REXML
 
 Puppet::Type.type(:package).provide(
   :portagegt,
-  :parent => Puppet::Provider::Package
+  parent: Puppet::Provider::Package
 ) do
 
   ##################
@@ -65,7 +65,7 @@ Puppet::Type.type(:package).provide(
   ################
 
   desc "Provides better support for Gentoo's portage system."
-  confine :operatingsystem => :gentoo
+  confine operatingsystem: :gentoo
 
   # It turns out has_features automatically determines what's available from
   # the definitions in this file, so the following lines probably aren't
@@ -84,18 +84,18 @@ Puppet::Type.type(:package).provide(
   # Method latest() is available
   # Method update() is available
 
-  commands :emerge => '/usr/bin/emerge'
+  commands emerge: '/usr/bin/emerge'
 
   has_command(:eix, '/usr/bin/eix') do
-    environment :EIXRC => '/etc/eixrc'
+    environment EIXRC: '/etc/eixrc'
   end
 
   has_command(:eix_update, '/usr/bin/eix-update') do
-    environment :EIXRC => '/etc/eixrc'
+    environment EIXRC: '/etc/eixrc'
   end
 
   has_command(:eix_sync, '/usr/bin/eix-sync') do
-    environment :EIXRC => '/etc/eixrc'
+    environment EIXRC: '/etc/eixrc'
   end
 
   ######################
@@ -456,9 +456,9 @@ Puppet::Type.type(:package).provide(
       # if this slot isn't yet defined in the slots hash, define it with the defaults
       unless slots.key?(slot)
         slots[slot] = {
-          :provider => self.name,
-          :name => name,
-          :ensure => version,
+          provider: self.name,
+          name: name,
+          ensure: version,
         }
       end
 
