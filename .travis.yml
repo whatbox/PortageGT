@@ -2,24 +2,36 @@ language: ruby
 rvm:
   - 1.9.3
   - 2.0.0
+  - 2.1.0
   - ruby-head
+
 script:
   - bundle exec rspec --color --format documentation
   - bundle exec rubocop
+
 env:
   - PUPPET_VERSION="~> 3.0.2"
   - PUPPET_VERSION="~> 3.1.1"
   - PUPPET_VERSION="~> 3.2.1"
   - PUPPET_VERSION="~> 3.3.0"
   - PUPPET_VERSION="~> 3.4.0"
+
 matrix:
   allow_failures:
+    - rvm: 2.1.0
     - rvm: ruby-head
+
   exclude:
     - rvm: 2.0.0
       env: PUPPET_VERSION="~> 3.0.2"
     - rvm: 2.0.0
       env: PUPPET_VERSION="~> 3.1.1"
+
+    - rvm: 2.1.0
+      env: PUPPET_VERSION="~> 3.0.2"
+    - rvm: 2.1.0
+      env: PUPPET_VERSION="~> 3.1.1"
+
     - rvm: ruby-head
       env: PUPPET_VERSION="~> 3.0.2"
     - rvm: ruby-head
