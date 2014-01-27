@@ -82,7 +82,7 @@ describe provider_class do
       Case.new(
         { name: 'mysql', repository: 'other-overlay', category: 'floomba', ensure: '7.0.2' },
         '=floomba/mysql-7.0.2::other-overlay'
-      ),
+      )
     ]
 
     failure = [
@@ -113,7 +113,7 @@ describe provider_class do
       Case.new(
         { name: 'mysql:2', category: 'dev-db', slot: '3' },
         /Slot disagreement on Package.*, please check the definition/
-      ),
+      )
     ]
 
     success.each do |c|

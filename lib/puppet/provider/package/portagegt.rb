@@ -458,7 +458,7 @@ Puppet::Type.type(:package).provide(
         slots[slot] = {
           provider: self.name,
           name: name,
-          ensure: version,
+          ensure: version
         }
       end
 

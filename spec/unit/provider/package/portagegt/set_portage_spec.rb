@@ -175,7 +175,7 @@ describe provider_class, fakefs: true do
 
         resources = {
           'dev-lang/php:5.3' => resource53,
-          'dev-lang/php:5.4' => resource54,
+          'dev-lang/php:5.4' => resource54
         }
 
         provider_class.set_portage(resources, '/etc/portage/package.use', 'package_use')
@@ -200,7 +200,7 @@ describe provider_class, fakefs: true do
         resource.stubs(:provider).returns(provider)
 
         resources = {
-          'mysql' => resource,
+          'mysql' => resource
         }
 
         Puppet.expects(:warning).with('Cannot apply package_use for Package[mysql] without a category').once
@@ -232,7 +232,7 @@ describe provider_class, fakefs: true do
 
         resources = {
           'mysql' => resource,
-          'dev-lang/php:5.3' => resource53,
+          'dev-lang/php:5.3' => resource53
         }
 
         Puppet.expects(:warning).with('Cannot apply package_use for Package[mysql] without a category').once
