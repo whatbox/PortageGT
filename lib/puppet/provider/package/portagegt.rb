@@ -388,7 +388,11 @@ Puppet::Type.type(:package).provide(
       ENV.replace(env_hold.merge(@resource[:environment]))
     end
 
-    emerge name
+    if @resource.oneshot?
+      emerge('--oneshot', name)
+    else
+      emerge name
+    end
 
     ENV.replace(env_hold)
   end

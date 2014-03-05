@@ -5,6 +5,8 @@
 # Please see the LICENSE file for proper rights to this file
 
 require 'puppet/parameter/package_options'
+require 'puppet/parameter/boolean'
+
 
 module Puppet
   newtype(:package) do
@@ -30,6 +32,11 @@ module Puppet
     newparam(:environment) do
       desc 'Package Environment'
     end
+
+    newparam(:oneshot, :boolean => true, :parent => Puppet::Parameter::Boolean) do
+      desc 'Do not add this to the world file'
+    end
+
 
     newparam(:name) do
       desc 'The package name.'
