@@ -1,6 +1,6 @@
 {
     "name": "Whatbox/portagegt",
-    "version": "1.1.0",
+    "version": "2.0.0",
     "summary": "Package provider for Gentoo that supports use flags, keywords and slots",
     "source": "git@github.com:whatbox/PortageGT.git",
     "project_page": "http://github.com/whatbox/PortageGT",
@@ -13,7 +13,9 @@
         "3.0",
         "3.1",
         "3.2",
-        "3.3"
+        "3.3",
+        "3.4",
+        "3.5"
     ],
     "dependencies": []
 }

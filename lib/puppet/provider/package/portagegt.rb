@@ -187,7 +187,7 @@ Puppet::Type.type(:package).provide(
       unless File.directory?(opt_dir)
 
         # Not a directory, but exists
-        if File.exists?(opt_dir)
+        if File.exist?(opt_dir)
           if File.file?(opt_dir)
             File.unlink(opt_dir)
           else
@@ -432,7 +432,7 @@ Puppet::Type.type(:package).provide(
     Dir.glob("#{PACKAGE_STATE_DIR}/#{glob_value}-[0-9]*").each do |directory|
 
       %w(SLOT PF CATEGORY USE).each do |expected|
-        unless File.exists?("#{directory}/#{expected}")
+        unless File.exist?("#{directory}/#{expected}")
           fail Puppet::Error, "The metadata file \"#{expected}\" was not found in #{directory}"
         end
       end
@@ -442,7 +442,7 @@ Puppet::Type.type(:package).provide(
       category = File.read("#{directory}/CATEGORY").rstrip
       use = File.read("#{directory}/USE").rstrip
 
-      if File.exists?("#{directory}/IUSE")
+      if File.exist?("#{directory}/IUSE")
         iuse = File.read("#{directory}/IUSE").rstrip
       else
         iuse = ''
