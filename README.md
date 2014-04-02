@@ -9,7 +9,8 @@ I will also warn you that this module is not completely compatible with the exis
 
 ## Dependencies
 The following packages are necessary for this module.
-* `app-admin/puppet >= 3.0.0`
+* `dev-lang/ruby >= 1.9.0`
+* `app-admin/puppet >= 3.5.0`
 * `sys-apps/portage`
 * `app-portage/eix`
 * `dev-ruby/xml-simple`
@@ -59,38 +60,36 @@ Using PortageGT should be pretty familiar to anyone already using puppet on Gent
 #### Attribute based
 
 	package { "dev-lang/python":
-		slot   => "2.7",
+		package_settings: {
+			slot   => "2.7",
+		},
 		ensure => latest;
 	}
 
 	package { "dev-lang/python:3.1":
-		slot   => "3.1",
+		package_settings: {
+			slot   => "3.1",
+		},
 		ensure => latest;
 	}
 
 ### Keywords
 
 	package { "sys-boot/grub":
-		slot     => "2",
-		keywords => "~amd64",
-		ensure   => "2.00";
-	}
-
-### Custom Environment variables
-
-	package { "dev-db/mongodb":
-		keywords => "~amd64",
-		environment => {
-			"EPYTHON" => "python2.7",
+		package_settings: {
+			slot     => "2",
+			keywords => "~amd64",
 		},
-		ensure   => "2.2.2-r1";
+		ensure   => "2.00";
 	}
 
 ### Repository/Overlay
 Specify the latest version of a specific overlay available on your systems, to ensure you don't accidentally build code from the wrong overlay.
 
 	package { "www-servers/nginx":
-		repository => "company-overlay",
+		package_settings: {
+			repository => "company-overlay",
+		},
 		ensure => latest;
 	}
 
@@ -98,18 +97,38 @@ Specify the latest version of a specific overlay available on your systems, to e
 #### String
 
 	package { "www-servers/apache2":
-		use    => "apache2_modules_alias apache2_modules_auth_basic",
+		package_settings: {
+			use    => "apache2_modules_alias apache2_modules_auth_basic",
+		},
 		ensure => latest;
 	}
 
 ### Array
 
 	package { "www-servers/apache2":
-		use    => [
-			"apache2_modules_alias",
-			"-ssl",
-		],
+		package_settings: {
+			use    => [
+				"apache2_modules_alias",
+				"-ssl",
+			],
+		},
 		ensure => latest;
+	}
+
+### Additional emerge options
+
+	package { "media-libs/libpng":
+		install_options: ["--oneshot"],
+		ensure => latest;
+	}
+
+### Keywords & Use flags on dependencies
+If you need to keyword or add use flags to a package without wanting to manage it's version directly.
+
+	package { "dev-libs/boost":
+		package_settings: {
+			use => ["icu", "threads"],
+		}
 	}
 
 ### eselect

@@ -15,11 +15,6 @@ describe provider_class do
     Puppet.expects(:warning).never
   end
 
-  def pkg(args = {})
-    defaults = { provider: 'portagegt' }
-    Puppet::Type.type(:package).new(defaults.merge(args))
-  end
-
   it 'should have an #latest method' do
     provider = provider_class.new
     provider.should respond_to('latest')
@@ -132,7 +127,18 @@ describe provider_class do
 
       provider_class.stubs(:eix).with('--xml', '--pure-packages', '--exact', '--category-name', 'media-libs/libpng').returns(file)
 
-      provider = provider_class.new(pkg(name: 'media-libs/libpng', slot: 0, ensure: :latest))
+      provider = provider_class.new(pkg(name: 'media-libs/libpng', ensure: :latest, package_settings: { slot: '0' }))
+      provider.latest.should == '1.6.8'
+    end
+
+    it 'when obsolete slots are available' do
+      fh = File.open('spec/unit/provider/package/eix/libpng_subslot.xml', 'rb')
+      file = fh.read
+      fh.close
+
+      provider_class.stubs(:eix).with('--xml', '--pure-packages', '--exact', '--category-name', 'media-libs/libpng').returns(file)
+
+      provider = provider_class.new(pkg(name: 'media-libs/libpng', ensure: :latest))
       provider.latest.should == '1.6.8'
     end
 

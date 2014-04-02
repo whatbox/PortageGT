@@ -11,12 +11,7 @@ script:
   - bundle exec rubocop
 
 env:
-  - PUPPET_VERSION="~> 3.0.0"
-  - PUPPET_VERSION="~> 3.1.0"
-  - PUPPET_VERSION="~> 3.2.0"
-  - PUPPET_VERSION="~> 3.3.0"
-  - PUPPET_VERSION="~> 3.4.0"
-  - PUPPET_VERSION="~> 3.4.3"
+  - PUPPET_VERSION="~> 3.5.0.rc3"
 
 matrix:
   allow_failures:
@@ -24,47 +19,6 @@ matrix:
     - rvm: 2.2.0
     - rvm: ruby-head
 
-  exclude:
-    - rvm: 2.0.0
-      env: PUPPET_VERSION="~> 3.0.0"
-    - rvm: 2.0.0
-      env: PUPPET_VERSION="~> 3.1.0"
-
-    - rvm: 2.1.0
-      env: PUPPET_VERSION="~> 3.0.0"
-    - rvm: 2.1.0
-      env: PUPPET_VERSION="~> 3.1.0"
-    - rvm: 2.1.0
-      env: PUPPET_VERSION="~> 3.2.0"
-    - rvm: 2.1.0
-      env: PUPPET_VERSION="~> 3.3.0"
-    - rvm: 2.1.0
-      env: PUPPET_VERSION="~> 3.4.0"
-    - rvm: 2.1.0
-      env: PUPPET_VERSION="~> 3.4.3"
-
-    - rvm: 2.2.0
-      env: PUPPET_VERSION="~> 3.0.0"
-    - rvm: 2.2.0
-      env: PUPPET_VERSION="~> 3.1.0"
-    - rvm: 2.2.0
-      env: PUPPET_VERSION="~> 3.2.0"
-    - rvm: 2.2.0
-      env: PUPPET_VERSION="~> 3.3.0"
-    - rvm: 2.2.0
-      env: PUPPET_VERSION="~> 3.4.0"
-    - rvm: 2.2.0
-      env: PUPPET_VERSION="~> 3.4.3"
-
-    - rvm: ruby-head
-      env: PUPPET_VERSION="~> 3.0.0"
-    - rvm: ruby-head
-      env: PUPPET_VERSION="~> 3.1.0"
-    - rvm: ruby-head
-      env: PUPPET_VERSION="~> 3.2.0"
-    - rvm: ruby-head
-      env: PUPPET_VERSION="~> 3.3.0"
-    - rvm: ruby-head
-      env: PUPPET_VERSION="~> 3.4.0"
-    - rvm: ruby-head
-      env: PUPPET_VERSION="~> 3.4.3"
+  # exclude:
+  #   - rvm: 2.2.0
+  #     env: PUPPET_VERSION="~> 3.5.0"

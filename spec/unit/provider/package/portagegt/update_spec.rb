@@ -10,13 +10,8 @@ describe provider_class do
     Puppet.expects(:warning).never
   end
 
-  it 'should have an #update function' do
-    provider = provider_class.new
-    provider.should respond_to('update')
-  end
-
   describe '#update' do
-    it 'should invoke #install' do
+    it 'invokes #install' do
       provider = provider_class.new
       provider.expects(:install)
       provider.update

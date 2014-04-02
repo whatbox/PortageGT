@@ -10,16 +10,27 @@ describe provider_class do
     Puppet.expects(:warning).never
   end
 
-  it 'should be versionable' do
+  it 'versionable' do
     provider_class.should be_versionable
   end
-  it 'should be installable' do
+
+  it 'installable' do
     provider_class.should be_installable
   end
-  it 'should be uninstallable' do
+
+  it 'uninstallable' do
     provider_class.should be_uninstallable
   end
-  it 'should be upgradeable' do
+
+  it 'upgradeable' do
     provider_class.should be_upgradeable
+  end
+
+  it 'support install_options' do
+    provider_class.should be_install_options
+  end
+
+  it 'support package_settings' do
+    provider_class.should be_package_settings
   end
 end

@@ -10,6 +10,8 @@
 # Released under MIT, BSD & GPL Licenses.
 #
 
+require 'set'
+
 require 'puppet/provider/package'
 require 'fileutils'
 require 'xmlsimple'
@@ -33,9 +35,6 @@ Puppet::Type.type(:package).provide(
   # times per day to prevent rsync server bans.
   EIX_RUN_SYNC = 48 * 3600
 
-  # Recompile package if use flags change
-  RECOMPILE_USE_CHANGE = true
-
   # You probably don't want to change these
   DEFAULT_SLOT = '0'
   DEFAULT_REPOSITORY = 'gentoo'
@@ -44,21 +43,6 @@ Puppet::Type.type(:package).provide(
   KEYWORDS_DIR = '/etc/portage/package.keywords'
   PACKAGE_STATE_DIR = '/var/db/pkg'
   TIMESTAMP_FILE = '/usr/portage/metadata/timestamp'
-
-  #######################
-  # Internal Structures #
-  #######################
-
-  # package {
-  #  :provider
-  #  A self reference to this class
-  #
-  #  :name
-  #  Package name within category
-  #
-  #  :ensure
-  #  Absent or "version string"
-  # }
 
   ################
   # Puppet Setup #
@@ -75,14 +59,22 @@ Puppet::Type.type(:package).provide(
   # Handles package versions
 
   has_feature :installable
-  # Method install() is available
+  # Method install is available
 
   has_feature :uninstallable
-  # Method uninstall() is available
+  # Method uninstall is available
 
   has_feature :upgradeable
-  # Method latest() is available
-  # Method update() is available
+  # Method latest is available
+  # Method update is available
+
+  has_feature :install_options
+  # Allows passing custom parameters
+
+  has_feature :package_settings
+  # Method package_settings_insync? is available
+  # Method package_settings is available
+  # Method package_settings= is available
 
   commands emerge: '/usr/bin/emerge'
 
@@ -96,6 +88,16 @@ Puppet::Type.type(:package).provide(
 
   has_command(:eix_sync, '/usr/bin/eix-sync') do
     environment EIXRC: '/etc/eixrc'
+  end
+
+  def package_settings_validate(opts)
+    return if opts.nil?
+    fail Puppet::ResourceError, 'Must be a hash' unless opts.is_a? Hash
+
+    if opts.key?(:slot)
+      fail Puppet::ResourceError, 'slot may not contain whitespace' if opts[:slot] =~ /\s/
+      fail Puppet::ResourceError, 'slot may not contain subslot' if opts[:slot] =~ /\//
+    end
   end
 
   ######################
@@ -125,10 +127,12 @@ Puppet::Type.type(:package).provide(
       !(entry == '.' || entry == '..')
     end
 
-    new_categories = []
+    new_categories = Set.new
     new_entries = {}
 
     packages.each do |name, package|
+      debug("Package[#{name}] use flags: #{package.provider.package_use.inspect}")
+      debug("Package[#{name}] keywords: #{package.provider.package_keywords.inspect}")
 
       # Early check variables
       category = package.provider.package_category
@@ -136,7 +140,7 @@ Puppet::Type.type(:package).provide(
 
       # We cannot specify these attributes unless we have a category as well
       if category.nil?
-        if opt_flags.length != 0
+        unless opt_flags.empty?
           Puppet.warning("Cannot apply #{function} for Package[#{name}] without a category")
         end
         next
@@ -176,7 +180,7 @@ Puppet::Type.type(:package).provide(
       ###########################
 
       # Update newoptCats
-      new_categories << category unless new_categories.include?(category)
+      new_categories << category
 
       # Add category to new_entries
       new_entries[category] = [] unless new_entries.key?(category)
@@ -203,7 +207,7 @@ Puppet::Type.type(:package).provide(
 
       out = "#{out}:#{slot}" if !slot.nil? && slot != DEFAULT_SLOT
 
-      out = "#{out} #{opt_flags.join(' ')}\n"
+      out = "#{out} #{opt_flags.sort.join(' ')}\n"
 
       debug("#{function}: Testing #{out}".rstrip)
 
@@ -218,7 +222,7 @@ Puppet::Type.type(:package).provide(
     end # packages.each
 
     # Remove (what should be) empty directories
-    remove_categories = old_categories - new_categories
+    remove_categories = old_categories - new_categories.to_a
     remove_categories.each do |c|
       debug("#{function}: RemoveCategory #{c}")
       FileUtils.rm_rf(File.join(dir, c))
@@ -255,7 +259,7 @@ Puppet::Type.type(:package).provide(
 
   # string (string)
   def _strip_subslot(slot)
-    return slot.split('/')[0] if slot.count('/') == 1
+    return slot.split('/').first if slot.count('/') == 1
 
     slot
   end
@@ -263,32 +267,29 @@ Puppet::Type.type(:package).provide(
   # string[] (string)
   # string[] (string[])
   def resource_tok(string)
-    if string.nil?
-      return []
-    elsif string.kind_of?(Array)
-      return string.sort
-    else
-      flags = string.split(' ')
+    return [] if string.nil?
+    return string if string.is_a? Array
 
-      # Allow excess whitespace (by stripping it) between flags
-      flags = flags.reject do |c|
-        c.empty?
-      end
-
-      # Sort the flags so the order doesn't matter
-      flags = flags.sort
-
-      return flags
+    string.split(' ').reject do |c|
+      c.empty?
     end
   end
 
   # string (void)
   def package_name
+    fail Puppet::ResourceError, 'name must be specified' if @resource[:name].empty?
+    fail Puppet::ResourceError, 'name may not contain whitespace' if @resource[:name] =~ /\s/
+    fail Puppet::ResourceError, 'name may not end with category boundary' if @resource[:name] =~ /\/$/
+    fail Puppet::ResourceError, 'name may not start with category boundary' if @resource[:name] =~ /^\//
+    fail Puppet::ResourceError, 'name may not contain multiple category boundaries' if @resource[:name].count('/') > 1
+    fail Puppet::ResourceError, 'name may not end with slot boundary' if @resource[:name] =~ /:$/
+    fail Puppet::ResourceError, 'name may not start with slot boundary' if @resource[:name] =~ /^:/
+    fail Puppet::ResourceError, 'name may not contain repository' if @resource[:name].include?('::')
+    fail Puppet::ResourceError, 'name may not contain multiple slot boundaries' if @resource[:name].count(':') > 1
+
     name = @resource[:name]
-
-    name = name.split(':')[0] if name.count(':') > 0
-
-    name = name.split('/')[1] if name.count('/') > 0
+    name = name.split(':').first if name.count(':') > 0
+    name = name.split('/').last if name.count('/') > 0
 
     name
   end
@@ -301,13 +302,13 @@ Puppet::Type.type(:package).provide(
     name_category = false
 
     if name.count('/') > 0
-      category = name.split('/')[0]
+      category = name.split('/').first
       name_category = true
     end
 
     if @resource[:category]
       if name_category && category != @resource[:category]
-        fail Puppet::Error, "Category disagreement on Package[#{name}], please check the definition"
+        fail Puppet::Error, "Category disagreement on Package[#{name}]"
       end
 
       category = @resource[:category]
@@ -328,12 +329,14 @@ Puppet::Type.type(:package).provide(
       name_slot = true
     end
 
-    if @resource[:slot]
-      if name_slot && slot != @resource[:slot].to_s
-        fail Puppet::Error, "Slot disagreement on Package[#{name}], please check the definition"
-      end
+    unless @resource[:package_settings].nil?
+      if @resource[:package_settings].key?('slot')
+        if name_slot && slot != @resource[:package_settings]['slot'].to_s
+          fail Puppet::Error, "Slot disagreement on Package[#{name}]"
+        end
 
-      slot = @resource[:slot]
+        slot = @resource[:package_settings]['slot']
+      end
     end
 
     slot
@@ -341,24 +344,77 @@ Puppet::Type.type(:package).provide(
 
   # string (void)
   def package_repository
-    return @resource[:repository] if @resource[:repository]
+    return nil if @resource[:package_settings].nil?
+    return nil unless @resource[:package_settings].key?('repository')
 
-    nil
+    @resource[:package_settings]['repository']
   end
 
   # string[] (void)
   def package_use
-    resource_tok(@resource[:use])
+    debug(@resource[:package_settings].inspect)
+
+    if @resource[:package_settings].nil?
+      debug('package_settings was nil')
+      return []
+    end
+    unless @resource[:package_settings].key?('use')
+      debug('no use key in package_settings')
+      return []
+    end
+
+    x = resource_tok(@resource[:package_settings]['use'])
+
+    debug(x.inspect)
+
+    x
   end
 
   # string[] (void)
   def package_keywords
-    resource_tok(@resource[:keywords])
+    return [] if @resource[:package_settings].nil?
+    return [] unless @resource[:package_settings].key?('keywords')
+
+    resource_tok(@resource[:package_settings]['keywords'])
   end
 
   ###########################
   # Implement required APIs #
   ###########################
+
+  # This populates the "is" value in package_settings_insync?
+  # hash (void)
+  def package_settings
+    query
+  end
+
+  # bool (hash, hash)
+  def package_settings_insync?(should, is)
+    if should.key?('repository')
+      return false if should['repository'] != is[:repository]
+    else
+      return false if is[:repository] != DEFAULT_REPOSITORY
+    end
+
+    should_positive = is[:use_valid] & use_neutral(resource_tok(should['use']))
+    unless (should_positive - is[:use_positive]).empty?
+      debug("+ use flag not in use #{(should_positive - is[:use_positive]).inspect}")
+      return false
+    end
+
+    should_negative = is[:use_valid] & use_negative(resource_tok(should['use']))
+    unless (should_negative & is[:use_positive]).empty?
+      debug("- use flag found use: #{(should_negative & is[:use_positive]).inspect}")
+      return false
+    end
+
+    true
+  end
+
+  # void (hash)
+  def package_settings=(settings)
+    install
+  end
 
   # void (void)
   def install
@@ -383,28 +439,17 @@ Puppet::Type.type(:package).provide(
     # Install from a specific source
     name = "#{name}::#{package_repository}" if package_repository
 
-    env_hold = ENV.to_hash
-    if @resource[:environment].is_a? Hash
-      ENV.replace(env_hold.merge(@resource[:environment]))
-    end
+    @resource[:install_options] = [] \
+      unless @resource[:install_options].is_a? Array
 
-    if @resource.oneshot?
-      emerge('--oneshot', name)
-    else
-      emerge name
-    end
-
-    ENV.replace(env_hold)
+    execute([command(:emerge)] + @resource[:install_options] + [name])
   end
 
   # void (void)
   def uninstall
     name = package_name
-
     name = "#{package_category}/#{name}" unless package_category.nil?
-
     name = "#{name}:#{package_slot}" unless package_slot.nil?
-
     name = "#{name}::#{package_repository}" unless package_repository.nil?
 
     emerge('--unmerge', name)
@@ -415,111 +460,70 @@ Puppet::Type.type(:package).provide(
     install
   end
 
-  # Returns what is currently installed
-  # package[] (void)
+  # Returns the currently installed version
+  # hash (void)
   def query
     slots = {}
-    repositories = []
-    categories = []
+    categories = Set.new
 
-    if package_category.nil?
-      glob_value = "*/#{package_name}"
-      search_value = package_name
-    else
-      glob_value = "#{package_category}/#{package_name}"
-      search_value = glob_value
-    end
-    Dir.glob("#{PACKAGE_STATE_DIR}/#{glob_value}-[0-9]*").each do |directory|
+    _package_glob.each do |directory|
 
-      %w(SLOT PF CATEGORY USE).each do |expected|
+      %w(SLOT PF CATEGORY repository USE).each do |expected|
         unless File.exist?("#{directory}/#{expected}")
           fail Puppet::Error, "The metadata file \"#{expected}\" was not found in #{directory}"
         end
       end
 
-      # Get variables
       slot = _strip_subslot(File.read("#{directory}/SLOT").rstrip)
-      category = File.read("#{directory}/CATEGORY").rstrip
-      use = File.read("#{directory}/USE").rstrip
+      next if !package_slot.nil? && slot != package_slot
 
+      category = File.read("#{directory}/CATEGORY").rstrip
+      categories << category
+
+      repository = File.read("#{directory}/repository").rstrip
+
+      use_positive = resource_tok(File.read("#{directory}/USE").rstrip)
+
+      # I have observed the IUSE file does not exist on packages emerged before a certain date
+      # I expect it would be safe to make this file mandatory sometime in 2018
       if File.exist?("#{directory}/IUSE")
-        iuse = File.read("#{directory}/IUSE").rstrip
+        use_valid = use_strip_positive(resource_tok(File.read("#{directory}/IUSE").rstrip))
       else
-        iuse = ''
+        use_valid = []
       end
 
       # http://dev.gentoo.org/~ulm/pms/5/pms.html#x1-280003.2
-      name, version = File.read("#{directory}/PF").rstrip.split(/-(?=[0-9])/)
-
-      # Skip based on specific constraints
-      next if !package_slot.nil? && slot != package_slot
-
-      # Update disambiugation values
-      categories.push(category) unless categories.include?(category)
+      version = File.read("#{directory}/PF").rstrip.split(/-(?=[0-9])/).last
 
       # if this slot isn't yet defined in the slots hash, define it with the defaults
       unless slots.key?(slot)
         slots[slot] = {
-          provider: self.name,
-          name: name,
+          repository: repository,
+          use_positive: use_positive & use_valid,
+          use_valid: use_valid,
+
           ensure: version
         }
       end
-
-      # Handle use flag Changes
-      if RECOMPILE_USE_CHANGE
-        valid = resource_tok(iuse).map do |x|
-          x[1..-1] if x[0, 1] == '+'
-
-          x
-        end
-
-        if use_changed(resource_tok(use), valid, package_use)
-
-          # Recompile lie, 0 -> current
-          slots[slot][:ensure] = '0'
-          next
-        end
-      end
-    end
-
-    if @resource[:ensure] == :absent && slots.length == 0
-      fail 'Faulty assumption: categories empty when slots empty' unless categories.length == 0
-      fail 'Faulty assumption: repositories empty when slots empty' unless repositories.length == 0
-      return nil
     end
 
     # Disambiguation errors
-    case categories.length
-    when 0
-      return nil
-    when 1
-      # Correct number, we're done here
-    else
-      categories_available = categories.join(' ')
-      fail Puppet::Error, "Multiple categories [#{categories_available}] available for package [#{search_value}]"
+    if categories.length > 1
+      fail Puppet::Error, "Package[#{@resource[:name]}] is ambiguous, specify a category: #{categories.to_a.join(', ')}"
     end
 
-    case slots.length
-    when 0
-      return nil
-    when 1
-      # Correct number, we're done here
-    else
-      slots_available = slots.keys.join(' ')
-      fail Puppet::Error, "Multiple slots [#{slots_available}] available for package [#{search_value}]"
+    if slots.length > 1
+      fail Puppet::Error, "Package[#{@resource[:name]}] is ambiguous, specify a slot: #{slots.keys.join(', ')}"
     end
 
-    slot = slots.keys[0]
-    slots[slot]
+    slots.values.first
   end
 
   # Returns the string for the newest version of a package available
   # string (void)
   def latest
     slots = {}
-    repositories = []
-    categories = []
+    categories = Set.new
 
     # Chose arguments based on what we've received
     if package_category.nil?
@@ -535,28 +539,18 @@ Puppet::Type.type(:package).provide(
     xml = REXML::Document.new(eixout)
 
     unless EIX_DUMP_VERSION.include?(Integer(xml.root.attributes['version']))
-      warnonce("eixdump version is not in [#{EIX_DUMP_VERSION.join(', ')}].")
+      warnonce("eixdump version is not in: #{EIX_DUMP_VERSION.join(', ')}.")
     end
 
     xml.elements.each('eixdump/category/package') do |p|
       p.elements.each('version') do |v|
 
-        # TODO: reenable this after some unit tests have been added accordingly
-        #       - also needs checking for special cases to come after better tests for :installed, :present, etc.
-        #
-        # Throw an error if slot & ensure do not match up
-        # if !package_slot.nil? && v.attributes['id'] == @resource[:ensure]
-        #   if v.attributes['slot'] != package_slot
-        #     fail Puppet::Error, "Explicit version for Package[#{search_value}] \"#{v.attributes['id']}\" not in slot \"#{package_slot}\"."
-        #   end
-        # end
-
         # Skip based on specific constraints
         unless package_slot.nil?
           if package_slot == DEFAULT_SLOT
-            next unless v.attributes['slot'].nil?
+            next unless v.attributes['slot'].nil? || _strip_subslot(v.attributes['slot']) == package_slot
           else
-            next if v.attributes['slot'] != package_slot
+            next if _strip_subslot(v.attributes['slot']) != package_slot
           end
         end
 
@@ -575,23 +569,11 @@ Puppet::Type.type(:package).provide(
           slot = DEFAULT_SLOT
         end
 
-        if !v.attributes['repository'].nil?
-          repository = v.attributes['repository']
-        else
-          repository = DEFAULT_REPOSITORY
-        end
-
         # Update disambiguation values
-        categories.push(p.parent.attributes['name']) unless categories.include?(p.parent.attributes['name'])
-
-        repositories.push(repository) unless repositories.include?(repository)
+        categories << p.parent.attributes['name']
 
         # if this slot isn't yet defined in the slots hash, define it with the defaults
         slots[slot] = nil unless slots.key?(slot)
-
-        # to make the if statements bellow easier to follow
-        installed = (v.attributes['installed'] && v.attributes['installed'] == '1')
-        dev = v.attributes['id'] =~ /^9+$/
 
         # http://docs.dvo.ru/eix-0.25.5/html/eix-xml.html
         # <mask type=" [..] " />
@@ -606,20 +588,21 @@ Puppet::Type.type(:package).provide(
         # minus_unstable
         # minus_asterisk
         # minus_keyword
-        hard_masked = (v.elements['mask[@type!=\'keyword\']'] && !v.elements['unmask[@type=\'package_unmask\']'])
-        keyword_masked = (v.elements['mask[@type=\'keyword\']'] && !v.elements['unmask[@type=\'package_keywords\']'])
+        hard_unmasked = (!v.elements['mask[@type!=\'keyword\']'] || v.elements['unmask[@type=\'package_unmask\']'])
+        keyword_unmasked = (!v.elements['mask[@type=\'keyword\']'] || v.elements['unmask[@type=\'package_keywords\']'])
 
-        # Currently installed packages should always be valid candidates for staying installed
-        if installed
+        # installed versions are always valid candidates for latest
+        # this way latest should never try to downgrade a package
+        if v.attributes['installed'] && v.attributes['installed'] == '1'
           slots[slot] = v.attributes['id']
           next
         end
 
-        # Skip dev builds
-        next if dev
+        # Skip dev (9999) ebuilds
+        next if v.attributes['id'] =~ /^9+$/
 
         # Check package masks
-        if !hard_masked && !keyword_masked
+        if hard_unmasked && keyword_unmasked
           slots[slot] = v.attributes['id']
           next
         end
@@ -630,95 +613,57 @@ Puppet::Type.type(:package).provide(
     case categories.length
     when 0
       if !package_category.nil?
-        fail Puppet::Error, "No package found with the specified name [#{search_value}] in category [#{package_category}]"
+        fail Puppet::Error, "No package found with the specified name [#{search_value}] in category [#{package_category}]: #{categories.to_a.join(' ')}"
       else
         fail Puppet::Error, "No package found with the specified name [#{search_value}]"
       end
     when 1
       # Correct number, we're done here
     else
-      categories_available = categories.join(' ')
+      categories_available = categories.to_a.join(' ')
       fail Puppet::Error, "Multiple categories [#{categories_available}] available for package [#{search_value}]"
     end
 
-    case slots.length
-    when 0
-      if !package_slot.nil?
-        fail Puppet::Error, "No package found with the specified name [#{search_value}] in slot [#{package_slot}]"
-      else
-        fail Puppet::Error, 'Faulty assumption: 1 category and 0 slots with no slot specified'
-      end
-    when 1
-      # Correct number, we're done here
+    # If there's a single slot, use it
+    return slots.values.first if slots.length == 1
+
+    # If there's multiple slots including the default, use the default
+    return slots[DEFAULT_SLOT] if slots.key?(DEFAULT_SLOT)
+
+    # Multiple slots
+    fail Puppet::Error, "Package[#{@resource[:name]}] is ambiguous, specify a slot: #{slots.keys.join(' ')}"
+  end
+
+private
+
+  def use_strip_positive(use)
+    use.map do |x|
+      x[1..-1] if x[0, 1] == '+'
+
+      x
+    end
+  end
+
+  def use_neutral(use)
+    use.select { |x| x[0, 1] != '-' && x[0, 1] != '+' }
+  end
+
+  def use_negative(use)
+    use.select { |x| x[0, 1] == '-' }.map { |x| x[1..-1] }
+  end
+
+  def use_positive(use)
+    use.select { |x| x[0, 1] == '+' }.map { |x| x[1..-1] }
+  end
+
+  # string[] (void)
+  def _package_glob
+    if package_category.nil?
+      glob_value = "*/#{package_name}"
     else
-      slots_available = slots.keys.join(' ')
-      fail Puppet::Error, "Multiple slots [#{slots_available}] available for package [#{search_value}]"
+      glob_value = "#{package_category}/#{package_name}"
     end
 
-    case repositories.length
-    when 0
-      if !package_repository.nil?
-        fail Puppet::Error, "No package found with the specified name [#{search_value}] in repository [#{package_repository}]"
-      else
-        fail Puppet::Error, 'Faulty assumption: 1 category, 1 slot, and 0 repositories with no repository specified'
-      end
-    when 1
-      # Correct number, we're done here
-    else
-      repos_available = repositories.join(' ')
-      fail Puppet::Error, "Multiple repositories [#{repos_available}] available for package [#{search_value}]"
-    end
-
-    slot = slots.keys[0]
-    slots[slot]
-  end
-
-  private
-
-  # string[] (string[])
-  def use_filter_positive(everything)
-    everything.select do |x|
-      x[0, 1] != '-'
-    end
-  end
-
-  private
-
-  # string[] (string[])
-  def use_filter_negative(everything)
-    filtered = everything.select do |x|
-      x[0, 1] == '-'
-    end
-
-    filtered.map do |x|
-      x[1..-1]
-    end
-  end
-
-  private
-
-  # bool (string have[], string valid[], string want[])
-  def use_changed(have, valid, want)
-    # Negative flags
-    use_filter_negative(want).each do |x|
-      next unless valid.include?(x)
-
-      if have.include?(x)
-        debug("Recompiling #{package_category}/#{package_name} for USE=\"-#{x}\"")
-        return true
-      end
-    end
-
-    # Positive flags
-    use_filter_positive(want).each do |x|
-      next unless valid.include?(x)
-
-      unless have.include?(x)
-        debug("Recompiling #{package_category}/#{package_name} for USE=\"#{x}\"")
-        return true
-      end
-    end
-
-    false
+    Dir.glob("#{PACKAGE_STATE_DIR}/#{glob_value}-[0-9]*")
   end
 end

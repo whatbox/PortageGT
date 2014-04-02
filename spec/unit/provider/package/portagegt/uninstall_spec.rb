@@ -12,11 +12,6 @@ describe provider_class do
     Puppet.expects(:warning).never
   end
 
-  def pkg(args = {})
-    defaults = { provider: 'portagegt' }
-    Puppet::Type.type(:package).new(defaults.merge(args))
-  end
-
   it 'should have an #uninstall method' do
     provider = provider_class.new
     provider.should respond_to('uninstall')
@@ -40,20 +35,22 @@ describe provider_class do
       end
 
       it 'in the params' do
-        provider = provider_class.new(pkg(name: 'mysql', slot: '2'))
+        provider = provider_class.new(pkg(name: 'mysql', package_settings: { 'slot' => '2' }))
         provider.expects(:emerge).with('--unmerge', 'mysql:2')
         provider.uninstall
       end
 
       it 'in the name & params' do
-        provider = provider_class.new(pkg(name: 'mysql:2', slot: '2'))
+        provider = provider_class.new(pkg(name: 'mysql:2', package_settings: { 'slot' => '2' }))
         provider.expects(:emerge).with('--unmerge', 'mysql:2')
         provider.uninstall
       end
 
       it 'mismatched between the name & params' do
-        provider = provider_class.new(pkg(name: 'dev-db/mysql:2', slot: '3'))
-        proc { provider.uninstall }.should raise_error(Puppet::Error, /Slot disagreement on Package.*, please check the definition/)
+        expect do
+          provider = provider_class.new(pkg(name: 'dev-db/mysql:2', package_settings: { 'slot' => '3' }))
+          provider.uninstall
+        end.to raise_error(Puppet::Error, 'Slot disagreement on Package[dev-db/mysql:2]')
       end
     end
 
@@ -77,14 +74,16 @@ describe provider_class do
       end
 
       it 'mismatched between the name & params' do
-        provider = provider_class.new(pkg(name: 'dev-db/mysql', category: 'nope'))
-        proc { provider.uninstall }.should raise_error(Puppet::Error, /Category disagreement on Package.*, please check the definition/)
+        expect do
+          provider = provider_class.new(pkg(name: 'dev-db/mysql', category: 'nope'))
+          provider.uninstall
+        end.to raise_error(Puppet::Error, 'Category disagreement on Package[dev-db/mysql]')
       end
     end
 
     context 'with repository parameter' do
       it 'in the params' do
-        provider = provider_class.new(pkg(name: 'mysql', repository: 'awesome-overlay'))
+        provider = provider_class.new(pkg(name: 'mysql', package_settings: { 'repository' => 'awesome-overlay' }))
         provider.expects(:emerge).with('--unmerge', 'mysql::awesome-overlay')
         provider.uninstall
       end
@@ -98,13 +97,13 @@ describe provider_class do
       end
 
       it 'in the params' do
-        provider = provider_class.new(pkg(name: 'mysql', category: 'dev-db', slot: '5.5'))
+        provider = provider_class.new(pkg(name: 'mysql', category: 'dev-db', package_settings: { 'slot' => '5.5' }))
         provider.expects(:emerge).with('--unmerge', 'dev-db/mysql:5.5')
         provider.uninstall
       end
 
       it 'in the name & params' do
-        provider = provider_class.new(pkg(name: 'foo/bar:baz', category: 'foo', slot: 'baz'))
+        provider = provider_class.new(pkg(name: 'foo/bar:baz', category: 'foo', package_settings: { 'slot' => 'baz' }))
         provider.expects(:emerge).with('--unmerge', 'foo/bar:baz')
         provider.uninstall
       end
@@ -112,7 +111,7 @@ describe provider_class do
 
     context 'with category & repository' do
       it 'in the params' do
-        provider = provider_class.new(pkg(name: 'php', category: 'dev-lang', repository: 'internal'))
+        provider = provider_class.new(pkg(name: 'php', category: 'dev-lang', package_settings: { 'repository' => 'internal' }))
         provider.expects(:emerge).with('--unmerge', 'dev-lang/php::internal')
         provider.uninstall
       end
@@ -120,7 +119,7 @@ describe provider_class do
 
     context 'with slot & repository' do
       it 'in the params' do
-        provider = provider_class.new(pkg(name: 'program', slot: 'ruby18', repository: 'internal'))
+        provider = provider_class.new(pkg(name: 'program', package_settings: { 'slot' => 'ruby18',  'repository' => 'internal' }))
         provider.expects(:emerge).with('--unmerge', 'program:ruby18::internal')
         provider.uninstall
       end
@@ -128,7 +127,7 @@ describe provider_class do
 
     context 'with category, slot & repository' do
       it 'in the params' do
-        provider = provider_class.new(pkg(name: 'python', category: 'dev-lang', slot: '3.3', repository: 'gentoo'))
+        provider = provider_class.new(pkg(name: 'python', category: 'dev-lang', package_settings: { 'slot' => '3.3', 'repository' => 'gentoo' }))
         provider.expects(:emerge).with('--unmerge', 'dev-lang/python:3.3::gentoo')
         provider.uninstall
       end
