@@ -204,7 +204,7 @@ To install dependencies necessary for running the tests use `bundle install`, te
 **Note:** eix *must* be installed to test successfully on Gentoo, this is not necessary when running tests from other operating systems.
 
 ## Roadmap
-* Remove package type overwrite ([PUP-1183](https://tickets.puppetlabs.com/browse/PUP-1183))
+* Using first-class parameters ([PUP-1183](https://tickets.puppetlabs.com/browse/PUP-1183))
 * More extensive unit testing
 * Easier configuration of provider options
 
@@ -214,4 +214,3 @@ These are features we're not implementing at this time
 * package mask
     * using puppet `ensure => :held`
 * package unmask
-* `RECOMPILE_USE_CHANGE` does not trigger a recompile if global use flags defined in `/etc/portage/make.conf` change.

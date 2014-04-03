@@ -546,12 +546,10 @@ Puppet::Type.type(:package).provide(
       p.elements.each('version') do |v|
 
         # Skip based on specific constraints
-        unless package_slot.nil?
-          if package_slot == DEFAULT_SLOT
-            next unless v.attributes['slot'].nil? || _strip_subslot(v.attributes['slot']) == package_slot
-          else
-            next if _strip_subslot(v.attributes['slot']) != package_slot
-          end
+        if package_slot.nil? || package_slot == DEFAULT_SLOT
+          next unless v.attributes['slot'].nil? || _strip_subslot(v.attributes['slot']) == DEFAULT_SLOT
+        else
+          next unless _strip_subslot(v.attributes['slot']) == package_slot
         end
 
         unless package_repository.nil?
