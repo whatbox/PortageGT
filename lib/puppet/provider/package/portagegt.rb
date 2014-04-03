@@ -544,14 +544,6 @@ Puppet::Type.type(:package).provide(
 
     xml.elements.each('eixdump/category/package') do |p|
       p.elements.each('version') do |v|
-
-        # Skip based on specific constraints
-        if package_slot.nil? || package_slot == DEFAULT_SLOT
-          next unless v.attributes['slot'].nil? || _strip_subslot(v.attributes['slot']) == DEFAULT_SLOT
-        else
-          next unless _strip_subslot(v.attributes['slot']) == package_slot
-        end
-
         unless package_repository.nil?
           if package_repository == DEFAULT_REPOSITORY
             next unless v.attributes['repository'].nil?
@@ -621,6 +613,9 @@ Puppet::Type.type(:package).provide(
       categories_available = categories.to_a.join(' ')
       fail Puppet::Error, "Multiple categories [#{categories_available}] available for package [#{search_value}]"
     end
+
+    # Skip based on specific constraints
+    return slots[package_slot] unless package_slot.nil?
 
     # If there's a single slot, use it
     return slots.values.first if slots.length == 1

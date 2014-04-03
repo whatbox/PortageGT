@@ -142,5 +142,17 @@ describe provider_class do
       provider.latest.should == '1.6.8'
     end
 
+
+    it 'only one slot, that is not the default' do
+      fh = File.open('spec/unit/provider/package/eix/glibc.xml', 'rb')
+      file = fh.read
+      fh.close
+
+      provider_class.stubs(:eix).with('--xml', '--pure-packages', '--exact', '--category-name', 'sys-libs/glibc').returns(file)
+
+      provider = provider_class.new(pkg(name: 'sys-libs/glibc', ensure: :latest))
+      provider.latest.should == '2.17'
+    end
+
   end # xml parse check
 end
