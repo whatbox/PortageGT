@@ -142,7 +142,6 @@ describe provider_class do
       provider.latest.should == '1.6.8'
     end
 
-
     it 'only one slot, that is not the default' do
       fh = File.open('spec/unit/provider/package/eix/glibc.xml', 'rb')
       file = fh.read

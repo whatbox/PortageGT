@@ -183,7 +183,7 @@ describe provider_class, fakefs: true do
         Dir.chdir('/etc/portage/package.use') do
           Dir.glob('*').should eq(%w(dev-lang))
           Dir.glob('dev-lang/*').should eq(%w(dev-lang/php:5.3 dev-lang/php:5.4))
-          File.read('dev-lang/php:5.3').should eq("dev-lang/php:5.3 something -without\n")
+          File.read('dev-lang/php:5.3').should eq("dev-lang/php:5.3 -without something\n")
           File.read('dev-lang/php:5.4').should eq("dev-lang/php:5.4 -bar -seven\n")
         end
       end
@@ -242,7 +242,7 @@ describe provider_class, fakefs: true do
         Dir.chdir('/etc/portage/package.use') do
           Dir.glob('*').should eq(%w(dev-lang))
           Dir.glob('dev-lang/*').should eq(%w(dev-lang/php:5.3))
-          File.read('dev-lang/php:5.3').should eq("dev-lang/php:5.3 something -without\n")
+          File.read('dev-lang/php:5.3').should eq("dev-lang/php:5.3 -without something\n")
         end
       end
     end

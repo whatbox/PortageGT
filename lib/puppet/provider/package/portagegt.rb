@@ -131,9 +131,6 @@ Puppet::Type.type(:package).provide(
     new_entries = {}
 
     packages.each do |name, package|
-      debug("Package[#{name}] use flags: #{package.provider.package_use.inspect}")
-      debug("Package[#{name}] keywords: #{package.provider.package_keywords.inspect}")
-
       # Early check variables
       category = package.provider.package_category
       opt_flags = package.provider.send(function)
@@ -199,7 +196,7 @@ Puppet::Type.type(:package).provide(
           end
         end
 
-        debug("#{function}: CreateCategory #{opt_dir}")
+        debug("#{function}: creating category #{opt_dir}")
         Dir.mkdir(opt_dir)
       end
 
@@ -209,7 +206,7 @@ Puppet::Type.type(:package).provide(
 
       out = "#{out} #{opt_flags.sort.join(' ')}\n"
 
-      debug("#{function}: Testing #{out}".rstrip)
+      debug("#{function}: comparing existing to #{out}".rstrip)
 
       # Create file
       if !File.file?(opt_file) || File.read(opt_file) != out
@@ -224,7 +221,7 @@ Puppet::Type.type(:package).provide(
     # Remove (what should be) empty directories
     remove_categories = old_categories - new_categories.to_a
     remove_categories.each do |c|
-      debug("#{function}: RemoveCategory #{c}")
+      debug("#{function}: removing empty category #{c}")
       FileUtils.rm_rf(File.join(dir, c))
     end
 
@@ -236,7 +233,7 @@ Puppet::Type.type(:package).provide(
 
       remove_entries = old_entries - new_entries[cat]
       remove_entries.each do |e|
-        debug("#{function}: RemoveEntry #{cat}/#{e}")
+        debug("#{function}: removing empty entry #{cat}/#{e}")
         FileUtils.rm_rf(File.join(dir, cat, e))
       end
     end
@@ -352,22 +349,10 @@ Puppet::Type.type(:package).provide(
 
   # string[] (void)
   def package_use
-    debug(@resource[:package_settings].inspect)
+    return [] if @resource[:package_settings].nil?
+    return [] unless @resource[:package_settings].key?('use')
 
-    if @resource[:package_settings].nil?
-      debug('package_settings was nil')
-      return []
-    end
-    unless @resource[:package_settings].key?('use')
-      debug('no use key in package_settings')
-      return []
-    end
-
-    x = resource_tok(@resource[:package_settings]['use'])
-
-    debug(x.inspect)
-
-    x
+    resource_tok(@resource[:package_settings]['use'])
   end
 
   # string[] (void)
@@ -398,13 +383,13 @@ Puppet::Type.type(:package).provide(
 
     should_positive = is[:use_valid] & use_neutral(resource_tok(should['use']))
     unless (should_positive - is[:use_positive]).empty?
-      debug("+ use flag not in use #{(should_positive - is[:use_positive]).inspect}")
+      # debug("+ use flag not in use #{(should_positive - is[:use_positive]).inspect}")
       return false
     end
 
     should_negative = is[:use_valid] & use_negative(resource_tok(should['use']))
     unless (should_negative & is[:use_positive]).empty?
-      debug("- use flag found use: #{(should_negative & is[:use_positive]).inspect}")
+      # debug("- use flag found use: #{(should_negative & is[:use_positive]).inspect}")
       return false
     end
 
