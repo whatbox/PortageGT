@@ -42,8 +42,8 @@ Using PortageGT should be pretty familiar to anyone already using puppet on Gent
 ### Attribute based
 
 	package { "vnstat":
-		category => "net-analyzer",
-		ensure => "1.11-r2";
+		ensure   => "1.11-r2",
+		category => "net-analyzer";
 	}
 
 ### Slots
@@ -60,73 +60,73 @@ Using PortageGT should be pretty familiar to anyone already using puppet on Gent
 #### Attribute based
 
 	package { "dev-lang/python":
-		package_settings: {
-			slot   => "2.7",
-		},
-		ensure => latest;
+		ensure           => latest,
+		package_settings => {
+			slot => "2.7",
+		};
 	}
 
 	package { "dev-lang/python:3.1":
-		package_settings: {
-			slot   => "3.1",
-		},
-		ensure => latest;
+		ensure           => latest,
+		package_settings => {
+			slot => "3.1",
+		};
 	}
 
 ### Keywords
 
 	package { "sys-boot/grub":
-		package_settings: {
+		ensure           => "2.00",
+		package_settings => {
 			slot     => "2",
 			keywords => "~amd64",
-		},
-		ensure   => "2.00";
+		};
 	}
 
 ### Repository/Overlay
 Specify the latest version of a specific overlay available on your systems, to ensure you don't accidentally build code from the wrong overlay.
 
 	package { "www-servers/nginx":
-		package_settings: {
+		ensure => latest,
+		package_settings => {
 			repository => "company-overlay",
-		},
-		ensure => latest;
+		};
 	}
 
 ### Use flags
 #### String
 
 	package { "www-servers/apache2":
-		package_settings: {
+		ensure => latest,
+		package_settings => {
 			use    => "apache2_modules_alias apache2_modules_auth_basic",
-		},
-		ensure => latest;
+		};
 	}
 
 ### Array
 
 	package { "www-servers/apache2":
-		package_settings: {
-			use    => [
+		ensure           => latest,
+		package_settings => {
+			use => [
 				"apache2_modules_alias",
 				"-ssl",
 			],
-		},
-		ensure => latest;
+		};
 	}
 
 ### Additional emerge options
 
 	package { "media-libs/libpng":
-		install_options: ["--oneshot"],
-		ensure => latest;
+		ensure          => latest;
+		install_options => ["--oneshot"],
 	}
 
 ### Keywords & Use flags on dependencies
 If you need to keyword or add use flags to a package without wanting to manage it's version directly.
 
 	package { "dev-libs/boost":
-		package_settings: {
+		package_settings => {
 			use => ["icu", "threads"],
 		}
 	}
@@ -137,17 +137,17 @@ eselect is useful when selecting specific versions from between several slots
 #### PHP
 
 	eselect { "php-fpm":
-		module => "php",
-		submodule => "fpm",
-		ensure => "php5.4";
+		ensure    => "php5.4",
+		module    => "php",
+		submodule => "fpm";
 	}
 
 #### GCC
 
 	eselect { "gcc":
 		listcmd => "gcc-config -l",
-		setcmd => "gcc-config",
-		ensure => "x86_64-pc-linux-gnu-4.5.3";
+		setcmd  => "gcc-config",
+		ensure  => "x86_64-pc-linux-gnu-4.5.3";
 	}
 
 #### Ruby
@@ -163,15 +163,15 @@ eselect is useful when selecting specific versions from between several slots
 	}
 
 	eselect { "python2":
-		module => "python",
+		module    => "python",
 		submodule => "--python2",
-		ensure => "python2.7";
+		ensure    => "python2.7";
 	}
 
 	eselect { "python3":
-		module => "python",
+		module    => "python",
 		submodule => "--python3",
-		ensure => "python3.2";
+		ensure    => "python3.2";
 	}
 
 #### Profile
