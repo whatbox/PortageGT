@@ -150,7 +150,7 @@ Puppet::Type.type(:package).provide(
       opt_file = File.join(opt_dir, opt_name)
 
       # Add slot to file where necessary
-      if !slot.nil? && slot != DEFAULT_SLOT
+      if slot && slot != DEFAULT_SLOT
         opt_file = "#{opt_file}:#{slot}"
         opt_name = "#{opt_name}:#{slot}"
       end
@@ -202,7 +202,7 @@ Puppet::Type.type(:package).provide(
 
       out = "#{category}/#{package.provider.package_name}"
 
-      out = "#{out}:#{slot}" if !slot.nil? && slot != DEFAULT_SLOT
+      out = "#{out}:#{slot}" if slot && slot != DEFAULT_SLOT
 
       out = "#{out} #{opt_flags.sort.join(' ')}\n"
 
@@ -460,7 +460,7 @@ Puppet::Type.type(:package).provide(
       end
 
       slot = _strip_subslot(File.read("#{directory}/SLOT").rstrip)
-      next if !package_slot.nil? && slot != package_slot
+      next if package_slot && slot != package_slot
 
       category = File.read("#{directory}/CATEGORY").rstrip
       categories << category
@@ -538,7 +538,7 @@ Puppet::Type.type(:package).provide(
         end
 
         # Establish variables for reuse
-        if !v.attributes['slot'].nil?
+        if v.attributes['slot']
           slot = _strip_subslot(v.attributes['slot'])
         else
           slot = DEFAULT_SLOT
@@ -587,7 +587,7 @@ Puppet::Type.type(:package).provide(
     # Disambiguation errors
     case categories.length
     when 0
-      if !package_category.nil?
+      if package_category
         fail Puppet::Error, "No package found with the specified name [#{search_value}] in category [#{package_category}]: #{categories.to_a.join(' ')}"
       else
         fail Puppet::Error, "No package found with the specified name [#{search_value}]"
