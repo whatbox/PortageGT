@@ -377,8 +377,6 @@ Puppet::Type.type(:package).provide(
   def package_settings_insync?(should, is)
     if should.key?('repository')
       return false if should['repository'] != is[:repository]
-    else
-      return false if is[:repository] != DEFAULT_REPOSITORY
     end
 
     should_positive = is[:use_valid] & use_neutral(resource_tok(should['use']))
