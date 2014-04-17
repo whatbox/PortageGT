@@ -7,10 +7,15 @@
     "author": "Whatbox Inc.",
     "license": "GPLv3, MIT, BSD",
     "operatingsystem_support": [
-        "Gentoo"
+        {
+            "operatingsystem": "Gentoo"
+        }
     ],
-    "puppet_version": [
-        "3.5"
+    "requirements": [
+        {
+            "name": "puppet",
+            "version_requirement": "3.5.x"
+        }
     ],
     "dependencies": []
 }
