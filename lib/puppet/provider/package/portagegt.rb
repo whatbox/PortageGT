@@ -395,7 +395,7 @@ Puppet::Type.type(:package).provide(
   end
 
   # void (hash)
-  def package_settings=(settings)
+  def package_settings=(_settings)
     install
   end
 
