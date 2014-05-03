@@ -55,26 +55,9 @@ Puppet::Type.type(:package).provide(
   # the definitions in this file, so the following lines probably aren't
   # necessary, regardless, I wanted to document this for my own purposes
 
-  has_feature :versionable
-  # Handles package versions
-
-  has_feature :installable
-  # Method install is available
-
-  has_feature :uninstallable
-  # Method uninstall is available
-
-  has_feature :upgradeable
-  # Method latest is available
-  # Method update is available
-
-  has_feature :install_options
-  # Allows passing custom parameters
-
-  has_feature :package_settings
-  # Method package_settings_insync? is available
-  # Method package_settings is available
-  # Method package_settings= is available
+  # The methods each of these requires can be found in
+  # Puppet's puppet/lib/puppet/type/package.rb
+  has_features :installable, :versionable, :uninstallable, :upgradeable, :install_options, :package_settings, :refreshable
 
   commands emerge: '/usr/bin/emerge'
 
@@ -403,6 +386,11 @@ Puppet::Type.type(:package).provide(
 
   # void (hash)
   def package_settings=(_settings)
+    install
+  end
+
+  # void (void)
+  def reinstall
     install
   end
 
