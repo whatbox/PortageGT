@@ -153,5 +153,16 @@ describe provider_class do
       provider.latest.should == '2.17'
     end
 
+    it 'when installed version is newer than unmasked / unkeyworded' do
+      fh = File.open('spec/unit/provider/package/eix/unrar_newer_installed.xml', 'rb')
+      file = fh.read
+      fh.close
+
+      provider_class.stubs(:eix).with('--xml', '--pure-packages', '--exact', '--category-name', 'app-arch/unrar').returns(file)
+
+      provider = provider_class.new(pkg(name: 'app-arch/unrar', ensure: :latest))
+      provider.latest.should == '5.1.5'
+    end
+
   end # xml parse check
 end
