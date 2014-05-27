@@ -1,4 +1,4 @@
-# It would be nice to enable these someday
+# It would be nice to enable all of these someday
 LineLength:
   Enabled: false
 MethodLength:
@@ -6,4 +6,9 @@ MethodLength:
 CyclomaticComplexity:
   Enabled: false
 Documentation:
+  Enabled: false
+
+# Either this is a buggy cop, or the cyclomatic complexity 
+# is too high for me to see where we're going wrong.
+Next:
   Enabled: false

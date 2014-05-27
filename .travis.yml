@@ -12,7 +12,7 @@ script:
 
 env:
   - PUPPET_VERSION="~> 3.5.1"
-  - PUPPET_VERSION="~> 3.6.0"
+  - PUPPET_VERSION="~> 3.6.1"
 
 matrix:
   allow_failures:

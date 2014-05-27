@@ -94,10 +94,10 @@ Puppet::Type.type(:package).provide(
     return if opts.nil?
     fail Puppet::ResourceError, 'Must be a hash' unless opts.is_a? Hash
 
-    if opts.key?(:slot)
-      fail Puppet::ResourceError, 'slot may not contain whitespace' if opts[:slot] =~ /\s/
-      fail Puppet::ResourceError, 'slot may not contain subslot' if opts[:slot] =~ /\//
-    end
+    return unless opts.key?(:slot)
+
+    fail Puppet::ResourceError, 'slot may not contain whitespace' if opts[:slot] =~ /\s/
+    fail Puppet::ResourceError, 'slot may not contain subslot' if opts[:slot] =~ /\//
   end
 
   ######################
