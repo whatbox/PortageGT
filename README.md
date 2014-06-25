@@ -24,6 +24,20 @@ The following things are assumed:
 * __WARNING:__ Folders contained within either of these will be automatically removed by this plugin
 
 
+## Installing
+PortageGT can be installed from Puppet Forge:
+
+	puppet module install Whatbox-portagegt
+
+All code is contained within the `lib` folder if you wish to place it in an existing module.
+
+To use the PortageGT provider for all of your packages you can set in your manifests, alternatively you can add teh provider attribute to any individual packages you desire.
+
+	Package {
+	  provider => 'portagegt'
+	}
+
+
 ## Usage
 Using PortageGT should be pretty familiar to anyone already using puppet on Gentoo, the only differences are in the added attributes that may be included in the manifests. The simplest case is the same as it is with existing puppet setups.
 
