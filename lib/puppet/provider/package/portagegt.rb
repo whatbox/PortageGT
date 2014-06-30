@@ -380,12 +380,19 @@ Puppet::Type.type(:package).provide(
     end
 
     should_positive = is[:use_valid] & use_neutral(resource_tok(should['use']))
+    should_negative = is[:use_valid] & use_negative(resource_tok(should['use']))
+
+    use_conflict = should_positive & should_negative
+    unless use_conflict.empty?
+      Puppet.warning("Package[#{package_name}] contains conflicting instructions for USE flag #{use_conflict.inspect}")
+      return true
+    end
+
     unless (should_positive - is[:use_positive]).empty?
       # debug("+ use flag not in use #{(should_positive - is[:use_positive]).inspect}")
       return false
     end
 
-    should_negative = is[:use_valid] & use_negative(resource_tok(should['use']))
     unless (should_negative & is[:use_positive]).empty?
       # debug("- use flag found use: #{(should_negative & is[:use_positive]).inspect}")
       return false

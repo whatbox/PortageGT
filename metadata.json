@@ -5,7 +5,7 @@
     "source": "git@github.com:whatbox/PortageGT.git",
     "project_page": "http://github.com/whatbox/PortageGT",
     "author": "Whatbox Inc.",
-    "license": "GPLv3, MIT, BSD",
+    "license": "Apache 2.0",
     "operatingsystem_support": [
         {
             "operatingsystem": "Gentoo"
@@ -15,6 +15,9 @@
         {
             "name": "puppet",
             "version_requirement": "3.5.x"
+        },
+        {
+            "name": "puppet",
             "version_requirement": "3.6.x"
         }
     ],
