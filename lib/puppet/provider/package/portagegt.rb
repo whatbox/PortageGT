@@ -620,11 +620,7 @@ Puppet::Type.type(:package).provide(
 private
 
   def use_strip_positive(use)
-    use.map do |x|
-      x[1..-1] if x[0, 1] == '+'
-
-      x
-    end
+    use.map { |x| x[0, 1] == '+' ? x[1..-1] : x }
   end
 
   def use_neutral(use)
