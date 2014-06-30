@@ -31,7 +31,7 @@ PortageGT can be installed from Puppet Forge:
 
 All code is contained within the `lib` folder if you wish to place it in an existing module.
 
-To use the PortageGT provider for all of your packages you can set in your manifests, alternatively you can add teh provider attribute to any individual packages you desire.
+To use the PortageGT provider for all of your packages you can set in your manifests, alternatively you can add the provider attribute to any individual packages you desire.
 
 	Package {
 	  provider => 'portagegt'
