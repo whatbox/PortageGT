@@ -552,8 +552,9 @@ Puppet::Type.type(:package).provide(
         # Update disambiguation values
         categories << p.parent.attributes['name']
 
-        # if this slot isn't yet defined in the slots hash, define it with the defaults
-        slots[slot] = nil unless slots.key?(slot)
+        # Skip dev (9999) ebuilds
+        # This is just a precaution incase they're ever unkeyworded
+        next if v.attributes['id'] =~ /^9+$/
 
         # http://docs.dvo.ru/eix-0.25.5/html/eix-xml.html
         # <mask type=" [..] " />
@@ -578,9 +579,6 @@ Puppet::Type.type(:package).provide(
           next
         end
 
-        # Skip dev (9999) ebuilds
-        next if v.attributes['id'] =~ /^9+$/
-
         # Check package masks
         if hard_unmasked && keyword_unmasked
           slots[slot] = v.attributes['id']
@@ -604,7 +602,7 @@ Puppet::Type.type(:package).provide(
       fail Puppet::Error, "Multiple categories [#{categories_available}] available for package [#{search_value}]"
     end
 
-    # Skip based on specific constraints
+    # If a slot is specified, use it
     return slots[package_slot] unless package_slot.nil?
 
     # If there's a single slot, use it
