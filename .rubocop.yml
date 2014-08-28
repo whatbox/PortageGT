@@ -5,10 +5,12 @@ MethodLength:
   Enabled: false
 CyclomaticComplexity:
   Enabled: false
+PerceivedComplexity:
+  Enabled: false
 Documentation:
   Enabled: false
 
-# Either this is a buggy cop, or the cyclomatic complexity 
-# is too high for me to see where we're going wrong.
+# This cop will make more sense once we reduce
+# the complexity further.
 Next:
   Enabled: false
