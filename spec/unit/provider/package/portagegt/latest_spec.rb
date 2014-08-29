@@ -153,6 +153,7 @@ describe provider_class do
       provider.latest.should == '2.17'
     end
 
+    # latest should never cause a downgrade
     it 'when installed version is newer than unmasked / unkeyworded' do
       fh = File.open('spec/unit/provider/package/eix/unrar_newer_installed.xml', 'rb')
       file = fh.read
@@ -162,6 +163,18 @@ describe provider_class do
 
       provider = provider_class.new(pkg(name: 'app-arch/unrar', ensure: :latest))
       provider.latest.should == '5.1.5'
+    end
+
+
+    it 'when latest version is 9' do
+      fh = File.open('spec/unit/provider/package/eix/automake_wrapper.xml', 'rb')
+      file = fh.read
+      fh.close
+
+      provider_class.stubs(:eix).with('--xml', '--pure-packages', '--exact', '--category-name', 'sys-devel/automake-wrapper').returns(file)
+
+      provider = provider_class.new(pkg(name: 'sys-devel/automake-wrapper', ensure: :latest))
+      provider.latest.should == '9'
     end
 
   end # xml parse check

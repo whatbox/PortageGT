@@ -552,10 +552,6 @@ Puppet::Type.type(:package).provide(
         # Update disambiguation values
         categories << p.parent.attributes['name']
 
-        # Skip dev (9999) ebuilds
-        # This is just a precaution incase they're ever unkeyworded
-        next if v.attributes['id'] =~ /^9+$/
-
         # http://docs.dvo.ru/eix-0.25.5/html/eix-xml.html
         # <mask type=" [..] " />
         # Possible values for the type are:

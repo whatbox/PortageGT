@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<eixdump version="10">
+	<category name="sys-devel">
+		<package name="automake-wrapper">
+			<description>wrapper for automake to manage multiple automake versions</description>
+			<homepage>http://www.gentoo.org/</homepage>
+			<licenses>GPL-2</licenses>
+			<version id="3-r1">
+			</version>
+			<version id="4">
+			</version>
+			<version id="5">
+			</version>
+			<version id="6">
+			</version>
+			<version id="7">
+			</version>
+			<version id="8">
+				<mask type="keyword" />
+			</version>
+			<version id="9" installed="1" installDate="1387334877">
+			</version>
+		</package>
+	</category>
+</eixdump>
