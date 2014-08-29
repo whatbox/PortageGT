@@ -165,7 +165,6 @@ describe provider_class do
       provider.latest.should == '5.1.5'
     end
 
-
     it 'when latest version is 9' do
       fh = File.open('spec/unit/provider/package/eix/automake_wrapper.xml', 'rb')
       file = fh.read
