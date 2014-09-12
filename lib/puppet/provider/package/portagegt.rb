@@ -267,9 +267,7 @@ Puppet::Type.type(:package).provide(
     return [] if string.nil?
     return string if string.is_a? Array
 
-    string.split(' ').reject do |c|
-      c.empty?
-    end
+    string.split(' ').reject(&:empty?)
   end
 
   # string (void)
