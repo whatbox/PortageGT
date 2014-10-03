@@ -9,6 +9,6 @@ gem 'bundler'
 gem 'rspec'
 gem 'xml-simple'
 gem 'puppetlabs_spec_helper'
-gem 'fakefs', '0.5.2'
+gem 'fakefs'
 
 gem 'rubocop'
