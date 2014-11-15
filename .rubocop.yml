@@ -1,16 +1,18 @@
 # It would be nice to enable all of these someday
-LineLength:
+Style/Documentation:
   Enabled: false
-MethodLength:
+Metrics/LineLength:
   Enabled: false
-CyclomaticComplexity:
+Metrics/MethodLength:
   Enabled: false
-PerceivedComplexity:
+Metrics/PerceivedComplexity:
   Enabled: false
-Documentation:
+Metrics/CyclomaticComplexity:
+  Enabled: false
+Metrics/AbcSize:
   Enabled: false
 
 # This cop will make more sense once we reduce
 # the complexity further.
-Next:
+Style/Next:
   Enabled: false
