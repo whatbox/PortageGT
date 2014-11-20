@@ -13,7 +13,6 @@ The following packages are necessary for this module.
 * `app-admin/puppet >= 3.5.0`
 * `sys-apps/portage`
 * `app-portage/eix`
-* `dev-ruby/xml-simple`
 
 
 ## Environment

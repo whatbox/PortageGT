@@ -14,7 +14,7 @@ require 'set'
 
 require 'puppet/provider/package'
 require 'fileutils'
-require 'xmlsimple'
+require 'rexml/document'
 include REXML
 
 Puppet::Type.type(:package).provide(
