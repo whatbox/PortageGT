@@ -1,11 +1,13 @@
 {
     "name": "Whatbox/portagegt",
-    "version": "2.0.2",
+    "version": "2.0.3",
     "summary": "Package provider for Gentoo that supports use flags, keywords and slots",
     "source": "git@github.com:whatbox/PortageGT.git",
     "project_page": "http://github.com/whatbox/PortageGT",
+    "issues_url": "https://github.com/whatbox/PortageGT/issues",
     "author": "Whatbox Inc.",
     "license": "Apache 2.0",
+    "tags": ["gentoo", "emerge", "portage", "slot", "keywords", "use", "eselect"],
     "operatingsystem_support": [
         {
             "operatingsystem": "Gentoo"
@@ -19,7 +21,12 @@
         {
             "name": "puppet",
             "version_requirement": "3.6.x"
+        },
+        {
+            "name": "puppet",
+            "version_requirement": "3.7.x"
         }
+
     ],
     "dependencies": []
 }
