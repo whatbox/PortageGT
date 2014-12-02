@@ -1,4 +1,4 @@
-A collection of the relevant release notes from eix's ChangeLog that may 
+A collection of the relevant release notes from eix's ChangeLog that may
 impact our handling of eix --xml
 
 
@@ -34,3 +34,9 @@ No changes were made to PortageGT as a result of this.
 
 No changes were made to PortageGT as a result of this.
 
+
+# Version 11 (eix 0.30.1)
+
+	- Add maskreason to --xml output
+
+No changes were made to PortageGT as a result of this.

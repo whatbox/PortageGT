@@ -38,7 +38,7 @@ Puppet::Type.type(:package).provide(
   # You probably don't want to change these
   DEFAULT_SLOT = '0'
   DEFAULT_REPOSITORY = 'gentoo'
-  EIX_DUMP_VERSION = [6, 7, 8, 9, 10]
+  EIX_DUMP_VERSION = [6, 7, 8, 9, 10, 11]
   USE_DIR = '/etc/portage/package.use'
   KEYWORDS_DIR = '/etc/portage/package.keywords'
   PACKAGE_STATE_DIR = '/var/db/pkg'
