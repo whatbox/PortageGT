@@ -175,6 +175,5 @@ describe provider_class do
       provider = provider_class.new(pkg(name: 'sys-devel/automake-wrapper', ensure: :latest))
       provider.latest.should == '9'
     end
-
   end # xml parse check
 end

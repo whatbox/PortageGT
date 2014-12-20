@@ -18,7 +18,7 @@ The following packages are necessary for this module.
 ## Environment
 The following things are assumed:
 * `/etc/portage/package.use` is a directory
-* `/etc/portage/package.keywords` is a directory
+* `/etc/portage/package.accept_keywords` is a directory
 * Both of the above are free for modification by puppet
 * __WARNING:__ Folders contained within either of these will be automatically removed by this plugin
 

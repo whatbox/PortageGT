@@ -7,7 +7,6 @@ provider_class = Puppet::Type.type(:package).provider(:portagegt)
 
 describe provider_class do
   describe '#install' do
-
     # Bad
     [
       {

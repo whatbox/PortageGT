@@ -21,7 +21,6 @@ Puppet::Type.type(:package).provide(
   :portagegt,
   parent: Puppet::Provider::Package
 ) do
-
   ##################
   # Config Options #
   ##################
@@ -40,7 +39,7 @@ Puppet::Type.type(:package).provide(
   DEFAULT_REPOSITORY = 'gentoo'
   EIX_DUMP_VERSION = [6, 7, 8, 9, 10, 11]
   USE_DIR = '/etc/portage/package.use'
-  KEYWORDS_DIR = '/etc/portage/package.keywords'
+  KEYWORDS_DIR = '/etc/portage/package.accept_keywords'
   PACKAGE_STATE_DIR = '/var/db/pkg'
   TIMESTAMP_FILE = '/usr/portage/metadata/timestamp'
 
@@ -246,8 +245,24 @@ Puppet::Type.type(:package).provide(
   # One of void self.prefetch(package[]) or package[] self.instances() must be used
   def self.prefetch(packages)
     run_eix
-    set_portage(packages, USE_DIR, 'package_use')
-    set_portage(packages, KEYWORDS_DIR, 'package_keywords')
+
+    if File.exist?(USE_DIR) && !File.directory?(USE_DIR)
+      Puppet.warning("#{USE_DIR} is not a directory, puppet management of USE flags has been disabled")
+    else
+      Dir.mkdir(USE_DIR) unless File.exist?(USE_DIR)
+      set_portage(packages, USE_DIR, 'package_use')
+    end
+
+    if File.directory?('/etc/portage/package.keywords')
+      Puppet.warning('/etc/portage/package.keywords may conflict with /etc/portage/package.accept_keywords and cause unexpected behavior')
+    end
+
+    if File.exist?(KEYWORDS_DIR) && !File.directory?(KEYWORDS_DIR)
+      Puppet.warning("#{KEYWORDS_DIR} is not a directory, puppet management of KEYWORDs has been disabled")
+    else
+      Dir.mkdir(KEYWORDS_DIR) unless File.exist?(KEYWORDS_DIR)
+      set_portage(packages, KEYWORDS_DIR, 'package_keywords')
+    end
   end
 
   ###########################################
@@ -455,7 +470,6 @@ Puppet::Type.type(:package).provide(
     categories = Set.new
 
     _package_glob.each do |directory|
-
       %w(SLOT PF CATEGORY repository USE).each do |expected|
         unless File.exist?("#{directory}/#{expected}")
           fail Puppet::Error, "The metadata file \"#{expected}\" was not found in #{directory}"
