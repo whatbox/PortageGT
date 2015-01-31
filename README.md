@@ -135,6 +135,39 @@ Specify the latest version of a specific overlay available on your systems, to e
 		install_options => ["--oneshot"],
 	}
 
+### Customizing the environment per package
+All of your desired environment variables can saved in a named file, as follows:
+
+	file {'/etc/portage/env':
+		ensure  => directory;
+	}
+
+	file { '/etc/portage/env/notest':
+		content => 'FEATURES="-test"';
+	}
+
+	file {'/etc/portage/env/fastmath':
+		ensure => file,
+		source  => 'puppet:///modules/portage/env/fastmath';
+	}
+
+### String
+	package { 'dev-ruby/facter':
+		ensure          => latest,
+		package_settings => {
+			environment => 'notest',
+		};
+	}
+
+### Array
+	package { 'media-libs/libpng':
+		ensure          => latest,
+		package_settings => {
+			environment => ['notest', 'fastmath'],
+		};
+	}
+
+
 ### Keywords & Use flags on dependencies
 If you need to keyword or add use flags to a package without wanting to manage it's version directly.
 

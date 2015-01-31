@@ -39,6 +39,7 @@ Puppet::Type.type(:package).provide(
   DEFAULT_REPOSITORY = 'gentoo'
   EIX_DUMP_VERSION = [6, 7, 8, 9, 10, 11]
   USE_DIR = '/etc/portage/package.use'
+  ENV_DIR = '/etc/portage/package.env'
   KEYWORDS_DIR = '/etc/portage/package.accept_keywords'
   PACKAGE_STATE_DIR = '/var/db/pkg'
   TIMESTAMP_FILE = '/usr/portage/metadata/timestamp'
@@ -253,6 +254,13 @@ Puppet::Type.type(:package).provide(
       set_portage(packages, USE_DIR, 'package_use')
     end
 
+    if File.exist?(ENV_DIR) && !File.directory?(ENV_DIR)
+      Puppet.warning("#{ENV_DIR} is not a directory, puppet management of environment variables has been disabled")
+    else
+      Dir.mkdir(ENV_DIR) unless File.exist?(ENV_DIR)
+      set_portage(packages, ENV_DIR, 'package_env')
+    end
+
     if File.directory?('/etc/portage/package.keywords')
       Puppet.warning('/etc/portage/package.keywords may conflict with /etc/portage/package.accept_keywords and cause unexpected behavior')
     end
@@ -366,6 +374,14 @@ Puppet::Type.type(:package).provide(
     return [] unless @resource[:package_settings].key?('use')
 
     resource_tok(@resource[:package_settings]['use'])
+  end
+
+  # string[] (void)
+  def package_env
+    return [] if @resource[:package_settings].nil?
+    return [] unless @resource[:package_settings].key?('environment')
+
+    resource_tok(@resource[:package_settings]['environment'])
   end
 
   # string[] (void)
