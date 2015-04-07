@@ -18,7 +18,7 @@ describe provider_class do
   [:ensure].each do |param|
     it "should have a #{param} function" do
       provider = provider_class.new
-      provider.should respond_to(param)
+      expect(provider).to respond_to(param)
     end
   end
 

@@ -14,7 +14,7 @@ describe provider_class do
 
   it 'should have an #uninstall method' do
     provider = provider_class.new
-    provider.should respond_to('uninstall')
+    expect(provider).to respond_to('uninstall')
   end
 
   # We have skipped testing disambiugation because that should be handled at the package

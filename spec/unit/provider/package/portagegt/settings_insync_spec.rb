@@ -25,7 +25,7 @@ describe provider_class do
           use_valid: []
         }
         goal = {}
-        provider.package_settings_insync?(goal, have).should == true
+        expect(provider.package_settings_insync?(goal, have)).to be true
       end
 
       it 'using overlay, and specifying a repository' do
@@ -39,7 +39,7 @@ describe provider_class do
         goal = {
           'repository' => 'gentoo'
         }
-        provider.package_settings_insync?(goal, have).should == false
+        expect(provider.package_settings_insync?(goal, have)).to be false
       end
 
       it 'using default, and specifying a repository' do
@@ -53,7 +53,7 @@ describe provider_class do
         goal = {
           'repository' => 'company-overlay'
         }
-        provider.package_settings_insync?(goal, have).should == false
+        expect(provider.package_settings_insync?(goal, have)).to be false
       end
     end
 
@@ -69,7 +69,7 @@ describe provider_class do
         goal = {
           'use' => 'want'
         }
-        provider.package_settings_insync?(goal, have).should == true
+        expect(provider.package_settings_insync?(goal, have)).to be true
       end
 
       it 'negative use flag already absent' do
@@ -83,7 +83,7 @@ describe provider_class do
         goal = {
           'use' => '-dontwant'
         }
-        provider.package_settings_insync?(goal, have).should == true
+        expect(provider.package_settings_insync?(goal, have)).to be true
       end
 
       it 'positive and negative use flags as they should be' do
@@ -97,7 +97,7 @@ describe provider_class do
         goal = {
           'use' => 'want -dontwant'
         }
-        provider.package_settings_insync?(goal, have).should == true
+        expect(provider.package_settings_insync?(goal, have)).to be true
       end
 
       it 'positive use flag missing' do
@@ -111,7 +111,7 @@ describe provider_class do
         goal = {
           'use' => 'want'
         }
-        provider.package_settings_insync?(goal, have).should == false
+        expect(provider.package_settings_insync?(goal, have)).to be false
       end
 
       it 'negative use flag included' do
@@ -125,7 +125,7 @@ describe provider_class do
         goal = {
           'use' => '-dontwant'
         }
-        provider.package_settings_insync?(goal, have).should == false
+        expect(provider.package_settings_insync?(goal, have)).to be false
       end
 
       it 'doesn\'t care about unspecified' do
@@ -139,7 +139,7 @@ describe provider_class do
         goal = {
           'use' => '-dontwant'
         }
-        provider.package_settings_insync?(goal, have).should == true
+        expect(provider.package_settings_insync?(goal, have)).to be true
       end
     end
   end

@@ -12,7 +12,7 @@ describe provider_class, fakefs: true do
   end
 
   it 'should have a .set_portage method' do
-    provider_class.should respond_to('set_portage')
+    expect(provider_class).to respond_to('set_portage')
   end
 
   describe '.set_portage' do
@@ -33,15 +33,15 @@ describe provider_class, fakefs: true do
 
     def validate_structure_mysql
       Dir.chdir('/etc/portage/package.use') do
-        Dir.glob('*').should eq(%w(dev-db))
-        Dir.glob('dev-db/*').should eq(%w(dev-db/mysql))
-        File.read('dev-db/mysql').should eq("dev-db/mysql bar baz foo\n")
+        expect(Dir.glob('*')).to eq(%w(dev-db))
+        expect(Dir.glob('dev-db/*')).to eq(%w(dev-db/mysql))
+        expect(File.read('dev-db/mysql')).to eq("dev-db/mysql bar baz foo\n")
       end
     end
 
     def validate_empty_structure
       Dir.chdir('/etc/portage/package.use') do
-        Dir.glob('*').should eq([])
+        expect(Dir.glob('*')).to eq([])
       end
     end
     context 'when package.use should be empty, and is empty' do
@@ -181,10 +181,10 @@ describe provider_class, fakefs: true do
         provider_class.set_portage(resources, '/etc/portage/package.use', 'package_use')
 
         Dir.chdir('/etc/portage/package.use') do
-          Dir.glob('*').should eq(%w(dev-lang))
-          Dir.glob('dev-lang/*').should eq(%w(dev-lang/php:5.3 dev-lang/php:5.4))
-          File.read('dev-lang/php:5.3').should eq("dev-lang/php:5.3 -without something\n")
-          File.read('dev-lang/php:5.4').should eq("dev-lang/php:5.4 -bar -seven\n")
+          expect(Dir.glob('*')).to eq(%w(dev-lang))
+          expect(Dir.glob('dev-lang/*')).to eq(%w(dev-lang/php:5.3 dev-lang/php:5.4))
+          expect(File.read('dev-lang/php:5.3')).to eq("dev-lang/php:5.3 -without something\n")
+          expect(File.read('dev-lang/php:5.4')).to eq("dev-lang/php:5.4 -bar -seven\n")
         end
       end
     end
@@ -240,9 +240,9 @@ describe provider_class, fakefs: true do
         provider_class.set_portage(resources, '/etc/portage/package.use', 'package_use')
 
         Dir.chdir('/etc/portage/package.use') do
-          Dir.glob('*').should eq(%w(dev-lang))
-          Dir.glob('dev-lang/*').should eq(%w(dev-lang/php:5.3))
-          File.read('dev-lang/php:5.3').should eq("dev-lang/php:5.3 -without something\n")
+          expect(Dir.glob('*')).to eq(%w(dev-lang))
+          expect(Dir.glob('dev-lang/*')).to eq(%w(dev-lang/php:5.3))
+          expect(File.read('dev-lang/php:5.3')).to eq("dev-lang/php:5.3 -without something\n")
         end
       end
     end

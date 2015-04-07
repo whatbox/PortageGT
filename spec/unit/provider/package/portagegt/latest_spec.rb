@@ -17,7 +17,7 @@ describe provider_class do
 
   it 'should have an #latest method' do
     provider = provider_class.new
-    provider.should respond_to('latest')
+    expect(provider).to respond_to('latest')
   end
 
   describe '#latest' do
@@ -40,7 +40,7 @@ describe provider_class do
       provider_class.stubs(:eix).with('--xml', '--pure-packages', '--exact', '--category-name', 'dev-db/mysql').returns(mysql)
 
       provider = provider_class.new(pkg(name: 'dev-db/mysql', ensure: :latest))
-      provider.latest.should be == '5.1.62-r1'
+      expect(provider.latest).to eq('5.1.62-r1')
     end
 
     it 'when hard and keyword are masked and only keyword is unmasked' do
@@ -51,7 +51,7 @@ describe provider_class do
       provider_class.stubs(:eix).with('--xml', '--pure-packages', '--exact', '--category-name', 'dev-libs/boost').returns(boost)
 
       provider = provider_class.new(pkg(name: 'dev-libs/boost', ensure: :latest))
-      provider.latest.should == '1.52.0-r6'
+      expect(provider.latest).to eq('1.52.0-r6')
     end
 
     it 'when hard and keyword are masked and both are unmasked' do
@@ -62,7 +62,7 @@ describe provider_class do
       provider_class.stubs(:eix).with('--xml', '--pure-packages', '--exact', '--category-name', 'dev-libs/boost').returns(boost)
 
       provider = provider_class.new(pkg(name: 'dev-libs/boost', ensure: :latest))
-      provider.latest.should == '1.53.0'
+      expect(provider.latest).to eq('1.53.0')
     end
 
     it 'when hard and keyword are masked and only hard is unmasked' do
@@ -73,7 +73,7 @@ describe provider_class do
       provider_class.stubs(:eix).with('--xml', '--pure-packages', '--exact', '--category-name', 'dev-libs/boost').returns(boost)
 
       provider = provider_class.new(pkg(name: 'dev-libs/boost', ensure: :latest))
-      provider.latest.should == '1.49.0-r2'
+      expect(provider.latest).to eq('1.49.0-r2')
     end
 
     it 'when hard and keyword are masked and only hard is unmasked but a keyworded package is already installed' do
@@ -84,7 +84,7 @@ describe provider_class do
       provider_class.stubs(:eix).with('--xml', '--pure-packages', '--exact', '--category-name', 'dev-libs/boost').returns(boost)
 
       provider = provider_class.new(pkg(name: 'dev-libs/boost', ensure: :latest))
-      provider.latest.should == '1.52.0-r6'
+      expect(provider.latest).to eq('1.52.0-r6')
     end
 
     it 'when packages are masked in different ways (alien_unstable)' do
@@ -95,7 +95,7 @@ describe provider_class do
       provider_class.stubs(:eix).with('--xml', '--pure-packages', '--exact', '--category-name', 'sys-apps/portage').returns(portage)
 
       provider = provider_class.new(pkg(name: 'sys-apps/portage', ensure: :latest))
-      provider.latest.should == '2.1.11.63'
+      expect(provider.latest).to eq('2.1.11.63')
     end
 
     it 'when packages are masked in different ways (missing_keyword)' do
@@ -106,7 +106,7 @@ describe provider_class do
       provider_class.stubs(:eix).with('--xml', '--pure-packages', '--exact', '--category-name', 'sys-apps/file').returns(file)
 
       provider = provider_class.new(pkg(name: 'sys-apps/file', ensure: :latest))
-      provider.latest.should == '5.12-r1'
+      expect(provider.latest).to eq('5.12-r1')
     end
 
     it 'when several versions are masked and some are unmasked by keywords' do
@@ -117,7 +117,7 @@ describe provider_class do
       provider_class.stubs(:eix).with('--xml', '--pure-packages', '--exact', '--category-name', 'x11-themes/gnome-themes-standard').returns(file)
 
       provider = provider_class.new(pkg(name: 'x11-themes/gnome-themes-standard', ensure: :latest))
-      provider.latest.should == '3.6.5'
+      expect(provider.latest).to eq('3.6.5')
     end
 
     it 'when specify a slot and the package includes a subslot' do
@@ -128,7 +128,7 @@ describe provider_class do
       provider_class.stubs(:eix).with('--xml', '--pure-packages', '--exact', '--category-name', 'media-libs/libpng').returns(file)
 
       provider = provider_class.new(pkg(name: 'media-libs/libpng', ensure: :latest, package_settings: { slot: '0' }))
-      provider.latest.should == '1.6.8'
+      expect(provider.latest).to eq('1.6.8')
     end
 
     it 'when obsolete slots are available' do
@@ -139,7 +139,7 @@ describe provider_class do
       provider_class.stubs(:eix).with('--xml', '--pure-packages', '--exact', '--category-name', 'media-libs/libpng').returns(file)
 
       provider = provider_class.new(pkg(name: 'media-libs/libpng', ensure: :latest))
-      provider.latest.should == '1.6.8'
+      expect(provider.latest).to eq('1.6.8')
     end
 
     it 'only one slot, that is not the default' do
@@ -150,7 +150,7 @@ describe provider_class do
       provider_class.stubs(:eix).with('--xml', '--pure-packages', '--exact', '--category-name', 'sys-libs/glibc').returns(file)
 
       provider = provider_class.new(pkg(name: 'sys-libs/glibc', ensure: :latest))
-      provider.latest.should == '2.17'
+      expect(provider.latest).to eq('2.17')
     end
 
     # latest should never cause a downgrade
@@ -162,7 +162,7 @@ describe provider_class do
       provider_class.stubs(:eix).with('--xml', '--pure-packages', '--exact', '--category-name', 'app-arch/unrar').returns(file)
 
       provider = provider_class.new(pkg(name: 'app-arch/unrar', ensure: :latest))
-      provider.latest.should == '5.1.5'
+      expect(provider.latest).to eq('5.1.5')
     end
 
     it 'when latest version is 9' do
@@ -173,7 +173,7 @@ describe provider_class do
       provider_class.stubs(:eix).with('--xml', '--pure-packages', '--exact', '--category-name', 'sys-devel/automake-wrapper').returns(file)
 
       provider = provider_class.new(pkg(name: 'sys-devel/automake-wrapper', ensure: :latest))
-      provider.latest.should == '9'
+      expect(provider.latest).to eq('9')
     end
   end # xml parse check
 end

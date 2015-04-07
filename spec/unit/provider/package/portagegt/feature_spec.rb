@@ -11,26 +11,26 @@ describe provider_class do
   end
 
   it 'versionable' do
-    provider_class.should be_versionable
+    expect(provider_class).to be_versionable
   end
 
   it 'installable' do
-    provider_class.should be_installable
+    expect(provider_class).to be_installable
   end
 
   it 'uninstallable' do
-    provider_class.should be_uninstallable
+    expect(provider_class).to be_uninstallable
   end
 
   it 'upgradeable' do
-    provider_class.should be_upgradeable
+    expect(provider_class).to be_upgradeable
   end
 
   it 'support install_options' do
-    provider_class.should be_install_options
+    expect(provider_class).to be_install_options
   end
 
   it 'support package_settings' do
-    provider_class.should be_package_settings
+    expect(provider_class).to be_package_settings
   end
 end

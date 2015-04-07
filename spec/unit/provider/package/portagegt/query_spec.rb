@@ -172,7 +172,7 @@ describe provider_class do
       simulate_git_installed
 
       provider = provider_class.new(pkg(name: 'dev-vcs/git'))
-      provider.query[:ensure].should be == '1.9.1'
+      expect(provider.query[:ensure]).to eq('1.9.1')
     end
 
     it 'disambugated category' do
@@ -227,7 +227,7 @@ describe provider_class do
 
     it 'not installled' do
       provider = provider_class.new(pkg(name: 'www-browsers/firefox'))
-      provider.query.should.nil?
+      expect(provider.query).to be_nil
     end
   end
 end
