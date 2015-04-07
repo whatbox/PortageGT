@@ -97,7 +97,7 @@ Puppet::Type.type(:package).provide(
     return unless opts.key?(:slot)
 
     fail Puppet::ResourceError, 'slot may not contain whitespace' if opts[:slot] =~ /\s/
-    fail Puppet::ResourceError, 'slot may not contain subslot' if opts[:slot] =~ /\//
+    fail Puppet::ResourceError, 'slot may not contain subslot' if opts[:slot] =~ %r{/}
   end
 
   ######################
@@ -297,8 +297,8 @@ Puppet::Type.type(:package).provide(
   def package_name
     fail Puppet::ResourceError, 'name must be specified' if @resource[:name].empty?
     fail Puppet::ResourceError, 'name may not contain whitespace' if @resource[:name] =~ /\s/
-    fail Puppet::ResourceError, 'name may not end with category boundary' if @resource[:name] =~ /\/$/
-    fail Puppet::ResourceError, 'name may not start with category boundary' if @resource[:name] =~ /^\//
+    fail Puppet::ResourceError, 'name may not end with category boundary' if @resource[:name] =~ %r{/$}
+    fail Puppet::ResourceError, 'name may not start with category boundary' if @resource[:name] =~ %r{^/}
     fail Puppet::ResourceError, 'name may not contain multiple category boundaries' if @resource[:name].count('/') > 1
     fail Puppet::ResourceError, 'name may not end with slot boundary' if @resource[:name] =~ /:$/
     fail Puppet::ResourceError, 'name may not start with slot boundary' if @resource[:name] =~ /^:/
