@@ -15,6 +15,9 @@ env:
   - PUPPET_VERSION="~> 3.6.2"
   - PUPPET_VERSION="~> 3.7.5"
   - PUPPET_VERSION="~> 4.0.0"
+
+  # Alternative operating modes
+  # Only test latest version
   - PUPPET_VERSION="~> 4.0.0" STRICT_VARIABLES=yes
 
 matrix:
