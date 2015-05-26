@@ -7,7 +7,7 @@ gem 'facter'
 
 gem 'bundler'
 gem 'rspec'
-gem 'puppetlabs_spec_helper', '0.10.1'
+gem 'puppetlabs_spec_helper'
 gem 'fakefs'
 
 gem 'rubocop'
