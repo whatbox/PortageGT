@@ -119,7 +119,7 @@ describe provider_class do
 
     context 'with slot & repository' do
       it 'in the params' do
-        provider = provider_class.new(pkg(name: 'program', package_settings: { 'slot' => 'ruby18',  'repository' => 'internal' }))
+        provider = provider_class.new(pkg(name: 'program', package_settings: { 'slot' => 'ruby18', 'repository' => 'internal' }))
         provider.expects(:emerge).with('--unmerge', 'program:ruby18::internal')
         provider.uninstall
       end
