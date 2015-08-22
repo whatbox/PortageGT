@@ -22,9 +22,9 @@ describe provider_class do
 
   describe '#latest' do
     it 'when multiple categories avaliable and a package definition is ambiguous' do
-      fh = File.open('spec/unit/provider/package/eix/mysql_loose.xml', 'rb')
-      mysql_loose = fh.read
-      fh.close
+      File.open('spec/unit/provider/package/eix/mysql_loose.xml', 'rb') do |fh|
+        mysql_loose = fh.read
+      end
 
       provider_class.stubs(:eix).with('--xml', '--pure-packages', '--exact', '--name', 'mysql').returns(mysql_loose)
 
@@ -33,9 +33,9 @@ describe provider_class do
     end
 
     it 'when package is specified explicitly' do
-      fh = File.open('spec/unit/provider/package/eix/mysql.xml', 'rb')
-      mysql = fh.read
-      fh.close
+      File.open('spec/unit/provider/package/eix/mysql.xml', 'rb') do |fh|
+        mysql = fh.read
+      end
 
       provider_class.stubs(:eix).with('--xml', '--pure-packages', '--exact', '--category-name', 'dev-db/mysql').returns(mysql)
 
@@ -44,9 +44,9 @@ describe provider_class do
     end
 
     it 'when hard and keyword are masked and only keyword is unmasked' do
-      fh = File.open('spec/unit/provider/package/eix/boost_multi_mask.xml', 'rb')
-      boost = fh.read
-      fh.close
+      File.open('spec/unit/provider/package/eix/boost_multi_mask.xml', 'rb') do |fh|
+        boost = fh.read
+      end
 
       provider_class.stubs(:eix).with('--xml', '--pure-packages', '--exact', '--category-name', 'dev-libs/boost').returns(boost)
 
@@ -55,9 +55,9 @@ describe provider_class do
     end
 
     it 'when hard and keyword are masked and both are unmasked' do
-      fh = File.open('spec/unit/provider/package/eix/boost_full_unmasked.xml', 'rb')
-      boost = fh.read
-      fh.close
+      File.open('spec/unit/provider/package/eix/boost_full_unmasked.xml', 'rb') do |fh|
+        boost = fh.read
+      end
 
       provider_class.stubs(:eix).with('--xml', '--pure-packages', '--exact', '--category-name', 'dev-libs/boost').returns(boost)
 
@@ -66,9 +66,9 @@ describe provider_class do
     end
 
     it 'when hard and keyword are masked and only hard is unmasked' do
-      fh = File.open('spec/unit/provider/package/eix/boost_unmasked_keyworded.xml', 'rb')
-      boost = fh.read
-      fh.close
+      File.open('spec/unit/provider/package/eix/boost_unmasked_keyworded.xml', 'rb') do |fh|
+        boost = fh.read
+      end
 
       provider_class.stubs(:eix).with('--xml', '--pure-packages', '--exact', '--category-name', 'dev-libs/boost').returns(boost)
 
@@ -77,9 +77,9 @@ describe provider_class do
     end
 
     it 'when hard and keyword are masked and only hard is unmasked but a keyworded package is already installed' do
-      fh = File.open('spec/unit/provider/package/eix/boost_unmasked_keyworded_installed.xml', 'rb')
-      boost = fh.read
-      fh.close
+      File.open('spec/unit/provider/package/eix/boost_unmasked_keyworded_installed.xml', 'rb') do |fh|
+        boost = fh.read
+      end
 
       provider_class.stubs(:eix).with('--xml', '--pure-packages', '--exact', '--category-name', 'dev-libs/boost').returns(boost)
 
@@ -88,9 +88,9 @@ describe provider_class do
     end
 
     it 'when packages are masked in different ways (alien_unstable)' do
-      fh = File.open('spec/unit/provider/package/eix/portage_alien_unstable.xml', 'rb')
-      portage = fh.read
-      fh.close
+      File.open('spec/unit/provider/package/eix/portage_alien_unstable.xml', 'rb') do |fh|
+        portage = fh.read
+      end
 
       provider_class.stubs(:eix).with('--xml', '--pure-packages', '--exact', '--category-name', 'sys-apps/portage').returns(portage)
 
@@ -99,9 +99,9 @@ describe provider_class do
     end
 
     it 'when packages are masked in different ways (missing_keyword)' do
-      fh = File.open('spec/unit/provider/package/eix/file_missing_keyword.xml', 'rb')
-      file = fh.read
-      fh.close
+      File.open('spec/unit/provider/package/eix/file_missing_keyword.xml', 'rb') do |fh|
+        file = fh.read
+      end
 
       provider_class.stubs(:eix).with('--xml', '--pure-packages', '--exact', '--category-name', 'sys-apps/file').returns(file)
 
@@ -110,9 +110,9 @@ describe provider_class do
     end
 
     it 'when several versions are masked and some are unmasked by keywords' do
-      fh = File.open('spec/unit/provider/package/eix/gnome_themes_standard.xml', 'rb')
-      file = fh.read
-      fh.close
+      File.open('spec/unit/provider/package/eix/gnome_themes_standard.xml', 'rb') do |fh|
+        file = fh.read
+      end
 
       provider_class.stubs(:eix).with('--xml', '--pure-packages', '--exact', '--category-name', 'x11-themes/gnome-themes-standard').returns(file)
 
@@ -121,9 +121,9 @@ describe provider_class do
     end
 
     it 'when specify a slot and the package includes a subslot' do
-      fh = File.open('spec/unit/provider/package/eix/libpng_subslot.xml', 'rb')
-      file = fh.read
-      fh.close
+      File.open('spec/unit/provider/package/eix/libpng_subslot.xml', 'rb') do |fh|
+        file = fh.read
+      end
 
       provider_class.stubs(:eix).with('--xml', '--pure-packages', '--exact', '--category-name', 'media-libs/libpng').returns(file)
 
@@ -132,9 +132,9 @@ describe provider_class do
     end
 
     it 'when obsolete slots are available' do
-      fh = File.open('spec/unit/provider/package/eix/libpng_subslot.xml', 'rb')
-      file = fh.read
-      fh.close
+      File.open('spec/unit/provider/package/eix/libpng_subslot.xml', 'rb') do |fh|
+        file = fh.read
+      end
 
       provider_class.stubs(:eix).with('--xml', '--pure-packages', '--exact', '--category-name', 'media-libs/libpng').returns(file)
 
@@ -143,9 +143,9 @@ describe provider_class do
     end
 
     it 'only one slot, that is not the default' do
-      fh = File.open('spec/unit/provider/package/eix/glibc.xml', 'rb')
-      file = fh.read
-      fh.close
+      File.open('spec/unit/provider/package/eix/glibc.xml', 'rb') do |fh|
+        file = fh.read
+      end
 
       provider_class.stubs(:eix).with('--xml', '--pure-packages', '--exact', '--category-name', 'sys-libs/glibc').returns(file)
 
@@ -155,9 +155,9 @@ describe provider_class do
 
     # latest should never cause a downgrade
     it 'when installed version is newer than unmasked / unkeyworded' do
-      fh = File.open('spec/unit/provider/package/eix/unrar_newer_installed.xml', 'rb')
-      file = fh.read
-      fh.close
+      File.open('spec/unit/provider/package/eix/unrar_newer_installed.xml', 'rb') do |fh|
+        file = fh.read
+      end
 
       provider_class.stubs(:eix).with('--xml', '--pure-packages', '--exact', '--category-name', 'app-arch/unrar').returns(file)
 
@@ -166,9 +166,9 @@ describe provider_class do
     end
 
     it 'when latest version is 9' do
-      fh = File.open('spec/unit/provider/package/eix/automake_wrapper.xml', 'rb')
-      file = fh.read
-      fh.close
+      File.open('spec/unit/provider/package/eix/automake_wrapper.xml', 'rb') do |fh|
+        file = fh.read
+      end
 
       provider_class.stubs(:eix).with('--xml', '--pure-packages', '--exact', '--category-name', 'sys-devel/automake-wrapper').returns(file)
 
