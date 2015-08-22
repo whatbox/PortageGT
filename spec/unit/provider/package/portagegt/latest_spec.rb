@@ -23,10 +23,8 @@ describe provider_class do
   describe '#latest' do
     it 'when multiple categories avaliable and a package definition is ambiguous' do
       File.open('spec/unit/provider/package/eix/mysql_loose.xml', 'rb') do |fh|
-        mysql_loose = fh.read
+        provider_class.stubs(:eix).with('--xml', '--pure-packages', '--exact', '--name', 'mysql').returns(fh.read)
       end
-
-      provider_class.stubs(:eix).with('--xml', '--pure-packages', '--exact', '--name', 'mysql').returns(mysql_loose)
 
       provider = provider_class.new(pkg(name: 'mysql', ensure: :latest))
       expect { provider.latest }.to raise_error(Puppet::Error, /Multiple categories .* available for package .*/)
@@ -34,10 +32,8 @@ describe provider_class do
 
     it 'when package is specified explicitly' do
       File.open('spec/unit/provider/package/eix/mysql.xml', 'rb') do |fh|
-        mysql = fh.read
+        provider_class.stubs(:eix).with('--xml', '--pure-packages', '--exact', '--category-name', 'dev-db/mysql').returns(fh.read)
       end
-
-      provider_class.stubs(:eix).with('--xml', '--pure-packages', '--exact', '--category-name', 'dev-db/mysql').returns(mysql)
 
       provider = provider_class.new(pkg(name: 'dev-db/mysql', ensure: :latest))
       expect(provider.latest).to eq('5.1.62-r1')
@@ -45,10 +41,8 @@ describe provider_class do
 
     it 'when hard and keyword are masked and only keyword is unmasked' do
       File.open('spec/unit/provider/package/eix/boost_multi_mask.xml', 'rb') do |fh|
-        boost = fh.read
+        provider_class.stubs(:eix).with('--xml', '--pure-packages', '--exact', '--category-name', 'dev-libs/boost').returns(fh.read)
       end
-
-      provider_class.stubs(:eix).with('--xml', '--pure-packages', '--exact', '--category-name', 'dev-libs/boost').returns(boost)
 
       provider = provider_class.new(pkg(name: 'dev-libs/boost', ensure: :latest))
       expect(provider.latest).to eq('1.52.0-r6')
@@ -56,10 +50,8 @@ describe provider_class do
 
     it 'when hard and keyword are masked and both are unmasked' do
       File.open('spec/unit/provider/package/eix/boost_full_unmasked.xml', 'rb') do |fh|
-        boost = fh.read
+        provider_class.stubs(:eix).with('--xml', '--pure-packages', '--exact', '--category-name', 'dev-libs/boost').returns(fh.read)
       end
-
-      provider_class.stubs(:eix).with('--xml', '--pure-packages', '--exact', '--category-name', 'dev-libs/boost').returns(boost)
 
       provider = provider_class.new(pkg(name: 'dev-libs/boost', ensure: :latest))
       expect(provider.latest).to eq('1.53.0')
@@ -67,10 +59,8 @@ describe provider_class do
 
     it 'when hard and keyword are masked and only hard is unmasked' do
       File.open('spec/unit/provider/package/eix/boost_unmasked_keyworded.xml', 'rb') do |fh|
-        boost = fh.read
+        provider_class.stubs(:eix).with('--xml', '--pure-packages', '--exact', '--category-name', 'dev-libs/boost').returns(fh.read)
       end
-
-      provider_class.stubs(:eix).with('--xml', '--pure-packages', '--exact', '--category-name', 'dev-libs/boost').returns(boost)
 
       provider = provider_class.new(pkg(name: 'dev-libs/boost', ensure: :latest))
       expect(provider.latest).to eq('1.49.0-r2')
@@ -78,10 +68,8 @@ describe provider_class do
 
     it 'when hard and keyword are masked and only hard is unmasked but a keyworded package is already installed' do
       File.open('spec/unit/provider/package/eix/boost_unmasked_keyworded_installed.xml', 'rb') do |fh|
-        boost = fh.read
+        provider_class.stubs(:eix).with('--xml', '--pure-packages', '--exact', '--category-name', 'dev-libs/boost').returns(fh.read)
       end
-
-      provider_class.stubs(:eix).with('--xml', '--pure-packages', '--exact', '--category-name', 'dev-libs/boost').returns(boost)
 
       provider = provider_class.new(pkg(name: 'dev-libs/boost', ensure: :latest))
       expect(provider.latest).to eq('1.52.0-r6')
@@ -89,10 +77,8 @@ describe provider_class do
 
     it 'when packages are masked in different ways (alien_unstable)' do
       File.open('spec/unit/provider/package/eix/portage_alien_unstable.xml', 'rb') do |fh|
-        portage = fh.read
+        provider_class.stubs(:eix).with('--xml', '--pure-packages', '--exact', '--category-name', 'sys-apps/portage').returns(fh.read)
       end
-
-      provider_class.stubs(:eix).with('--xml', '--pure-packages', '--exact', '--category-name', 'sys-apps/portage').returns(portage)
 
       provider = provider_class.new(pkg(name: 'sys-apps/portage', ensure: :latest))
       expect(provider.latest).to eq('2.1.11.63')
@@ -100,10 +86,8 @@ describe provider_class do
 
     it 'when packages are masked in different ways (missing_keyword)' do
       File.open('spec/unit/provider/package/eix/file_missing_keyword.xml', 'rb') do |fh|
-        file = fh.read
+        provider_class.stubs(:eix).with('--xml', '--pure-packages', '--exact', '--category-name', 'sys-apps/file').returns(fh.read)
       end
-
-      provider_class.stubs(:eix).with('--xml', '--pure-packages', '--exact', '--category-name', 'sys-apps/file').returns(file)
 
       provider = provider_class.new(pkg(name: 'sys-apps/file', ensure: :latest))
       expect(provider.latest).to eq('5.12-r1')
@@ -111,10 +95,8 @@ describe provider_class do
 
     it 'when several versions are masked and some are unmasked by keywords' do
       File.open('spec/unit/provider/package/eix/gnome_themes_standard.xml', 'rb') do |fh|
-        file = fh.read
+        provider_class.stubs(:eix).with('--xml', '--pure-packages', '--exact', '--category-name', 'x11-themes/gnome-themes-standard').returns(fh.read)
       end
-
-      provider_class.stubs(:eix).with('--xml', '--pure-packages', '--exact', '--category-name', 'x11-themes/gnome-themes-standard').returns(file)
 
       provider = provider_class.new(pkg(name: 'x11-themes/gnome-themes-standard', ensure: :latest))
       expect(provider.latest).to eq('3.6.5')
@@ -122,10 +104,8 @@ describe provider_class do
 
     it 'when specify a slot and the package includes a subslot' do
       File.open('spec/unit/provider/package/eix/libpng_subslot.xml', 'rb') do |fh|
-        file = fh.read
+        provider_class.stubs(:eix).with('--xml', '--pure-packages', '--exact', '--category-name', 'media-libs/libpng').returns(fh.read)
       end
-
-      provider_class.stubs(:eix).with('--xml', '--pure-packages', '--exact', '--category-name', 'media-libs/libpng').returns(file)
 
       provider = provider_class.new(pkg(name: 'media-libs/libpng', ensure: :latest, package_settings: { slot: '0' }))
       expect(provider.latest).to eq('1.6.8')
@@ -133,10 +113,8 @@ describe provider_class do
 
     it 'when obsolete slots are available' do
       File.open('spec/unit/provider/package/eix/libpng_subslot.xml', 'rb') do |fh|
-        file = fh.read
+        provider_class.stubs(:eix).with('--xml', '--pure-packages', '--exact', '--category-name', 'media-libs/libpng').returns(fh.read)
       end
-
-      provider_class.stubs(:eix).with('--xml', '--pure-packages', '--exact', '--category-name', 'media-libs/libpng').returns(file)
 
       provider = provider_class.new(pkg(name: 'media-libs/libpng', ensure: :latest))
       expect(provider.latest).to eq('1.6.8')
@@ -144,10 +122,8 @@ describe provider_class do
 
     it 'only one slot, that is not the default' do
       File.open('spec/unit/provider/package/eix/glibc.xml', 'rb') do |fh|
-        file = fh.read
+        provider_class.stubs(:eix).with('--xml', '--pure-packages', '--exact', '--category-name', 'sys-libs/glibc').returns(fh.read)
       end
-
-      provider_class.stubs(:eix).with('--xml', '--pure-packages', '--exact', '--category-name', 'sys-libs/glibc').returns(file)
 
       provider = provider_class.new(pkg(name: 'sys-libs/glibc', ensure: :latest))
       expect(provider.latest).to eq('2.17')
@@ -156,10 +132,8 @@ describe provider_class do
     # latest should never cause a downgrade
     it 'when installed version is newer than unmasked / unkeyworded' do
       File.open('spec/unit/provider/package/eix/unrar_newer_installed.xml', 'rb') do |fh|
-        file = fh.read
+        provider_class.stubs(:eix).with('--xml', '--pure-packages', '--exact', '--category-name', 'app-arch/unrar').returns(fh.read)
       end
-
-      provider_class.stubs(:eix).with('--xml', '--pure-packages', '--exact', '--category-name', 'app-arch/unrar').returns(file)
 
       provider = provider_class.new(pkg(name: 'app-arch/unrar', ensure: :latest))
       expect(provider.latest).to eq('5.1.5')
@@ -167,10 +141,8 @@ describe provider_class do
 
     it 'when latest version is 9' do
       File.open('spec/unit/provider/package/eix/automake_wrapper.xml', 'rb') do |fh|
-        file = fh.read
+        provider_class.stubs(:eix).with('--xml', '--pure-packages', '--exact', '--category-name', 'sys-devel/automake-wrapper').returns(fh.read)
       end
-
-      provider_class.stubs(:eix).with('--xml', '--pure-packages', '--exact', '--category-name', 'sys-devel/automake-wrapper').returns(file)
 
       provider = provider_class.new(pkg(name: 'sys-devel/automake-wrapper', ensure: :latest))
       expect(provider.latest).to eq('9')
