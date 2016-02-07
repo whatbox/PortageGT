@@ -12,7 +12,7 @@ Puppet::Type.newtype(:eselect) do
     desc 'eselect module'
 
     validate do |value|
-      fail Puppet::Error, 'module may not contain whitespace' if value =~ /\s/
+      raise Puppet::Error, 'module may not contain whitespace' if value =~ /\s/
     end
   end
 
@@ -20,7 +20,7 @@ Puppet::Type.newtype(:eselect) do
     desc 'eselect submodule'
 
     validate do |value|
-      fail Puppet::Error, 'submodule may not contain whitespace' if value =~ /\s/
+      raise Puppet::Error, 'submodule may not contain whitespace' if value =~ /\s/
     end
   end
 

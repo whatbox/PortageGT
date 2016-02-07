@@ -35,14 +35,14 @@ Puppet::Type.type(:package).provide(
   EIX_RUN_SYNC = 48 * 3600
 
   # You probably don't want to change these
-  DEFAULT_SLOT = '0'
-  DEFAULT_REPOSITORY = 'gentoo'
-  EIX_DUMP_VERSION = [6, 7, 8, 9, 10, 11]
-  USE_DIR = '/etc/portage/package.use'
-  ENV_DIR = '/etc/portage/package.env'
-  KEYWORDS_DIR = '/etc/portage/package.accept_keywords'
-  PACKAGE_STATE_DIR = '/var/db/pkg'
-  TIMESTAMP_FILE = '/usr/portage/metadata/timestamp'
+  DEFAULT_SLOT = '0'.freeze
+  DEFAULT_REPOSITORY = 'gentoo'.freeze
+  EIX_DUMP_VERSION = [6, 7, 8, 9, 10, 11].freeze
+  USE_DIR = '/etc/portage/package.use'.freeze
+  ENV_DIR = '/etc/portage/package.env'.freeze
+  KEYWORDS_DIR = '/etc/portage/package.accept_keywords'.freeze
+  PACKAGE_STATE_DIR = '/var/db/pkg'.freeze
+  TIMESTAMP_FILE = '/usr/portage/metadata/timestamp'.freeze
 
   ################
   # Puppet Setup #
@@ -92,12 +92,12 @@ Puppet::Type.type(:package).provide(
 
   def package_settings_validate(opts)
     return if opts.nil?
-    fail Puppet::ResourceError, 'Must be a hash' unless opts.is_a? Hash
+    raise Puppet::ResourceError, 'Must be a hash' unless opts.is_a? Hash
 
     return unless opts.key?(:slot)
 
-    fail Puppet::ResourceError, 'slot may not contain whitespace' if opts[:slot] =~ /\s/
-    fail Puppet::ResourceError, 'slot may not contain subslot' if opts[:slot] =~ %r{/}
+    raise Puppet::ResourceError, 'slot may not contain whitespace' if opts[:slot] =~ /\s/
+    raise Puppet::ResourceError, 'slot may not contain subslot' if opts[:slot] =~ %r{/}
   end
 
   ######################
@@ -108,7 +108,7 @@ Puppet::Type.type(:package).provide(
   def self.run_eix
     unless EIX_RUN_UPDATE
       if EIX_RUN_SYNC >= 0
-        fail Puppet::Error, 'EIX_RUN_UPDATE must be true if EIX_RUN_SYNC is not -1'
+        raise Puppet::Error, 'EIX_RUN_UPDATE must be true if EIX_RUN_SYNC is not -1'
       end
       return
     end
@@ -159,7 +159,7 @@ Puppet::Type.type(:package).provide(
       # Packages *without* opt flags #
       ################################
 
-      if opt_flags.length == 0
+      if opt_flags.empty?
 
         # No package in this category has opt flags, done
         next unless File.directory?(opt_dir)
@@ -170,7 +170,7 @@ Puppet::Type.type(:package).provide(
         # This package does have opt flags, remove them
         File.unlink(opt_file)
         next
-      end # opt_flags.length == 0
+      end # opt_flags.empty?
 
       ###########################
       # Packages with opt flags #
@@ -192,7 +192,7 @@ Puppet::Type.type(:package).provide(
           if File.file?(opt_dir)
             File.unlink(opt_dir)
           else
-            fail Puppet::Error, "Unexpected file type: #{opt_dir}"
+            raise Puppet::Error, "Unexpected file type: #{opt_dir}"
           end
         end
 
@@ -295,15 +295,15 @@ Puppet::Type.type(:package).provide(
 
   # string (void)
   def package_name
-    fail Puppet::ResourceError, 'name must be specified' if @resource[:name].empty?
-    fail Puppet::ResourceError, 'name may not contain whitespace' if @resource[:name] =~ /\s/
-    fail Puppet::ResourceError, 'name may not end with category boundary' if @resource[:name] =~ %r{/$}
-    fail Puppet::ResourceError, 'name may not start with category boundary' if @resource[:name] =~ %r{^/}
-    fail Puppet::ResourceError, 'name may not contain multiple category boundaries' if @resource[:name].count('/') > 1
-    fail Puppet::ResourceError, 'name may not end with slot boundary' if @resource[:name] =~ /:$/
-    fail Puppet::ResourceError, 'name may not start with slot boundary' if @resource[:name] =~ /^:/
-    fail Puppet::ResourceError, 'name may not contain repository' if @resource[:name].include?('::')
-    fail Puppet::ResourceError, 'name may not contain multiple slot boundaries' if @resource[:name].count(':') > 1
+    raise Puppet::ResourceError, 'name must be specified' if @resource[:name].empty?
+    raise Puppet::ResourceError, 'name may not contain whitespace' if @resource[:name] =~ /\s/
+    raise Puppet::ResourceError, 'name may not end with category boundary' if @resource[:name] =~ %r{/$}
+    raise Puppet::ResourceError, 'name may not start with category boundary' if @resource[:name] =~ %r{^/}
+    raise Puppet::ResourceError, 'name may not contain multiple category boundaries' if @resource[:name].count('/') > 1
+    raise Puppet::ResourceError, 'name may not end with slot boundary' if @resource[:name] =~ /:$/
+    raise Puppet::ResourceError, 'name may not start with slot boundary' if @resource[:name] =~ /^:/
+    raise Puppet::ResourceError, 'name may not contain repository' if @resource[:name].include?('::')
+    raise Puppet::ResourceError, 'name may not contain multiple slot boundaries' if @resource[:name].count(':') > 1
 
     name = @resource[:name]
     name = name.split(':').first if name.count(':') > 0
@@ -326,7 +326,7 @@ Puppet::Type.type(:package).provide(
 
     if @resource[:category]
       if name_category && category != @resource[:category]
-        fail Puppet::Error, "Category disagreement on Package[#{name}]"
+        raise Puppet::Error, "Category disagreement on Package[#{name}]"
       end
 
       category = @resource[:category]
@@ -350,7 +350,7 @@ Puppet::Type.type(:package).provide(
     unless @resource[:package_settings].nil?
       if @resource[:package_settings].key?('slot')
         if name_slot && slot != @resource[:package_settings]['slot'].to_s
-          fail Puppet::Error, "Slot disagreement on Package[#{name}]"
+          raise Puppet::Error, "Slot disagreement on Package[#{name}]"
         end
 
         slot = @resource[:package_settings]['slot']
@@ -488,7 +488,7 @@ Puppet::Type.type(:package).provide(
     _package_glob.each do |directory|
       %w(SLOT PF CATEGORY repository USE).each do |expected|
         unless File.exist?("#{directory}/#{expected}")
-          fail Puppet::Error, "The metadata file \"#{expected}\" was not found in #{directory}"
+          raise Puppet::Error, "The metadata file \"#{expected}\" was not found in #{directory}"
         end
       end
 
@@ -504,11 +504,11 @@ Puppet::Type.type(:package).provide(
 
       # I have observed the IUSE file does not exist on packages emerged before a certain date
       # I expect it would be safe to make this file mandatory sometime in 2018
-      if File.exist?("#{directory}/IUSE")
-        use_valid = use_strip_positive(resource_tok(File.read("#{directory}/IUSE").rstrip))
-      else
-        use_valid = []
-      end
+      use_valid = if File.exist?("#{directory}/IUSE")
+                    use_strip_positive(resource_tok(File.read("#{directory}/IUSE").rstrip))
+                  else
+                    []
+                  end
 
       # http://dev.gentoo.org/~ulm/pms/5/pms.html#x1-280003.2
       version = File.read("#{directory}/PF").rstrip.split(/-(?=[0-9])/).last
@@ -527,11 +527,11 @@ Puppet::Type.type(:package).provide(
 
     # Disambiguation errors
     if categories.length > 1
-      fail Puppet::Error, "Package[#{@resource[:name]}] is ambiguous, specify a category: #{categories.to_a.join(', ')}"
+      raise Puppet::Error, "Package[#{@resource[:name]}] is ambiguous, specify a category: #{categories.to_a.join(', ')}"
     end
 
     if slots.length > 1
-      fail Puppet::Error, "Package[#{@resource[:name]}] is ambiguous, specify a slot: #{slots.keys.join(', ')}"
+      raise Puppet::Error, "Package[#{@resource[:name]}] is ambiguous, specify a slot: #{slots.keys.join(', ')}"
     end
 
     slots.values.first
@@ -565,17 +565,17 @@ Puppet::Type.type(:package).provide(
         unless package_repository.nil?
           if package_repository == DEFAULT_REPOSITORY
             next unless v.attributes['repository'].nil?
-          else
-            next if v.attributes['repository'] != package_repository
+          elsif v.attributes['repository'] != package_repository
+            next
           end
         end
 
         # Establish variables for reuse
-        if v.attributes['slot']
-          slot = _strip_subslot(v.attributes['slot'])
-        else
-          slot = DEFAULT_SLOT
-        end
+        slot = if v.attributes['slot']
+                 _strip_subslot(v.attributes['slot'])
+               else
+                 DEFAULT_SLOT
+               end
 
         # Update disambiguation values
         categories << p.parent.attributes['name']
@@ -615,15 +615,15 @@ Puppet::Type.type(:package).provide(
     case categories.length
     when 0
       if package_category
-        fail Puppet::Error, "No package found with the specified name [#{search_value}] in category [#{package_category}]: #{categories.to_a.join(' ')}"
+        raise Puppet::Error, "No package found with the specified name [#{search_value}] in category [#{package_category}]: #{categories.to_a.join(' ')}"
       else
-        fail Puppet::Error, "No package found with the specified name [#{search_value}]"
+        raise Puppet::Error, "No package found with the specified name [#{search_value}]"
       end
     when 1
       # Correct number, we're done here
     else
       categories_available = categories.to_a.join(' ')
-      fail Puppet::Error, "Multiple categories [#{categories_available}] available for package [#{search_value}]"
+      raise Puppet::Error, "Multiple categories [#{categories_available}] available for package [#{search_value}]"
     end
 
     # If a slot is specified, use it
@@ -636,7 +636,7 @@ Puppet::Type.type(:package).provide(
     return slots[DEFAULT_SLOT] if slots.key?(DEFAULT_SLOT)
 
     # Multiple slots
-    fail Puppet::Error, "Package[#{@resource[:name]}] is ambiguous, specify a slot: #{slots.keys.join(' ')}"
+    raise Puppet::Error, "Package[#{@resource[:name]}] is ambiguous, specify a slot: #{slots.keys.join(' ')}"
   end
 
 private
@@ -659,11 +659,11 @@ private
 
   # string[] (void)
   def _package_glob
-    if package_category.nil?
-      glob_value = "*/#{package_name}"
-    else
-      glob_value = "#{package_category}/#{package_name}"
-    end
+    glob_value = if package_category.nil?
+                   "*/#{package_name}"
+                 else
+                   "#{package_category}/#{package_name}"
+                 end
 
     Dir.glob("#{PACKAGE_STATE_DIR}/#{glob_value}-[0-9]*")
   end

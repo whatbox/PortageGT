@@ -30,7 +30,7 @@ Puppet::Type.type(:eselect).provide(:eselect) do
 
     if @resource[:module]
       if name_module && emodule != @resource[:module]
-        fail Puppet::Error, "Module disagreement on eselect[#{name}], please check the definition"
+        raise Puppet::Error, "Module disagreement on eselect[#{name}], please check the definition"
       end
 
       emodule = @resource[:module]
@@ -52,15 +52,15 @@ Puppet::Type.type(:eselect).provide(:eselect) do
   def eselect_list
     if @resource[:listcmd]
       if @resource[:module]
-        fail Puppet::Error, "module should not be specified if listcmd is in eselect[#{@resource[:name]}], please check the definition"
+        raise Puppet::Error, "module should not be specified if listcmd is in eselect[#{@resource[:name]}], please check the definition"
       end
 
       if @resource[:submodule]
-        fail Puppet::Error, "submodule should not be specified if listcmd is in eselect[#{@resource[:name]}], please check the definition"
+        raise Puppet::Error, "submodule should not be specified if listcmd is in eselect[#{@resource[:name]}], please check the definition"
       end
 
       if @resource[:setcmd].nil?
-        fail Puppet::Error, "listcmd is specified but setcmd is not in eselect[#{@resource[:name]}], please check the definition"
+        raise Puppet::Error, "listcmd is specified but setcmd is not in eselect[#{@resource[:name]}], please check the definition"
       end
 
       return @resource[:listcmd]
@@ -77,15 +77,15 @@ Puppet::Type.type(:eselect).provide(:eselect) do
   def eselect_set
     if @resource[:setcmd]
       if @resource[:module]
-        fail Puppet::Error, "module should not be specified if setcmd is in eselect[#{@resource[:name]}], please check the definition"
+        raise Puppet::Error, "module should not be specified if setcmd is in eselect[#{@resource[:name]}], please check the definition"
       end
 
       if @resource[:submodule]
-        fail Puppet::Error, "submodule should not be specified if setcmd is in eselect[#{@resource[:name]}], please check the definition"
+        raise Puppet::Error, "submodule should not be specified if setcmd is in eselect[#{@resource[:name]}], please check the definition"
       end
 
       if @resource[:listcmd].nil?
-        fail Puppet::Error, "setcmd is specified but listcmd is not in eselect[#{@resource[:name]}], please check the definition"
+        raise Puppet::Error, "setcmd is specified but listcmd is not in eselect[#{@resource[:name]}], please check the definition"
       end
 
       return @resource[:setcmd]
@@ -112,7 +112,7 @@ Puppet::Type.type(:eselect).provide(:eselect) do
       next if option[0] !~ /\[\d+\]/
 
       if option[option.length - 1] == '*'
-        fail Puppet::Error, "Multiple selected versions for eselect[#{@resource[:name]}]" unless selected.nil?
+        raise Puppet::Error, "Multiple selected versions for eselect[#{@resource[:name]}]" unless selected.nil?
 
         selected = option[1]
       end
@@ -122,7 +122,7 @@ Puppet::Type.type(:eselect).provide(:eselect) do
 
     unless options.include? should
       available_options = options.join(' ')
-      fail Puppet::Error, "Invalid option \"#{should}\", should be one of [#{available_options}] for eselect[#{@resource[:name]}]"
+      raise Puppet::Error, "Invalid option \"#{should}\", should be one of [#{available_options}] for eselect[#{@resource[:name]}]"
     end
 
     selected
