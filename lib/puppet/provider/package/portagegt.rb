@@ -209,12 +209,11 @@ Puppet::Type.type(:package).provide(
       debug("#{function}: comparing existing to #{out}".rstrip)
 
       # Create file
-      if !File.file?(opt_file) || File.read(opt_file) != out
-        debug("#{function}: WriteFile #{out}")
-        File.open(opt_file, 'w') do |fh|
-          fh.write(out)
-        end
-        next
+      next unless !File.file?(opt_file) || File.read(opt_file) != out
+
+      debug("#{function}: WriteFile #{out}")
+      File.open(opt_file, 'w') do |fh|
+        fh.write(out)
       end
     end # packages.each
 
@@ -514,15 +513,15 @@ Puppet::Type.type(:package).provide(
       version = File.read("#{directory}/PF").rstrip.split(/-(?=[0-9])/).last
 
       # if this slot isn't yet defined in the slots hash, define it with the defaults
-      unless slots.key?(slot)
-        slots[slot] = {
-          repository: repository,
-          use_positive: use_positive & use_valid,
-          use_valid: use_valid,
+      next if slots.key?(slot)
 
-          ensure: version
-        }
-      end
+      slots[slot] = {
+        repository: repository,
+        use_positive: use_positive & use_valid,
+        use_valid: use_valid,
+
+        ensure: version
+      }
     end
 
     # Disambiguation errors

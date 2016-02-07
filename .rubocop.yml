@@ -1,6 +1,4 @@
 # It would be nice to enable all of these someday
-Style/Documentation:
-  Enabled: false
 Metrics/LineLength:
   Enabled: false
 Metrics/MethodLength:
@@ -10,9 +8,4 @@ Metrics/PerceivedComplexity:
 Metrics/CyclomaticComplexity:
   Enabled: false
 Metrics/AbcSize:
-  Enabled: false
-
-# This cop will make more sense once we reduce
-# the complexity further.
-Style/Next:
   Enabled: false
