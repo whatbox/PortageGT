@@ -107,14 +107,12 @@ Puppet::Type.type(:package).provide(
   # void (void)
   def self.run_eix
     unless EIX_RUN_UPDATE
-      if EIX_RUN_SYNC >= 0
-        raise Puppet::Error, 'EIX_RUN_UPDATE must be true if EIX_RUN_SYNC is not -1'
-      end
+      raise Puppet::Error, 'EIX_RUN_UPDATE must be true if EIX_RUN_SYNC is not -1' if EIX_RUN_SYNC >= 0
       return
     end
 
-    if EIX_RUN_SYNC >= 0
-      eix_sync if File.mtime(TIMESTAMP_FILE) + EIX_RUN_SYNC < Time.now
+    if EIX_RUN_SYNC >= 0 && File.mtime(TIMESTAMP_FILE) + EIX_RUN_SYNC < Time.now
+      eix_sync
     else
       eix_update
     end
@@ -137,9 +135,7 @@ Puppet::Type.type(:package).provide(
 
       # We cannot specify these attributes unless we have a category as well
       if category.nil?
-        unless opt_flags.empty?
-          Puppet.warning("Cannot apply #{function} for Package[#{name}] without a category")
-        end
+        Puppet.warning("Cannot apply #{function} for Package[#{name}] without a category") unless opt_flags.empty?
         next
       end
 
@@ -324,9 +320,7 @@ Puppet::Type.type(:package).provide(
     end
 
     if @resource[:category]
-      if name_category && category != @resource[:category]
-        raise Puppet::Error, "Category disagreement on Package[#{name}]"
-      end
+      raise Puppet::Error, "Category disagreement on Package[#{name}]" if name_category && category != @resource[:category]
 
       category = @resource[:category]
     end
@@ -348,9 +342,7 @@ Puppet::Type.type(:package).provide(
 
     unless @resource[:package_settings].nil?
       if @resource[:package_settings].key?('slot')
-        if name_slot && slot != @resource[:package_settings]['slot'].to_s
-          raise Puppet::Error, "Slot disagreement on Package[#{name}]"
-        end
+        raise Puppet::Error, "Slot disagreement on Package[#{name}]" if name_slot && slot != @resource[:package_settings]['slot'].to_s
 
         slot = @resource[:package_settings]['slot']
       end
@@ -486,9 +478,7 @@ Puppet::Type.type(:package).provide(
 
     _package_glob.each do |directory|
       %w(SLOT PF CATEGORY repository USE).each do |expected|
-        unless File.exist?("#{directory}/#{expected}")
-          raise Puppet::Error, "The metadata file \"#{expected}\" was not found in #{directory}"
-        end
+        raise Puppet::Error, "The metadata file \"#{expected}\" was not found in #{directory}" unless File.exist?("#{directory}/#{expected}")
       end
 
       slot = _strip_subslot(File.read("#{directory}/SLOT").rstrip)
@@ -525,13 +515,8 @@ Puppet::Type.type(:package).provide(
     end
 
     # Disambiguation errors
-    if categories.length > 1
-      raise Puppet::Error, "Package[#{@resource[:name]}] is ambiguous, specify a category: #{categories.to_a.join(', ')}"
-    end
-
-    if slots.length > 1
-      raise Puppet::Error, "Package[#{@resource[:name]}] is ambiguous, specify a slot: #{slots.keys.join(', ')}"
-    end
+    raise Puppet::Error, "Package[#{@resource[:name]}] is ambiguous, specify a category: #{categories.to_a.join(', ')}" if categories.length > 1
+    raise Puppet::Error, "Package[#{@resource[:name]}] is ambiguous, specify a slot: #{slots.keys.join(', ')}" if slots.length > 1
 
     slots.values.first
   end
