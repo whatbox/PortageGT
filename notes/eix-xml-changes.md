@@ -40,3 +40,17 @@ No changes were made to PortageGT as a result of this.
 	- Add maskreason to --xml output
 
 No changes were made to PortageGT as a result of this.
+
+# Version 12 (eix 0.31.7)
+
+	- https://github.com/vaeth/eix/commit/0ce260f82e0fc963a73794ac593020e618ef77bc
+	- REQUIRED_USE support
+
+No changes were made to PortageGT as a result of this.
+
+# Version 13 (eix 0.31.7)
+
+	- https://github.com/vaeth/eix/commit/c32de25adce2ffb84710e5d1a9e00e9621f6187f
+	- Addition of EAPI attribute to version element
+
+No changes were made to PortageGT as a result of this.

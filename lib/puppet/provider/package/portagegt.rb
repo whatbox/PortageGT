@@ -37,7 +37,7 @@ Puppet::Type.type(:package).provide(
   # You probably don't want to change these
   DEFAULT_SLOT = '0'.freeze
   DEFAULT_REPOSITORY = 'gentoo'.freeze
-  EIX_DUMP_VERSION = [6, 7, 8, 9, 10, 11].freeze
+  EIX_DUMP_VERSION = [6, 7, 8, 9, 10, 11, 12, 13].freeze
   USE_DIR = '/etc/portage/package.use'.freeze
   ENV_DIR = '/etc/portage/package.env'.freeze
   KEYWORDS_DIR = '/etc/portage/package.accept_keywords'.freeze
