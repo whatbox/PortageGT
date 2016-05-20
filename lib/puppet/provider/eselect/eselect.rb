@@ -93,7 +93,7 @@ Puppet::Type.type(:eselect).provide(:eselect) do
 
       next if option[0] !~ /\[\d+\]/
 
-      if option.end_with('*')
+      if option.last == '*'
         raise Puppet::Error, "Multiple selected versions for eselect[#{@resource[:name]}]" unless selected.nil?
       end
 
