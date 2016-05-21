@@ -95,12 +95,14 @@ Puppet::Type.type(:eselect).provide(:eselect) do
 
       if option.last == '*'
         raise Puppet::Error, "Multiple selected versions for eselect[#{@resource[:name]}]" unless selected.nil?
+
+        selected = option[1]
       end
 
       options.push(option[1])
     end
 
-    should raise Puppet::Error, "Invalid option \"#{should}\", should be one of [#{options.join(' ')}] for eselect[#{@resource[:name]}]" unless options.include?
+    raise Puppet::Error, "Invalid option \"#{should}\", should be one of [#{options.join(' ')}] for eselect[#{@resource[:name]}]" unless options.include? should
 
     selected
   end
