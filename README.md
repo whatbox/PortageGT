@@ -2,9 +2,17 @@
 [![Build Status](https://travis-ci.org/whatbox/PortageGT.png?branch=master)](https://travis-ci.org/whatbox/PortageGT)
 
 ## Overview
-PortageGT (short for "Portage using Gentoo") is a replacement Package Provider for Puppet. It was written by [Whatbox Inc.](https://whatbox.ca/) to improve server management, and released as on Open Source project under the Apache 2 license. Patches and bug reports are welcome, please see our [CLA](https://whatbox.ca/policies/contributions).
+PortageGT (short for "Portage using Gentoo") is a replacement Package 
+Provider for Puppet. It was written by [Whatbox Inc.](https://whatbox.ca/)
+to improve server management, and released as on Open Source project under
+the Apache 2 license. Patches and bug reports are welcome, please see
+**CLA.md**.
 
-I will also warn you that this module is not completely compatible with the existing Portage Provider. Rather than making assumptions, this provider will throw errors in the event of ambiguity, preferring developer clarification over the possibility of performing an unintended action.
+I will also warn you that this module is not completely compatible with 
+the existing Portage Provider. Rather than making assumptions, this 
+provider will throw errors in the event of ambiguity, preferring 
+developer clarification over the possibility of performing an unintended 
+action.
 
 
 ## Dependencies
