@@ -20,10 +20,13 @@ env:
   - PUPPET_VERSION="~> 4.2.0"
   - PUPPET_VERSION="~> 4.3.0"
   - PUPPET_VERSION="~> 4.4.0"
+  - PUPPET_VERSION="~> 4.5.0"
+  - PUPPET_VERSION="~> 4.6.0"
+  - PUPPET_VERSION="~> 4.7.0"
 
   # Alternative operating modes
   # Only test latest version
-  - PUPPET_VERSION="~> 4.4.0" STRICT_VARIABLES=yes
+  - PUPPET_VERSION="~> 4.7.0" STRICT_VARIABLES=yes
 
 matrix:
   allow_failures:

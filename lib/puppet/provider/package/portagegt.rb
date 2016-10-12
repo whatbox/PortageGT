@@ -185,11 +185,8 @@ Puppet::Type.type(:package).provide(
 
         # Not a directory, but exists
         if File.exist?(opt_dir)
-          if File.file?(opt_dir)
-            File.unlink(opt_dir)
-          else
-            raise Puppet::Error, "Unexpected file type: #{opt_dir}"
-          end
+          raise Puppet::Error, "Unexpected file type: #{opt_dir}" unless File.file?(opt_dir)
+          File.unlink(opt_dir)
         end
 
         debug("#{function}: creating category #{opt_dir}")
@@ -598,11 +595,8 @@ Puppet::Type.type(:package).provide(
     # Disambiguation errors
     case categories.length
     when 0
-      if package_category
-        raise Puppet::Error, "No package found with the specified name [#{search_value}] in category [#{package_category}]: #{categories.to_a.join(' ')}"
-      else
-        raise Puppet::Error, "No package found with the specified name [#{search_value}]"
-      end
+      raise Puppet::Error, "No package found with the specified name [#{search_value}] in category [#{package_category}]: #{categories.to_a.join(' ')}" if package_category
+      raise Puppet::Error, "No package found with the specified name [#{search_value}]"
     when 1
       # Correct number, we're done here
     else

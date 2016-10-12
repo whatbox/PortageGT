@@ -56,11 +56,8 @@ Puppet::Type.type(:eselect).provide(:eselect) do
       return @resource[:listcmd]
     end
 
-    if @resource[:submodule]
-      return "eselect #{eselect_module} list #{eselect_submodule}"
-    else
-      return "eselect #{eselect_module} list"
-    end
+    return "eselect #{eselect_module} list #{eselect_submodule}" if @resource[:submodule]
+    "eselect #{eselect_module} list"
   end
 
   # string (void)
@@ -73,11 +70,8 @@ Puppet::Type.type(:eselect).provide(:eselect) do
       return @resource[:setcmd]
     end
 
-    if @resource[:submodule]
-      return "eselect #{eselect_module} set #{eselect_submodule}"
-    else
-      return "eselect #{eselect_module} set"
-    end
+    return "eselect #{eselect_module} set #{eselect_submodule}" if @resource[:submodule]
+    "eselect #{eselect_module} set"
   end
 
   # string (void)
@@ -97,6 +91,7 @@ Puppet::Type.type(:eselect).provide(:eselect) do
         raise Puppet::Error, "Multiple selected versions for eselect[#{@resource[:name]}]" unless selected.nil?
 
         selected = option[1]
+
       end
 
       options.push(option[1])
