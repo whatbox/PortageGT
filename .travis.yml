@@ -61,3 +61,19 @@ matrix:
        env: PUPPET_VERSION="~> 3.6.2"
      - rvm: 2.4.0
        env: PUPPET_VERSION="~> 3.7.5"
+     - rvm: 2.4.0
+       env: PUPPET_VERSION="~> 4.0.0"
+     - rvm: 2.4.0
+       env: PUPPET_VERSION="~> 4.1.0"
+     - rvm: 2.4.0
+       env: PUPPET_VERSION="~> 4.2.0"
+     - rvm: 2.4.0
+       env: PUPPET_VERSION="~> 4.3.0"
+     - rvm: 2.4.0
+       env: PUPPET_VERSION="~> 4.4.0"
+     - rvm: 2.4.0
+       env: PUPPET_VERSION="~> 4.5.0"
+     - rvm: 2.4.0
+       env: PUPPET_VERSION="~> 4.6.0"
+     - rvm: 2.4.0
+       env: PUPPET_VERSION="~> 4.7.0"
