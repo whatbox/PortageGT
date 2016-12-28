@@ -2,12 +2,12 @@
 
 source 'https://rubygems.org'
 
-gem 'puppet', ENV['PUPPET_VERSION']
 gem 'facter'
+gem 'puppet', ENV['PUPPET_VERSION']
 
 gem 'bundler'
-gem 'rspec'
-gem 'puppetlabs_spec_helper'
 gem 'fakefs'
+gem 'puppetlabs_spec_helper'
+gem 'rspec'
 
 gem 'rubocop'

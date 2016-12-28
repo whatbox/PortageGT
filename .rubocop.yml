@@ -9,3 +9,8 @@ Metrics/CyclomaticComplexity:
   Enabled: false
 Metrics/AbcSize:
   Enabled: false
+Metrics/BlockLength:
+  Enabled: false
+# https://github.com/bbatsov/rubocop/issues/3696
+Lint/EmptyWhen:
+  Enabled: false
