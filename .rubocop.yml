@@ -1,16 +1,7 @@
 # It would be nice to enable all of these someday
-Metrics/LineLength:
+Metrics:
   Enabled: false
-Metrics/MethodLength:
-  Enabled: false
-Metrics/PerceivedComplexity:
-  Enabled: false
-Metrics/CyclomaticComplexity:
-  Enabled: false
-Metrics/AbcSize:
-  Enabled: false
-Metrics/BlockLength:
-  Enabled: false
+
 # https://github.com/bbatsov/rubocop/issues/3696
 Lint/EmptyWhen:
   Enabled: false

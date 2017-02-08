@@ -18,8 +18,7 @@ Puppet::Type.type(:eselect).provide(:eselect) do
   ######################
 
   # One of void self.prefetch(package[]) or package[] self.instances() must be used
-  def self.prefetch(_packages)
-  end
+  def self.prefetch(_packages); end
 
   # string (void)
   def eselect_module

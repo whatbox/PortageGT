@@ -13,13 +13,11 @@ describe provider_class do
     end
 
     # dev-db/mysql and virtual/mysql
-    def simulate_mysql_installed
-    end
+    def simulate_mysql_installed; end
 
     # media-libs/libpng "0" & 1.2 (obsolete)
     # The IUSE was left empty here, might be worth populating
-    def simulate_libpng_obsolete_multislot_installed
-    end
+    def simulate_libpng_obsolete_multislot_installed; end
 
     it 'simple' do
       FileUtils.mkdir_p('/var/db/pkg/dev-vcs/git-1.9.1')
