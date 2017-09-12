@@ -1,5 +1,5 @@
 # Encoding: utf-8
-#
+
 # PortageGT (Puppet Package Provider)
 #
 # Copyright 2012, Whatbox Inc.
@@ -120,9 +120,8 @@ Puppet::Type.type(:package).provide(
 
   # void (package[], string dir, string opts, string function)
   def self.set_portage(packages, dir, function)
-    old_categories = Dir.entries(dir).select do |entry|
-      # File.directory?(File.join(dir, entry)) and # for old legacy compatibility
-      !(entry == '.' || entry == '..')
+    old_categories = Dir.entries(dir).reject do |entry|
+      entry == '.' || entry == '..'
     end
 
     new_categories = Set.new
@@ -219,8 +218,8 @@ Puppet::Type.type(:package).provide(
 
     # Remove stray entries from categories
     new_categories.each do |cat|
-      old_entries = Dir.entries(File.join(dir, cat)).select do |entry|
-        !(entry == '.' || entry == '..')
+      old_entries = Dir.entries(File.join(dir, cat)).reject do |entry|
+        entry == '.' || entry == '..'
       end
 
       remove_entries = old_entries - new_entries[cat]
@@ -431,7 +430,7 @@ Puppet::Type.type(:package).provide(
 
     name = "#{package_category}/#{name}" unless package_category.nil?
 
-    if should == :present || should == :latest
+    if %i[present latest].include?(should)
       if package_slot
         # Install a specific slot
         name = "#{name}:#{package_slot}"
@@ -474,7 +473,7 @@ Puppet::Type.type(:package).provide(
     categories = Set.new
 
     _package_glob.each do |directory|
-      %w(SLOT PF CATEGORY repository USE).each do |expected|
+      %w[SLOT PF CATEGORY repository USE].each do |expected|
         raise Puppet::Error, "The metadata file \"#{expected}\" was not found in #{directory}" unless File.exist?("#{directory}/#{expected}")
       end
 

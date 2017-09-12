@@ -1,4 +1,3 @@
-#!/usr/bin/env rspec
 # Encoding: utf-8
 
 require 'spec_helper'
@@ -21,7 +20,7 @@ describe provider_class, fakefs: true do
       provider.stubs(:package_name).returns('mysql')
       provider.stubs(:package_category).returns('dev-db')
       provider.stubs(:package_slot).returns(nil)
-      provider.stubs(:package_use).returns(%w(bar baz foo))
+      provider.stubs(:package_use).returns(%w[bar baz foo])
       provider.stubs(:package_keywords).returns('~amd64')
 
       # Don't need to do much, here, as we're overriding the method abstractions above
@@ -33,8 +32,8 @@ describe provider_class, fakefs: true do
 
     def validate_structure_mysql
       Dir.chdir('/etc/portage/package.use') do
-        expect(Dir.glob('*')).to eq(%w(dev-db))
-        expect(Dir.glob('dev-db/*')).to eq(%w(dev-db/mysql))
+        expect(Dir.glob('*')).to eq(%w[dev-db])
+        expect(Dir.glob('dev-db/*')).to eq(%w[dev-db/mysql])
         expect(File.read('dev-db/mysql')).to eq("dev-db/mysql bar baz foo\n")
       end
     end
@@ -159,7 +158,7 @@ describe provider_class, fakefs: true do
         provider53.stubs(:package_name).returns('php')
         provider53.stubs(:package_category).returns('dev-lang')
         provider53.stubs(:package_slot).returns('5.3')
-        provider53.stubs(:package_use).returns(%w(something -without))
+        provider53.stubs(:package_use).returns(%w[something -without])
 
         resource53 = stub 'resource'
         resource53.stubs(:provider).returns(provider53)
@@ -168,7 +167,7 @@ describe provider_class, fakefs: true do
         provider54.stubs(:package_name).returns('php')
         provider54.stubs(:package_category).returns('dev-lang')
         provider54.stubs(:package_slot).returns('5.4')
-        provider54.stubs(:package_use).returns(%w(-bar -seven))
+        provider54.stubs(:package_use).returns(%w[-bar -seven])
 
         resource54 = stub 'resource'
         resource54.stubs(:provider).returns(provider54)
@@ -181,8 +180,8 @@ describe provider_class, fakefs: true do
         provider_class.set_portage(resources, '/etc/portage/package.use', 'package_use')
 
         Dir.chdir('/etc/portage/package.use') do
-          expect(Dir.glob('*')).to eq(%w(dev-lang))
-          expect(Dir.glob('dev-lang/*')).to eq(%w(dev-lang/php:5.3 dev-lang/php:5.4))
+          expect(Dir.glob('*')).to eq(%w[dev-lang])
+          expect(Dir.glob('dev-lang/*')).to eq(%w[dev-lang/php:5.3 dev-lang/php:5.4])
           expect(File.read('dev-lang/php:5.3')).to eq("dev-lang/php:5.3 -without something\n")
           expect(File.read('dev-lang/php:5.4')).to eq("dev-lang/php:5.4 -bar -seven\n")
         end
@@ -194,7 +193,7 @@ describe provider_class, fakefs: true do
         provider = stub 'provider'
         provider.stubs(:package_name).returns('mysql')
         provider.stubs(:package_category).returns(nil)
-        provider.stubs(:package_use).returns(%w(someflag))
+        provider.stubs(:package_use).returns(%w[someflag])
 
         resource = stub 'resource'
         resource.stubs(:provider).returns(provider)
@@ -217,7 +216,7 @@ describe provider_class, fakefs: true do
         provider53.stubs(:package_name).returns('php')
         provider53.stubs(:package_category).returns('dev-lang')
         provider53.stubs(:package_slot).returns('5.3')
-        provider53.stubs(:package_use).returns(%w(something -without))
+        provider53.stubs(:package_use).returns(%w[something -without])
 
         resource53 = stub 'resource'
         resource53.stubs(:provider).returns(provider53)
@@ -225,7 +224,7 @@ describe provider_class, fakefs: true do
         provider = stub 'provider'
         provider.stubs(:package_name).returns('mysql')
         provider.stubs(:package_category).returns(nil)
-        provider.stubs(:package_use).returns(%w(someflag))
+        provider.stubs(:package_use).returns(%w[someflag])
 
         resource = stub 'resource'
         resource.stubs(:provider).returns(provider)
@@ -240,8 +239,8 @@ describe provider_class, fakefs: true do
         provider_class.set_portage(resources, '/etc/portage/package.use', 'package_use')
 
         Dir.chdir('/etc/portage/package.use') do
-          expect(Dir.glob('*')).to eq(%w(dev-lang))
-          expect(Dir.glob('dev-lang/*')).to eq(%w(dev-lang/php:5.3))
+          expect(Dir.glob('*')).to eq(%w[dev-lang])
+          expect(Dir.glob('dev-lang/*')).to eq(%w[dev-lang/php:5.3])
           expect(File.read('dev-lang/php:5.3')).to eq("dev-lang/php:5.3 -without something\n")
         end
       end

@@ -1,4 +1,3 @@
-#!/usr/bin/env rspec
 # Encoding: utf-8
 
 require 'spec_helper'
@@ -30,7 +29,7 @@ describe provider_class do
           command: ['/usr/bin/emerge', '--oneshot', 'dev-db/mysql']
         },
         {
-          options: { name: 'dev-lang/php', install_options: %w(--deep --changed-use) },
+          options: { name: 'dev-lang/php', install_options: %w[--deep --changed-use] },
           command: ['/usr/bin/emerge', '--deep', '--changed-use', 'dev-lang/php']
         }
       ].each do |c|

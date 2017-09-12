@@ -1,4 +1,3 @@
-#!/usr/bin/env rspec
 # Encoding: utf-8
 
 require 'spec_helper'
@@ -63,8 +62,8 @@ describe provider_class do
         have = {
           ensure: '3.5.0',
           repository: 'gentoo',
-          use_positive: %w(want),
-          use_valid: %w(want dontwant dontcare)
+          use_positive: %w[want],
+          use_valid: %w[want dontwant dontcare]
         }
         goal = {
           'use' => 'want'
@@ -77,8 +76,8 @@ describe provider_class do
         have = {
           ensure: '3.5.0',
           repository: 'gentoo',
-          use_positive: %w(want),
-          use_valid: %w(want dontwant dontcare)
+          use_positive: %w[want],
+          use_valid: %w[want dontwant dontcare]
         }
         goal = {
           'use' => '-dontwant'
@@ -91,8 +90,8 @@ describe provider_class do
         have = {
           ensure: '3.5.0',
           repository: 'gentoo',
-          use_positive: %w(want),
-          use_valid: %w(want dontwant dontcare)
+          use_positive: %w[want],
+          use_valid: %w[want dontwant dontcare]
         }
         goal = {
           'use' => 'want -dontwant'
@@ -105,8 +104,8 @@ describe provider_class do
         have = {
           ensure: '3.5.0',
           repository: 'gentoo',
-          use_positive: %w(),
-          use_valid: %w(want dontwant dontcare)
+          use_positive: %w[],
+          use_valid: %w[want dontwant dontcare]
         }
         goal = {
           'use' => 'want'
@@ -119,8 +118,8 @@ describe provider_class do
         have = {
           ensure: '3.5.0',
           repository: 'gentoo',
-          use_positive: %w(dontwant dontcare),
-          use_valid: %w(want dontwant dontcare)
+          use_positive: %w[dontwant dontcare],
+          use_valid: %w[want dontwant dontcare]
         }
         goal = {
           'use' => '-dontwant'
@@ -133,8 +132,8 @@ describe provider_class do
         have = {
           ensure: '3.5.0',
           repository: 'gentoo',
-          use_positive: %w(dontcare),
-          use_valid: %w(want dontwant dontcare)
+          use_positive: %w[dontcare],
+          use_valid: %w[want dontwant dontcare]
         }
         goal = {
           'use' => '-dontwant'

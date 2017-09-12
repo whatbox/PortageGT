@@ -1,4 +1,3 @@
-#!/usr/bin/env rspec
 # Encoding: utf-8
 
 require 'spec_helper'
@@ -12,7 +11,7 @@ describe Puppet::Type.type(:eselect) do
     expect(described_class.key_attributes).to eq([:name])
   end
 
-  [:name, :module, :submodule, :listcmd, :setcmd].each do |param|
+  %i[name module submodule listcmd setcmd].each do |param|
     it "should have a #{param} parameter" do
       expect(described_class.attrtype(param)).to eq(:param)
     end

@@ -1,4 +1,3 @@
-#!/usr/bin/env rspec
 # Encoding: utf-8
 
 # Tests from reported bugs, and combinations of features
