@@ -1,5 +1,3 @@
-# Encoding: utf-8
-
 Puppet::Type.newtype(:eselect) do
   newparam(:name) do
     desc 'identifier for use throughout puppet manifests'

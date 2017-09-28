@@ -1,5 +1,3 @@
-# Encoding: utf-8
-
 require 'spec_helper'
 
 provider_class = Puppet::Type.type(:eselect).provider(:eselect)

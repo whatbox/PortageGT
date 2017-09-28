@@ -1,5 +1,3 @@
-# Encoding: utf-8
-
 # Tests from reported bugs, and combinations of features
 
 require 'spec_helper'

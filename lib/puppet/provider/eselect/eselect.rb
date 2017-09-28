@@ -1,5 +1,3 @@
-# Encoding: utf-8
-
 Puppet::Type.type(:eselect).provide(:eselect) do
   include Puppet::Util::Execution
 

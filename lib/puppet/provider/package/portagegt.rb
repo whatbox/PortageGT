@@ -1,5 +1,3 @@
-# Encoding: utf-8
-
 # PortageGT (Puppet Package Provider)
 #
 # Copyright 2012, Whatbox Inc.
