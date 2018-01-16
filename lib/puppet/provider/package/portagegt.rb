@@ -23,19 +23,9 @@ Puppet::Type.type(:package).provide(
   # Config Options #
   ##################
 
-  # Update eix database before each run
-  EIX_RUN_UPDATE = true
-
-  # Minimum age of local portage tree, in seconds,
-  # before re-syncing. -1 to never run eix-sync.
-  # Consider increasing if puppet is run multiple
-  # times per day to prevent rsync server bans.
-  EIX_RUN_SYNC = 48 * 3600
-
   # You probably don't want to change these
   DEFAULT_SLOT = '0'.freeze
   DEFAULT_REPOSITORY = 'gentoo'.freeze
-  EIX_DUMP_VERSION = [6, 7, 8, 9, 10, 11, 12, 13, 14].freeze
   USE_DIR = '/etc/portage/package.use'.freeze
   ENV_DIR = '/etc/portage/package.env'.freeze
   KEYWORDS_DIR = '/etc/portage/package.accept_keywords'.freeze
@@ -76,17 +66,7 @@ Puppet::Type.type(:package).provide(
 
   commands emerge: '/usr/bin/emerge'
 
-  has_command(:eix, '/usr/bin/eix') do
-    environment EIXRC: '/etc/eixrc'
-  end
-
-  has_command(:eix_update, '/usr/bin/eix-update') do
-    environment EIXRC: '/etc/eixrc'
-  end
-
-  has_command(:eix_sync, '/usr/bin/eix-sync') do
-    environment EIXRC: '/etc/eixrc'
-  end
+  attr_accessor :old_query
 
   def package_settings_validate(opts)
     return if opts.nil?
@@ -101,20 +81,6 @@ Puppet::Type.type(:package).provide(
   ######################
   # Custom self.* APIs #
   ######################
-
-  # void (void)
-  def self.run_eix
-    unless EIX_RUN_UPDATE
-      raise Puppet::Error, 'EIX_RUN_UPDATE must be true if EIX_RUN_SYNC is not -1' if EIX_RUN_SYNC >= 0
-      return
-    end
-
-    if EIX_RUN_SYNC >= 0 && File.mtime(TIMESTAMP_FILE) + EIX_RUN_SYNC < Time.now
-      eix_sync
-    else
-      eix_update
-    end
-  end
 
   # void (package[], string dir, string opts, string function)
   def self.set_portage(packages, dir, function)
@@ -234,7 +200,36 @@ Puppet::Type.type(:package).provide(
 
   # One of void self.prefetch(package[]) or package[] self.instances() must be used
   def self.prefetch(packages)
-    run_eix
+    emerge('--sync')
+
+    Dir.mkdir('/etc/portage/sets') unless File.exist?('/etc/portage/sets')
+    File.open('/etc/portage/sets/puppet', 'w') do |fh|
+      packages.each do |name, package|
+        should = package.should(:ensure)
+        next if %i[absent purged].include?(should)
+
+        name = package.provider.package_name
+
+        name = "#{package.provider.package_category}/#{name}" unless package.provider.package_category.nil?
+
+        if %i[present latest].include?(should)
+          if package.provider.package_slot
+            # Install a specific slot
+            name = "#{name}:#{package.provider.package_slot}"
+          end
+        else
+          # We must install a specific version
+          name = "=#{name}-#{should}"
+
+          # A specific version can't have multiple slots, so no need to specify
+        end
+
+        # Install from a specific source
+        name = "#{name}::#{package.provider.package_repository}" if package.provider.package_repository
+
+        fh.write("#{name}\n")
+      end
+    end
 
     if File.exist?(USE_DIR) && !File.directory?(USE_DIR)
       Puppet.warning("#{USE_DIR} is not a directory, puppet management of USE flags has been disabled")
@@ -260,6 +255,12 @@ Puppet::Type.type(:package).provide(
       Dir.mkdir(KEYWORDS_DIR) unless File.exist?(KEYWORDS_DIR)
       set_portage(packages, KEYWORDS_DIR, 'package_keywords')
     end
+
+    packages.each do |name, package|
+      package.provider.old_query = package.provider._query
+    end
+
+    emerge('--update', '--deep', '--changed-use', '@system', '@puppet')
   end
 
   ###########################################
@@ -422,41 +423,12 @@ Puppet::Type.type(:package).provide(
 
   # void (void)
   def install
-    should = @resource.should(:ensure)
-
-    name = package_name
-
-    name = "#{package_category}/#{name}" unless package_category.nil?
-
-    if %i[present latest].include?(should)
-      if package_slot
-        # Install a specific slot
-        name = "#{name}:#{package_slot}"
-      end
-    else
-      # We must install a specific version
-      name = "=#{name}-#{should}"
-
-      # A specific version can't have multiple slots, so no need to specify
-    end
-
-    # Install from a specific source
-    name = "#{name}::#{package_repository}" if package_repository
-
-    @resource[:install_options] = [] \
-      unless @resource[:install_options].is_a? Array
-
-    execute([command(:emerge)] + @resource[:install_options] + [name])
+    # Do nothing
   end
 
   # void (void)
   def uninstall
-    name = package_name
-    name = "#{package_category}/#{name}" unless package_category.nil?
-    name = "#{name}:#{package_slot}" unless package_slot.nil?
-    name = "#{name}::#{package_repository}" unless package_repository.nil?
-
-    emerge('--unmerge', name)
+    # Do nothing
   end
 
   # void (void)
@@ -467,6 +439,12 @@ Puppet::Type.type(:package).provide(
   # Returns the currently installed version
   # hash (void)
   def query
+    return old_query
+  end
+
+  # Returns the currently installed version
+  # hash (void)
+  def _query
     slots = {}
     categories = Set.new
 
@@ -518,100 +496,7 @@ Puppet::Type.type(:package).provide(
   # Returns the string for the newest version of a package available
   # string (void)
   def latest
-    slots = {}
-    categories = Set.new
-
-    # Chose arguments based on what we've received
-    if package_category.nil?
-      search_field = '--name'
-      search_value = package_name
-    else
-      search_field = '--category-name'
-      search_value = "#{package_category}/#{package_name}"
-    end
-
-    eixout = eix('--xml', '--pure-packages', '--exact', search_field, search_value)
-
-    xml = REXML::Document.new(eixout)
-
-    unless EIX_DUMP_VERSION.include?(Integer(xml.root.attributes['version']))
-      warnonce("eixdump version is not in: #{EIX_DUMP_VERSION.join(', ')}.")
-    end
-
-    xml.elements.each('eixdump/category/package') do |p|
-      p.elements.each('version') do |v|
-        unless package_repository.nil?
-          if package_repository == DEFAULT_REPOSITORY
-            next unless v.attributes['repository'].nil?
-          elsif v.attributes['repository'] != package_repository
-            next
-          end
-        end
-
-        # Establish variables for reuse
-        slot = if v.attributes['slot']
-                 _strip_subslot(v.attributes['slot'])
-               else
-                 DEFAULT_SLOT
-               end
-
-        # Update disambiguation values
-        categories << p.parent.attributes['name']
-
-        # http://docs.dvo.ru/eix-0.25.5/html/eix-xml.html
-        # <mask type=" [..] " />
-        # Possible values for the type are:
-        # profile
-        # hard
-        # package_mask
-        # keyword
-        # missing_keyword
-        # alien_stable
-        # alien_unstable
-        # minus_unstable
-        # minus_asterisk
-        # minus_keyword
-        hard_unmasked = (!v.elements['mask[@type!=\'keyword\']'] || v.elements['unmask[@type=\'package_unmask\']'])
-        keyword_unmasked = (!v.elements['mask[@type=\'keyword\']'] || v.elements['unmask[@type=\'package_keywords\']'])
-
-        # installed versions are always valid candidates for latest
-        # this way latest should never try to downgrade a package
-        if v.attributes['installed'] && v.attributes['installed'] == '1'
-          slots[slot] = v.attributes['id']
-          next
-        end
-
-        # Check package masks
-        if hard_unmasked && keyword_unmasked
-          slots[slot] = v.attributes['id']
-          next
-        end
-      end
-    end
-
-    # Disambiguation errors
-    case categories.length
-    when 0
-      raise Puppet::Error, "No package found with the specified name [#{search_value}] in category [#{package_category}]: #{categories.to_a.join(' ')}" if package_category
-      raise Puppet::Error, "No package found with the specified name [#{search_value}]"
-    when 1
-      # Correct number, we're done here
-    else
-      categories_available = categories.to_a.join(' ')
-      raise Puppet::Error, "Multiple categories [#{categories_available}] available for package [#{search_value}]"
-    end
-
-    # If a slot is specified, use it
-    return slots[package_slot] unless package_slot.nil?
-
-    # If there's a single slot, use it
-    return slots.values.first if slots.length == 1
-
-    # If there's multiple slots including the default, use the default
-    return slots[DEFAULT_SLOT] if slots.key?(DEFAULT_SLOT)
-
-    # Multiple slots
-    raise Puppet::Error, "Package[#{@resource[:name]}] is ambiguous, specify a slot: #{slots.keys.join(' ')}"
+    _query[:ensure]
   end
 
 private
