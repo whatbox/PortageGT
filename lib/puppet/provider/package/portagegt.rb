@@ -260,6 +260,10 @@ Puppet::Type.type(:package).provide(
     emerge('--update', '--deep', '--changed-use', '@system', '@puppet')
   end
 
+  def self.post_resource_eval
+    emerge('--depclean')
+  end
+
   ###########################################
   # Utility classes (not for use in self.*) #
   ###########################################
