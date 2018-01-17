@@ -2,33 +2,31 @@
 [![Build Status](https://travis-ci.org/whatbox/PortageGT.png?branch=master)](https://travis-ci.org/whatbox/PortageGT)
 
 ## Overview
-PortageGT (short for "Portage using Gentoo") is a replacement Package 
+PortageGT (short for "Portage using Gentoo") is a replacement Package
 Provider for Puppet. It was written by [Whatbox Inc.](https://whatbox.ca/)
 to improve server management, and released as on Open Source project under
 the Apache 2 license. Patches and bug reports are welcome, please see
 **CLA.md**.
 
-I will also warn you that this module is not completely compatible with 
-the existing Portage Provider. Rather than making assumptions, this 
-provider will throw errors in the event of ambiguity, preferring 
-developer clarification over the possibility of performing an unintended 
+I will also warn you that this module is not completely compatible with
+the existing Portage Provider. Rather than making assumptions, this
+provider will throw errors in the event of ambiguity, preferring
+developer clarification over the possibility of performing an unintended
 action.
 
 
 ## Dependencies
 The following packages are necessary for this module.
-* `dev-lang/ruby >= 1.9.0`
-* `app-admin/puppet >= 3.5.0`
+* `dev-lang/ruby >= 2.2.0`
+* `app-admin/puppet >= 4.8.0`
 * `sys-apps/portage`
-* `app-portage/eix`
 
 
 ## Environment
-The following things are assumed:
-* `/etc/portage/package.use` is a directory
-* `/etc/portage/package.accept_keywords` is a directory
-* Both of the above are free for modification by puppet
-* __WARNING:__ Folders contained within either of these will be automatically removed by this plugin
+The this package manages the following files:
+* `/etc/portage/sets/puppet`
+* `/etc/portage/package.use/*``
+* `/etc/portage/package.accept_keywords/*`
 
 
 ## Installing
@@ -134,13 +132,6 @@ Specify the latest version of a specific overlay available on your systems, to e
 				"-ssl",
 			],
 		};
-	}
-
-### Additional emerge options
-
-	package { "media-libs/libpng":
-		ensure          => latest;
-		install_options => ["--oneshot"],
 	}
 
 ### Customizing the environment per package

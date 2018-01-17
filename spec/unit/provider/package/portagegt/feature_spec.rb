@@ -23,10 +23,6 @@ describe provider_class do
     expect(provider_class).to be_upgradeable
   end
 
-  it 'support install_options' do
-    expect(provider_class).to be_install_options
-  end
-
   it 'support package_settings' do
     expect(provider_class).to be_package_settings
   end

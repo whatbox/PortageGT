@@ -56,9 +56,6 @@ Puppet::Type.type(:package).provide(
   # Method latest is available
   # Method update is available
 
-  has_feature :install_options
-  # Allows passing custom parameters
-
   has_feature :package_settings
   # Method package_settings_insync? is available
   # Method package_settings is available
