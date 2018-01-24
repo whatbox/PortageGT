@@ -257,7 +257,11 @@ Puppet::Type.type(:package).provide(
       package.provider.old_query = package.provider._query
     end
 
-    emerge('--update', '--deep', '--changed-use', '@system', '@puppet')
+    # we don't inherit the default umask from /etc/profile when launching
+    # programs, so we must set this ourselves
+    Puppet::Util.withumask(0022) do
+        emerge('--update', '--deep', '--changed-use', '@system', '@puppet')
+    end
   end
 
   def self.post_resource_eval
