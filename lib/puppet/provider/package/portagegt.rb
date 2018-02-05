@@ -12,8 +12,6 @@ require 'set'
 
 require 'puppet/provider/package'
 require 'fileutils'
-require 'rexml/document'
-include REXML
 
 Puppet::Type.type(:package).provide(
   :portagegt,
