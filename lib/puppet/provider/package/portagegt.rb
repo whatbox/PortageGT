@@ -203,9 +203,12 @@ Puppet::Type.type(:package).provide(
         should = package.should(:ensure)
         next if %i[absent purged].include?(should)
 
-        name = package.provider.package_name
+        if package.provider.package_category.nil?
+          Puppet.warning("Please specify a category for Package[#{name}]") unless opt_flags.empty?
+          next
+        end
 
-        name = "#{package.provider.package_category}/#{name}" unless package.provider.package_category.nil?
+        name = "#{package.provider.package_category}/#{package.provider.package_name}"
 
         if %i[present latest].include?(should)
           if package.provider.package_slot
