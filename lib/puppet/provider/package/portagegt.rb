@@ -79,13 +79,6 @@ Puppet::Type.type(:package).provide(
 
   # void (package[], string dir, string opts, string function)
   def self.set_portage(packages, dir, function)
-    old_categories = Dir.entries(dir).reject do |entry|
-      entry == '.' || entry == '..'
-    end
-
-    new_categories = Set.new
-    new_entries = {}
-
     File.open(File.join(dir, 'puppet-packages'), 'w') do |fh|
       packages.each do |name, package|
         # Early check variables
@@ -108,7 +101,7 @@ Puppet::Type.type(:package).provide(
 
         fh.write(out)
       end
-    end # packages.each
+    end
   end
 
   ######################
@@ -176,14 +169,14 @@ Puppet::Type.type(:package).provide(
       set_portage(packages, KEYWORDS_DIR, 'package_keywords')
     end
 
-    packages.each do |name, package|
+    packages.each do |_name, package|
       package.provider.old_query = package.provider._query
     end
 
     # we don't inherit the default umask from /etc/profile when launching
     # programs, so we must set this ourselves
     Puppet::Util.withumask(0022) do
-        emerge('--update', '--deep', '--changed-use', '@system', '@puppet')
+      emerge('--update', '--deep', '--changed-use', '@system', '@puppet')
     end
   end
 
@@ -367,7 +360,7 @@ Puppet::Type.type(:package).provide(
   # Returns the currently installed version
   # hash (void)
   def query
-    return old_query
+    old_query
   end
 
   # Returns the currently installed version
