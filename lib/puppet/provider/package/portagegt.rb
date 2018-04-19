@@ -86,107 +86,29 @@ Puppet::Type.type(:package).provide(
     new_categories = Set.new
     new_entries = {}
 
-    packages.each do |name, package|
-      # Early check variables
-      category = package.provider.package_category
-      opt_flags = package.provider.send(function)
+    File.open(File.join(dir, 'puppet-packages'), 'w') do |fh|
+      packages.each do |name, package|
+        # Early check variables
+        category = package.provider.package_category
+        opt_flags = package.provider.send(function)
 
-      # We cannot specify these attributes unless we have a category as well
-      if category.nil?
-        Puppet.warning("Cannot apply #{function} for Package[#{name}] without a category") unless opt_flags.empty?
-        next
-      end
+        next if opt_flags.empty?
 
-      # Remaining variables
-      slot = package.provider.package_slot
-      opt_dir = File.join(dir, category)
-      opt_name = package.provider.package_name
-      opt_file = File.join(opt_dir, opt_name)
-
-      # Add slot to file where necessary
-      if slot && slot != DEFAULT_SLOT
-        opt_file = "#{opt_file}:#{slot}"
-        opt_name = "#{opt_name}:#{slot}"
-      end
-
-      ################################
-      # Packages *without* opt flags #
-      ################################
-
-      if opt_flags.empty?
-
-        # No package in this category has opt flags, done
-        next unless File.directory?(opt_dir)
-
-        # This package has no opt flags, done
-        next unless File.file?(opt_file)
-
-        # This package does have opt flags, remove them
-        File.unlink(opt_file)
-        next
-      end # opt_flags.empty?
-
-      ###########################
-      # Packages with opt flags #
-      ###########################
-
-      # Update newoptCats
-      new_categories << category
-
-      # Add category to new_entries
-      new_entries[category] = [] unless new_entries.key?(category)
-
-      new_entries[category].push(opt_name)
-
-      # Create directory of none exists
-      unless File.directory?(opt_dir)
-
-        # Not a directory, but exists
-        if File.exist?(opt_dir)
-          raise Puppet::Error, "Unexpected file type: #{opt_dir}" unless File.file?(opt_dir)
-          File.unlink(opt_dir)
+        if category.nil?
+          Puppet.warning("Cannot apply #{function} for Package[#{name}] without a category") unless opt_flags.empty?
+          next
         end
 
-        debug("#{function}: creating category #{opt_dir}")
-        Dir.mkdir(opt_dir)
-      end
+        # Remaining variables
+        slot = package.provider.package_slot
 
-      out = "#{category}/#{package.provider.package_name}"
+        out = "#{category}/#{package.provider.package_name}"
+        out = "#{out}:#{slot}" if slot && slot != DEFAULT_SLOT
+        out = "#{out} #{opt_flags.sort.join(' ')}\n"
 
-      out = "#{out}:#{slot}" if slot && slot != DEFAULT_SLOT
-
-      out = "#{out} #{opt_flags.sort.join(' ')}\n"
-
-      debug("#{function}: comparing existing to #{out}".rstrip)
-
-      # Create file
-      next unless !File.file?(opt_file) || File.read(opt_file) != out
-
-      debug("#{function}: WriteFile #{out}")
-      File.open(opt_file, 'w') do |fh|
         fh.write(out)
       end
     end # packages.each
-
-    # Remove (what should be) empty directories
-    remove_categories = old_categories - new_categories.to_a
-    remove_categories.each do |c|
-      debug("#{function}: removing empty category #{c}")
-      FileUtils.rm_rf(File.join(dir, c))
-    end
-
-    # Remove stray entries from categories
-    new_categories.each do |cat|
-      old_entries = Dir.entries(File.join(dir, cat)).reject do |entry|
-        entry == '.' || entry == '..'
-      end
-
-      remove_entries = old_entries - new_entries[cat]
-      remove_entries.each do |e|
-        debug("#{function}: removing empty entry #{cat}/#{e}")
-        FileUtils.rm_rf(File.join(dir, cat, e))
-      end
-    end
   end
 
   ######################
