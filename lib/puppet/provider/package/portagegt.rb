@@ -181,6 +181,7 @@ Puppet::Type.type(:package).provide(
   end
 
   def self.post_resource_eval
+    emerge('@preserved-rebuild')
     emerge('--depclean')
   end
 
