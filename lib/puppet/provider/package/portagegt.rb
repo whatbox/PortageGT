@@ -112,6 +112,10 @@ Puppet::Type.type(:package).provide(
   def self.prefetch(packages)
     emerge('--sync')
 
+    if File.open('/var/lib/portage/world').readlines.size > 0
+        Puppet.warning("Please migrate @world packages into puppet manifests then deselect them")
+    end
+
     Dir.mkdir('/etc/portage/sets') unless File.exist?('/etc/portage/sets')
     File.open('/etc/portage/sets/puppet', 'w') do |fh|
       packages.each do |name, package|
