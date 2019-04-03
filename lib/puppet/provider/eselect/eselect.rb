@@ -54,6 +54,7 @@ Puppet::Type.type(:eselect).provide(:eselect) do
     end
 
     return "eselect #{eselect_module} list #{eselect_submodule}" if @resource[:submodule]
+
     "eselect #{eselect_module} list"
   end
 
@@ -68,6 +69,7 @@ Puppet::Type.type(:eselect).provide(:eselect) do
     end
 
     return "eselect #{eselect_module} set #{eselect_submodule}" if @resource[:submodule]
+
     "eselect #{eselect_module} set"
   end
 

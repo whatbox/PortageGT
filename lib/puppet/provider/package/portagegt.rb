@@ -112,9 +112,9 @@ Puppet::Type.type(:package).provide(
   def self.prefetch(packages)
     emerge('--sync')
 
-    if File.open('/var/lib/portage/world').readlines.size > 0
-        Puppet.warning("Please migrate @world packages into puppet manifests then deselect them")
-    end
+    Puppet.warning('Please migrate @world packages into puppet manifests then deselect them') if File.open('/var/lib/portage/world').readlines.!empty?
+
+    # TODO: Add @puppet to /var/lib/portage/world_sets
 
     Dir.mkdir('/etc/portage/sets') unless File.exist?('/etc/portage/sets')
     File.open('/etc/portage/sets/puppet', 'w') do |fh|
@@ -162,9 +162,7 @@ Puppet::Type.type(:package).provide(
       set_portage(packages, ENV_DIR, 'package_env')
     end
 
-    if File.directory?('/etc/portage/package.keywords')
-      Puppet.warning('/etc/portage/package.keywords may conflict with /etc/portage/package.accept_keywords and cause unexpected behavior')
-    end
+    Puppet.warning('/etc/portage/package.keywords may conflict with /etc/portage/package.accept_keywords and cause unexpected behavior') if File.directory?('/etc/portage/package.keywords')
 
     if File.exist?(KEYWORDS_DIR) && !File.directory?(KEYWORDS_DIR)
       Puppet.warning("#{KEYWORDS_DIR} is not a directory, puppet management of KEYWORDs has been disabled")
@@ -179,7 +177,7 @@ Puppet::Type.type(:package).provide(
 
     # we don't inherit the default umask from /etc/profile when launching
     # programs, so we must set this ourselves
-    Puppet::Util.withumask(0022) do
+    Puppet::Util.withumask(0o022) do
       emerge('--quiet-build', '--update', '--deep', '--changed-use', '--with-bdeps=y', '@system', '@puppet')
     end
   end
@@ -315,13 +313,13 @@ Puppet::Type.type(:package).provide(
   end
 
   # bool (hash, hash)
-  def package_settings_insync?(should, is)
+  def package_settings_insync?(should, present)
     if should.key?('repository')
-      return false if should['repository'] != is[:repository]
+      return false if should['repository'] != present[:repository]
     end
 
-    should_positive = is[:use_valid] & use_neutral(resource_tok(should['use']))
-    should_negative = is[:use_valid] & use_negative(resource_tok(should['use']))
+    should_positive = present[:use_valid] & use_neutral(resource_tok(should['use']))
+    should_negative = present[:use_valid] & use_negative(resource_tok(should['use']))
 
     use_conflict = should_positive & should_negative
     unless use_conflict.empty?
@@ -329,13 +327,13 @@ Puppet::Type.type(:package).provide(
       return true
     end
 
-    unless (should_positive - is[:use_positive]).empty?
-      # debug("+ use flag not in use #{(should_positive - is[:use_positive]).inspect}")
+    unless (should_positive - present[:use_positive]).empty?
+      # debug("+ use flag not in use #{(should_positive - present[:use_positive]).inspect}")
       return false
     end
 
-    unless (should_negative & is[:use_positive]).empty?
-      # debug("- use flag found use: #{(should_negative & is[:use_positive]).inspect}")
+    unless (should_negative & present[:use_positive]).empty?
+      # debug("- use flag found use: #{(should_negative & present[:use_positive]).inspect}")
       return false
     end
 
@@ -425,7 +423,7 @@ Puppet::Type.type(:package).provide(
     _query[:ensure]
   end
 
-private
+  private
 
   def use_strip_positive(use)
     use.map { |x| x[0, 1] == '+' ? x[1..-1] : x }
