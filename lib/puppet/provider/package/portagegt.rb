@@ -112,9 +112,26 @@ Puppet::Type.type(:package).provide(
   def self.prefetch(packages)
     emerge('--sync')
 
-    Puppet.warning('Please migrate @world packages into puppet manifests then deselect them') if File.open('/var/lib/portage/world').readlines.!empty?
+    Puppet.warning('Please migrate @world packages into puppet manifests then deselect them') if File.open('/var/lib/portage/world').readlines.empty?
 
-    # TODO: Add @puppet to /var/lib/portage/world_sets
+    if File.exist?('/var/lib/portage/world_sets')
+      sets = []
+      File.open('/var/lib/portage/world_sets', 'r') do |fh|
+        fh.each_line do |line|
+          sets << line.chop
+        end
+      end
+
+      File.write('/path/to/file', '@puppet', mode: 'a') unless sets.include?('@puppet')
+
+      sets.each do |set|
+        next if set == '@puppet'
+
+        Puppet.notice("Including updates for #{set}")
+      end
+    else
+      File.write('/path/to/file', '@puppet')
+    end
 
     Dir.mkdir('/etc/portage/sets') unless File.exist?('/etc/portage/sets')
     File.open('/etc/portage/sets/puppet', 'w') do |fh|
