@@ -332,6 +332,7 @@ Puppet::Type.type(:package).provide(
   # bool (hash, hash)
   def package_settings_insync?(should, present)
     if should.key?('repository')
+      debug("repository mismatch")
       return false if should['repository'] != present[:repository]
     end
 
@@ -345,12 +346,12 @@ Puppet::Type.type(:package).provide(
     end
 
     unless (should_positive - present[:use_positive]).empty?
-      # debug("+ use flag not in use #{(should_positive - present[:use_positive]).inspect}")
+      debug("positive use flag not in use #{(should_positive - present[:use_positive]).inspect}")
       return false
     end
 
     unless (should_negative & present[:use_positive]).empty?
-      # debug("- use flag found use: #{(should_negative & present[:use_positive]).inspect}")
+      debug("negative use flag found use: #{(should_negative & present[:use_positive]).inspect}")
       return false
     end
 
