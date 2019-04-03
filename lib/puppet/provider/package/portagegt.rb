@@ -336,6 +336,24 @@ Puppet::Type.type(:package).provide(
       return false if should['repository'] != present[:repository]
     end
 
+    invalid_use = use_neutral(resource_tok(should['use'])) - present[:use_valid]
+    invalid_use = invalid_use.select{ |use|
+        # Don't try to validate wildcard use flags (commonly seen )
+        !use.end_with?('_*')
+    }
+    unless invalid_use.empty?
+        Puppet.warning("Package[#{package_name}] USE flag #{invalid_use.inspect} does not exist")
+    end
+
+    invalid_use = use_negative(resource_tok(should['use'])) - present[:use_valid]
+    invalid_use = invalid_use.select{ |use|
+        # Don't try to validate wildcard use flags (commonly seen )
+        !use.end_with?('_*')
+    }
+    unless invalid_use.empty?
+        Puppet.notice("Package[#{package_name}] USE flag #{invalid_use.inspect} has been removed")
+    end
+
     should_positive = present[:use_valid] & use_neutral(resource_tok(should['use']))
     should_negative = present[:use_valid] & use_negative(resource_tok(should['use']))
 
@@ -345,22 +363,14 @@ Puppet::Type.type(:package).provide(
       return true
     end
 
-    unless (should_positive - present[:use_positive]).empty?
-      debug("positive use flag not in use #{(should_positive - present[:use_positive]).inspect}")
-      return false
-    end
-
-    unless (should_negative & present[:use_positive]).empty?
-      debug("negative use flag found use: #{(should_negative & present[:use_positive]).inspect}")
-      return false
-    end
-
-    true
+    # If the build timestamps match
+    # we didn't make changes because of the config
+    old_query[:build_time] == present[:build_time]
   end
 
   # void (hash)
   def package_settings=(_settings)
-    install
+    # Do nothing
   end
 
   # void (void)
@@ -391,7 +401,7 @@ Puppet::Type.type(:package).provide(
     categories = Set.new
 
     _package_glob.each do |directory|
-      %w[SLOT PF CATEGORY repository USE].each do |expected|
+      %w[SLOT PF CATEGORY repository USE BUILD_TIME].each do |expected|
         raise Puppet::Error, "The metadata file \"#{expected}\" was not found in #{directory}" unless File.exist?("#{directory}/#{expected}")
       end
 
@@ -402,8 +412,7 @@ Puppet::Type.type(:package).provide(
       categories << category
 
       repository = File.read("#{directory}/repository").rstrip
-
-      use_positive = resource_tok(File.read("#{directory}/USE").rstrip)
+      build_time = File.read("#{directory}/BUILD_TIME").to_i
 
       # I have observed the IUSE file does not exist on packages emerged before a certain date
       # I expect it would be safe to make this file mandatory sometime in 2018
@@ -421,9 +430,8 @@ Puppet::Type.type(:package).provide(
 
       slots[slot] = {
         repository: repository,
-        use_positive: use_positive & use_valid,
+        build_time: build_time,
         use_valid: use_valid,
-
         ensure: version
       }
     end
@@ -453,10 +461,6 @@ Puppet::Type.type(:package).provide(
 
   def use_negative(use)
     use.select { |x| x[0, 1] == '-' }.map { |x| x[1..-1] }
-  end
-
-  def use_positive(use)
-    use.select { |x| x[0, 1] == '+' }.map { |x| x[1..-1] }
   end
 
   # string[] (void)
