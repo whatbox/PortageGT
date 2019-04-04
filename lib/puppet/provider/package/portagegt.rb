@@ -29,6 +29,8 @@ Puppet::Type.type(:package).provide(
   KEYWORDS_DIR = '/etc/portage/package.accept_keywords'.freeze
   PACKAGE_STATE_DIR = '/var/db/pkg'.freeze
   TIMESTAMP_FILE = '/usr/portage/metadata/timestamp'.freeze
+  # TODO: ensure we respect the DISTDIR environment variable in make.conf
+  DISTFILES_DIR = '/usr/portage/distfiles'.freeze
 
   ################
   # Puppet Setup #
@@ -202,6 +204,9 @@ Puppet::Type.type(:package).provide(
   def self.post_resource_eval
     emerge('@preserved-rebuild')
     emerge('--depclean')
+
+    # Purge distfiles
+    FileUtils.rm_rf(Dir.glob(DISTFILES_DIR + '/*'))
   end
 
   ###########################################
