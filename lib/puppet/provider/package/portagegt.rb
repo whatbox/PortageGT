@@ -206,7 +206,7 @@ Puppet::Type.type(:package).provide(
     emerge('--depclean')
 
     # Purge distfiles
-    FileUtils.rm_rf(Dir.glob(DISTFILES_DIR + '/*'))
+    FileUtils.rm_r(Dir.glob(DISTFILES_DIR + '/*'), secure: true)
   end
 
   ###########################################
