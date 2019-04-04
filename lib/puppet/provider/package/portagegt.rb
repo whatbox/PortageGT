@@ -112,25 +112,25 @@ Puppet::Type.type(:package).provide(
   def self.prefetch(packages)
     emerge('--sync')
 
-    Puppet.warning('Please migrate @world packages into puppet manifests then deselect them') if File.open('/var/lib/portage/world').readlines.empty?
+    !File.file?('/var/lib/portage/world') \
+    || File.open('/var/lib/portage/world').readlines.empty? \
+    || Puppet.warning('Please migrate @world packages into puppet manifests then deselect them')
 
-    if File.exist?('/var/lib/portage/world_sets')
-      sets = []
-      File.open('/var/lib/portage/world_sets', 'r') do |fh|
-        fh.each_line do |line|
-          sets << line.chop
-        end
+    File.write('/path/to/file', '@puppet') unless File.exist?('/var/lib/portage/world_sets')
+
+    sets = []
+    File.open('/var/lib/portage/world_sets', 'r') do |fh|
+      fh.each_line do |line|
+        sets << line.chop
       end
+    end
 
-      File.write('/path/to/file', '@puppet', mode: 'a') unless sets.include?('@puppet')
+    File.write('/path/to/file', '@puppet', mode: 'a') unless sets.include?('@puppet')
 
-      sets.each do |set|
-        next if set == '@puppet'
+    sets.each do |set|
+      next if set == '@puppet'
 
-        Puppet.notice("Including updates for #{set}")
-      end
-    else
-      File.write('/path/to/file', '@puppet')
+      Puppet.notice("Including updates for #{set}")
     end
 
     Dir.mkdir('/etc/portage/sets') unless File.exist?('/etc/portage/sets')
@@ -332,27 +332,23 @@ Puppet::Type.type(:package).provide(
   # bool (hash, hash)
   def package_settings_insync?(should, present)
     if should.key?('repository')
-      debug("repository mismatch")
+      debug('repository mismatch')
       return false if should['repository'] != present[:repository]
     end
 
     invalid_use = use_neutral(resource_tok(should['use'])) - present[:use_valid]
-    invalid_use = invalid_use.select{ |use|
-        # Don't try to validate wildcard use flags (commonly seen )
-        !use.end_with?('_*')
-    }
-    unless invalid_use.empty?
-        Puppet.warning("Package[#{package_name}] USE flag #{invalid_use.inspect} does not exist")
+    invalid_use = invalid_use.reject do |use|
+      # Don't try to validate wildcard use flags (commonly seen )
+      use.end_with?('_*')
     end
+    Puppet.warning("Package[#{package_name}] USE flag #{invalid_use.inspect} does not exist") unless invalid_use.empty?
 
     invalid_use = use_negative(resource_tok(should['use'])) - present[:use_valid]
-    invalid_use = invalid_use.select{ |use|
-        # Don't try to validate wildcard use flags (commonly seen )
-        !use.end_with?('_*')
-    }
-    unless invalid_use.empty?
-        Puppet.notice("Package[#{package_name}] USE flag #{invalid_use.inspect} has been removed")
+    invalid_use = invalid_use.reject do |use|
+      # Don't try to validate wildcard use flags (commonly seen )
+      use.end_with?('_*')
     end
+    Puppet.notice("Package[#{package_name}] USE flag #{invalid_use.inspect} has been removed") unless invalid_use.empty?
 
     should_positive = present[:use_valid] & use_neutral(resource_tok(should['use']))
     should_negative = present[:use_valid] & use_negative(resource_tok(should['use']))
