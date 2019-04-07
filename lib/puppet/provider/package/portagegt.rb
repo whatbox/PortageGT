@@ -118,7 +118,7 @@ Puppet::Type.type(:package).provide(
     || File.open('/var/lib/portage/world').readlines.empty? \
     || Puppet.warning('Please migrate @world packages into puppet manifests then deselect them')
 
-    File.write('/path/to/file', '@puppet') unless File.exist?('/var/lib/portage/world_sets')
+    File.write('/var/lib/portage/world_sets', '@puppet') unless File.exist?('/var/lib/portage/world_sets')
 
     sets = []
     File.open('/var/lib/portage/world_sets', 'r') do |fh|
@@ -127,7 +127,7 @@ Puppet::Type.type(:package).provide(
       end
     end
 
-    File.write('/path/to/file', '@puppet', mode: 'a') unless sets.include?('@puppet')
+    File.write('/var/lib/portage/world_sets', '@puppet', mode: 'a') unless sets.include?('@puppet')
 
     sets.each do |set|
       next if set == '@puppet'
