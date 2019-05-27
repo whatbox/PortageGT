@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # PortageGT (Puppet Package Provider)
 #
 # Copyright 2012, Whatbox Inc.
@@ -22,15 +24,16 @@ Puppet::Type.type(:package).provide(
   ##################
 
   # You probably don't want to change these
-  DEFAULT_SLOT = '0'.freeze
-  DEFAULT_REPOSITORY = 'gentoo'.freeze
-  USE_DIR = '/etc/portage/package.use'.freeze
-  ENV_DIR = '/etc/portage/package.env'.freeze
-  KEYWORDS_DIR = '/etc/portage/package.accept_keywords'.freeze
-  PACKAGE_STATE_DIR = '/var/db/pkg'.freeze
-  TIMESTAMP_FILE = '/usr/portage/metadata/timestamp'.freeze
+  DEFAULT_SLOT = '0'
+  DEFAULT_REPOSITORY = 'gentoo'
+  USE_DIR = '/etc/portage/package.use'
+  ENV_DIR = '/etc/portage/package.env'
+  KEYWORDS_DIR = '/etc/portage/package.accept_keywords'
+  LICENSE_DIR = '/etc/portage/package.license'
+  PACKAGE_STATE_DIR = '/var/db/pkg'
+  TIMESTAMP_FILE = '/usr/portage/metadata/timestamp'
   # TODO: ensure we respect the DISTDIR environment variable in make.conf
-  DISTFILES_DIR = '/usr/portage/distfiles'.freeze
+  DISTFILES_DIR = '/usr/portage/distfiles'
 
   ################
   # Puppet Setup #
@@ -190,6 +193,13 @@ Puppet::Type.type(:package).provide(
       set_portage(packages, KEYWORDS_DIR, 'package_keywords')
     end
 
+    if File.exist?(KEYWORDS_DIR) && !File.directory?(KEYWORDS_DIR)
+      Puppet.warning("#{KEYWORDS_DIR} is not a directory, puppet management of KEYWORDs has been disabled")
+    else
+      Dir.mkdir(LICENSE_DIR) unless File.exist?(LICENSE_DIR)
+      set_portage(packages, LICENSE_DIR, 'package_license')
+    end
+
     packages.each do |_name, package|
       package.provider.old_query = package.provider._query
     end
@@ -215,7 +225,7 @@ Puppet::Type.type(:package).provide(
 
   # string (string)
   def _strip_subslot(slot)
-    return slot.split('/').first if slot.count('/') == 1
+    return slot.split('/').first if slot.include?('/')
 
     slot
   end
@@ -242,8 +252,8 @@ Puppet::Type.type(:package).provide(
     raise Puppet::ResourceError, 'name may not contain multiple slot boundaries' if @resource[:name].count(':') > 1
 
     name = @resource[:name]
-    name = name.split(':').first if name.count(':') > 0
-    name = name.split('/').last if name.count('/') > 0
+    name = name.split(':').first if name.include?(':')
+    name = name.split('/').last if name.include?('/')
 
     name
   end
@@ -255,7 +265,7 @@ Puppet::Type.type(:package).provide(
     category = nil
     name_category = false
 
-    if name.count('/') > 0
+    if name.include?('/')
       category = name.split('/').first
       name_category = true
     end
@@ -322,6 +332,14 @@ Puppet::Type.type(:package).provide(
     return [] unless @resource[:package_settings].key?('keywords')
 
     resource_tok(@resource[:package_settings]['keywords'])
+  end
+
+  # string[] (void)
+  def package_license
+    return [] if @resource[:package_settings].nil?
+    return [] unless @resource[:package_settings].key?('license')
+
+    resource_tok(@resource[:package_settings]['license'])
   end
 
   ###########################

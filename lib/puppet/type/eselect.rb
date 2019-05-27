@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Puppet::Type.newtype(:eselect) do
   newparam(:name) do
     desc 'identifier for use throughout puppet manifests'

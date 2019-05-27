@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Puppet::Type.type(:eselect).provide(:eselect) do
   include Puppet::Util::Execution
 

@@ -27,6 +27,7 @@ The this package manages the following files:
 * `/etc/portage/sets/puppet`
 * `/etc/portage/package.use/*``
 * `/etc/portage/package.accept_keywords/*`
+* `/etc/portage/package.license/*`
 
 
 ## Installing
@@ -99,6 +100,15 @@ Using PortageGT should be pretty familiar to anyone already using puppet on Gent
 		package_settings => {
 			slot     => "2",
 			keywords => "~amd64",
+		};
+	}
+
+### License
+
+	package { "sys-kernel/linux-firmware":
+		ensure           => latest,
+		package_settings => {
+			license => '@BINARY-REDISTRIBUTABLE',
 		};
 	}
 
@@ -236,10 +246,6 @@ eselect is useful when selecting specific versions from between several slots
 	eselect { "locale":
 		ensure => "en_US.UTF-8";
 	}
-
-## Tuning behavior
-
-Some configuration opetions can be found near the start of `lib/puppet/provider/package/portagegt.rb` that allow tuning of the modules behavior. The defaults cause explict use flag changes to recompile packages, and eix-sync to be run if it has been more than 48 hours since the last sync.
 
 
 ## Testing
