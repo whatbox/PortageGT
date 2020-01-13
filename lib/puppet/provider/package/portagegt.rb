@@ -64,7 +64,10 @@ Puppet::Type.type(:package).provide(
   # Method package_settings is available
   # Method package_settings= is available
 
-  commands emerge: '/usr/bin/emerge'
+  # commands emerge: '/usr/bin/emerge'
+  has_command('emerge', '/usr/bin/emerge') do
+    environment :LANG => 'en_US.UTF-8', :LC_ALL => 'en_US.UTF-8'
+  end
 
   attr_accessor :old_query
 
