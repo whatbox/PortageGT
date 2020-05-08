@@ -207,7 +207,7 @@ Puppet::Type.type(:package).provide(
     # we don't inherit the default umask from /etc/profile when launching
     # programs, so we must set this ourselves
     Puppet::Util.withumask(0o022) do
-      emerge('--update', '--changed-use', '--oneshot', 'sys-apps/portage')
+      # Updating portage before other packages as Gentoo reccomends actually just results in more failures
       emerge('--quiet-build', '--update', '--deep', '--changed-use', '--with-bdeps=y', '@system', '@puppet')
     end
   end
