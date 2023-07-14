@@ -234,7 +234,7 @@ Puppet::Type.type(:package).provide(
 
   def self.post_resource_eval
     execute(
-      ['/usr/bin/emerge', '--quiet-build', '@preserved-rebuild'],
+      ['/usr/bin/emerge', '--depclean'],
       {
         :failonfail => true,
         :combine => true,
@@ -245,7 +245,7 @@ Puppet::Type.type(:package).provide(
       }
     )
     execute(
-      ['/usr/bin/emerge', '--depclean'],
+      ['/usr/bin/emerge', '--quiet-build', '@preserved-rebuild'],
       {
         :failonfail => true,
         :combine => true,
