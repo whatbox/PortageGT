@@ -115,7 +115,17 @@ Puppet::Type.type(:package).provide(
 
   # One of void self.prefetch(package[]) or package[] self.instances() must be used
   def self.prefetch(packages)
-    emerge('--sync')
+    execute(
+      ['/usr/bin/emerge', '--sync'],
+      {
+        :failonfail => true,
+        :combine => true,
+        :custom_environment => {
+          'LANG' => 'en_US.utf8',
+          'LC_ALL' => 'en_US.UTF-8',
+        }
+      }
+    )
 
     !File.file?('/var/lib/portage/world') \
     || File.open('/var/lib/portage/world').readlines.empty? \
@@ -208,13 +218,43 @@ Puppet::Type.type(:package).provide(
     # programs, so we must set this ourselves
     Puppet::Util.withumask(0o022) do
       # Updating portage before other packages as Gentoo reccomends actually just results in more failures
-      emerge('--quiet-build', '--update', '--deep', '--changed-use', '--with-bdeps=y', '@system', '@puppet')
+      execute(
+        ['/usr/bin/emerge', '--quiet-build', '--update', '--deep', '--changed-use', '--with-bdeps=y', '@system', '@puppet'],
+        {
+          :failonfail => true,
+          :combine => true,
+          :custom_environment => {
+            'LANG' => 'en_US.utf8',
+            'LC_ALL' => 'en_US.UTF-8',
+          }
+        }
+      )
     end
   end
 
   def self.post_resource_eval
-    emerge('@preserved-rebuild')
-    emerge('--depclean')
+    execute(
+      ['/usr/bin/emerge', '--quiet-build', '@preserved-rebuild'],
+      {
+        :failonfail => true,
+        :combine => true,
+        :custom_environment => {
+          'LANG' => 'en_US.utf8',
+          'LC_ALL' => 'en_US.UTF-8',
+        }
+      }
+    )
+    execute(
+      ['/usr/bin/emerge', '--depclean'],
+      {
+        :failonfail => true,
+        :combine => true,
+        :custom_environment => {
+          'LANG' => 'en_US.utf8',
+          'LC_ALL' => 'en_US.UTF-8',
+        }
+      }
+    )
 
     # Purge distfiles
     FileUtils.rm_r(Dir.glob(DISTFILES_DIR + '/*'), secure: true)
