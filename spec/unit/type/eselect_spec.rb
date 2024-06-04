@@ -7,18 +7,18 @@ describe Puppet::Type.type(:eselect) do
     @class = described_class.provider(:eselect)
   end
 
-  it 'should have :name as its keyattribute' do
+  it 'has :name as its keyattribute' do
     expect(described_class.key_attributes).to eq([:name])
   end
 
   %i[name module submodule listcmd setcmd].each do |param|
-    it "should have a #{param} parameter" do
+    it "has a #{param} parameter" do
       expect(described_class.attrtype(param)).to eq(:param)
     end
   end
 
   [:ensure].each do |param|
-    it "should have a #{param} property" do
+    it "has a #{param} property" do
       expect(described_class.attrtype(param)).to eq(:property)
     end
   end

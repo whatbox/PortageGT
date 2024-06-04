@@ -2,30 +2,16 @@
 
 require 'spec_helper'
 
-provider_class = Puppet::Type.type(:package).provider(:portagegt)
-
-describe provider_class do
-  before :each do
-    Puppet.expects(:warning).never
+describe Puppet::Type.type(:package).provider(:portagegt) do
+  before do
+    expect(Puppet).not_to receive(:warning)
   end
 
-  it 'versionable' do
-    expect(provider_class).to be_versionable
-  end
-
-  it 'installable' do
-    expect(provider_class).to be_installable
-  end
-
-  it 'uninstallable' do
-    expect(provider_class).to be_uninstallable
-  end
-
-  it 'upgradeable' do
-    expect(provider_class).to be_upgradeable
-  end
-
-  it 'support package_settings' do
-    expect(provider_class).to be_package_settings
+  describe 'provider features' do
+    it { is_expected.to be_installable }
+    it { is_expected.to be_uninstallable }
+    it { is_expected.to be_upgradeable }
+    it { is_expected.to be_versionable }
+    it { is_expected.to be_package_settings }
   end
 end

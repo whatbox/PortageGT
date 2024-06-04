@@ -2,11 +2,9 @@
 
 require 'spec_helper'
 
-provider_class = Puppet::Type.type(:eselect).provider(:eselect)
-
-describe provider_class do
-  before :each do
-    Puppet.expects(:warning).never
+describe Puppet::Type.type(:eselect).provider(:eselect) do
+  before do
+    expect(Puppet).not_to receive(:warning)
   end
 
   def pkg(args = {})
@@ -15,8 +13,8 @@ describe provider_class do
   end
 
   [:ensure].each do |param|
-    it "should have a #{param} function" do
-      provider = provider_class.new
+    it "has a #{param} function" do
+      provider = described_class.new
       expect(provider).to respond_to(param)
     end
   end

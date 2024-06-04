@@ -13,7 +13,8 @@ require 'puppet/type/package'
 require 'puppet/provider/package/portagegt'
 
 def pkg(args = {})
-  Puppet::Type.type(:package).new({ provider: 'portagegt' }.merge(args))
+  defaults = { provider: 'portagegt' }
+  Puppet::Type.type(:package).new(defaults.merge(args))
 end
 
 # Stop at first error

@@ -2,9 +2,7 @@
 
 require 'spec_helper'
 
-provider_class = Puppet::Type.type(:package).provider(:portagegt)
-
-describe provider_class do
+describe Puppet::Type.type(:package).provider(:portagegt) do
   describe '#install' do
     # Bad
     [
@@ -21,9 +19,9 @@ describe provider_class do
         error: 'Parameter package_settings failed on Package[app-admin/puppet]: Must be a hash'
       }
     ].each do |c|
-      it c[:options].inspect + ' fails' do
+      it "#{c[:options].inspect} fails" do
         expect do
-          provider_class.new(pkg(c[:options]))
+          described_class.new(pkg(c[:options]))
         end.to raise_error(Puppet::ResourceError, c[:error])
       end
     end

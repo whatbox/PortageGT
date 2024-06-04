@@ -118,11 +118,11 @@ Puppet::Type.type(:package).provide(
     execute(
       ['/usr/bin/emerge', '--sync'],
       {
-        :failonfail => true,
-        :combine => true,
-        :custom_environment => {
+        failonfail: true,
+        combine: true,
+        custom_environment: {
           'LANG' => 'en_US.utf8',
-          'LC_ALL' => 'en_US.UTF-8',
+          'LC_ALL' => 'en_US.UTF-8'
         }
       }
     )
@@ -148,7 +148,7 @@ Puppet::Type.type(:package).provide(
       Puppet.notice("Including updates for #{set}")
     end
 
-    Dir.mkdir('/etc/portage/sets') unless File.exist?('/etc/portage/sets')
+    FileUtils.mkdir_p('/etc/portage/sets')
     File.open('/etc/portage/sets/puppet', 'w') do |fh|
       packages.each do |name, package|
         should = package.should(:ensure)
@@ -183,14 +183,14 @@ Puppet::Type.type(:package).provide(
     if File.exist?(USE_DIR) && !File.directory?(USE_DIR)
       Puppet.warning("#{USE_DIR} is not a directory, puppet management of USE flags has been disabled")
     else
-      Dir.mkdir(USE_DIR) unless File.exist?(USE_DIR)
+      FileUtils.mkdir_p(USE_DIR)
       set_portage(packages, USE_DIR, 'package_use')
     end
 
     if File.exist?(ENV_DIR) && !File.directory?(ENV_DIR)
       Puppet.warning("#{ENV_DIR} is not a directory, puppet management of environment variables has been disabled")
     else
-      Dir.mkdir(ENV_DIR) unless File.exist?(ENV_DIR)
+      FileUtils.mkdir_p(ENV_DIR)
       set_portage(packages, ENV_DIR, 'package_env')
     end
 
@@ -199,18 +199,18 @@ Puppet::Type.type(:package).provide(
     if File.exist?(KEYWORDS_DIR) && !File.directory?(KEYWORDS_DIR)
       Puppet.warning("#{KEYWORDS_DIR} is not a directory, puppet management of KEYWORDs has been disabled")
     else
-      Dir.mkdir(KEYWORDS_DIR) unless File.exist?(KEYWORDS_DIR)
+      FileUtils.mkdir_p(KEYWORDS_DIR)
       set_portage(packages, KEYWORDS_DIR, 'package_keywords')
     end
 
     if File.exist?(KEYWORDS_DIR) && !File.directory?(KEYWORDS_DIR)
       Puppet.warning("#{KEYWORDS_DIR} is not a directory, puppet management of KEYWORDs has been disabled")
     else
-      Dir.mkdir(LICENSE_DIR) unless File.exist?(LICENSE_DIR)
+      FileUtils.mkdir_p(LICENSE_DIR)
       set_portage(packages, LICENSE_DIR, 'package_license')
     end
 
-    packages.each do |_name, package|
+    packages.each_value do |package|
       package.provider.old_query = package.provider._query
     end
 
@@ -218,46 +218,53 @@ Puppet::Type.type(:package).provide(
     # programs, so we must set this ourselves
     Puppet::Util.withumask(0o022) do
       # Updating portage before other packages as Gentoo reccomends actually just results in more failures
-      execute(
+      output = execute(
         ['/usr/bin/emerge', '--quiet-build', '--update', '--deep', '--changed-use', '--with-bdeps=y', '@system', '@puppet'],
         {
-          :failonfail => true,
-          :combine => true,
-          :custom_environment => {
+          failonfail: true,
+          combine: true,
+          custom_environment: {
             'LANG' => 'en_US.utf8',
-            'LC_ALL' => 'en_US.UTF-8',
+            'LC_ALL' => 'en_US.UTF-8'
           }
         }
       )
+
+      @install_success = output.exitstatus.zero?
     end
   end
 
   def self.post_resource_eval
+    unless @install_success
+      Puppet.warning('Not running --depclean due to install failure')
+      return
+    end
+
     execute(
       ['/usr/bin/emerge', '--depclean'],
       {
-        :failonfail => true,
-        :combine => true,
-        :custom_environment => {
+        failonfail: true,
+        combine: true,
+        custom_environment: {
           'LANG' => 'en_US.utf8',
-          'LC_ALL' => 'en_US.UTF-8',
+          'LC_ALL' => 'en_US.UTF-8'
         }
       }
     )
     execute(
       ['/usr/bin/emerge', '--quiet-build', '@preserved-rebuild'],
       {
-        :failonfail => true,
-        :combine => true,
-        :custom_environment => {
+        failonfail: true,
+        combine: true,
+        custom_environment: {
           'LANG' => 'en_US.utf8',
-          'LC_ALL' => 'en_US.UTF-8',
+          'LC_ALL' => 'en_US.UTF-8'
         }
       }
     )
 
     # Purge distfiles
-    FileUtils.rm_r(Dir.glob(DISTFILES_DIR + '/*'), secure: true)
+    FileUtils.rm_r(Dir.glob("#{DISTFILES_DIR}/*"), secure: true)
   end
 
   ###########################################
@@ -277,7 +284,7 @@ Puppet::Type.type(:package).provide(
     return [] if string.nil?
     return string if string.is_a? Array
 
-    string.split(' ').reject(&:empty?)
+    string.split.reject(&:empty?)
   end
 
   # string (void)
@@ -332,12 +339,10 @@ Puppet::Type.type(:package).provide(
       name_slot = true
     end
 
-    unless @resource[:package_settings].nil?
-      if @resource[:package_settings].key?('slot')
-        raise Puppet::Error, "Slot disagreement on Package[#{name}]" if name_slot && slot != @resource[:package_settings]['slot'].to_s
+    if !@resource[:package_settings].nil? && @resource[:package_settings].key?('slot')
+      raise Puppet::Error, "Slot disagreement on Package[#{name}]" if name_slot && slot != @resource[:package_settings]['slot'].to_s
 
-        slot = @resource[:package_settings]['slot']
-      end
+      slot = @resource[:package_settings]['slot']
     end
 
     slot
@@ -512,7 +517,7 @@ Puppet::Type.type(:package).provide(
   private
 
   def use_strip_positive(use)
-    use.map { |x| x[0, 1] == '+' ? x[1..-1] : x }
+    use.map { |x| x[0, 1] == '+' ? x[1..] : x }
   end
 
   def use_neutral(use)
@@ -520,7 +525,7 @@ Puppet::Type.type(:package).provide(
   end
 
   def use_negative(use)
-    use.select { |x| x[0, 1] == '-' }.map { |x| x[1..-1] }
+    use.select { |x| x[0, 1] == '-' }.map { |x| x[1..] }
   end
 
   # string[] (void)

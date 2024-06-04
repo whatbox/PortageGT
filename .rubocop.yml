@@ -1,3 +1,9 @@
+# require:
+#  - rubocop-rspec
+
+AllCops:
+  NewCops: enable
+
 # It would be nice to enable all of these someday
 Metrics:
   Enabled: false
