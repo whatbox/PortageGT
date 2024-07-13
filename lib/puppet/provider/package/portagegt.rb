@@ -399,28 +399,28 @@ Puppet::Type.type(:package).provide(
   end
 
   # bool (hash, hash)
-  def package_settings_insync?(should, present)
+  def package_settings_insync?(should, is)
     if should.key?('repository')
       debug('repository mismatch')
-      return false if should['repository'] != present[:repository]
+      return false if should['repository'] != is[:repository]
     end
 
-    invalid_use = use_neutral(resource_tok(should['use'])) - present[:use_valid]
+    invalid_use = use_neutral(resource_tok(should['use'])) - is[:use_valid]
     invalid_use = invalid_use.reject do |use|
       # Don't try to validate wildcard use flags (commonly seen )
       use.end_with?('_*')
     end
     Puppet.warning("Package[#{package_name}] USE flag #{invalid_use.inspect} does not exist") unless invalid_use.empty?
 
-    invalid_use = use_negative(resource_tok(should['use'])) - present[:use_valid]
+    invalid_use = use_negative(resource_tok(should['use'])) - is[:use_valid]
     invalid_use = invalid_use.reject do |use|
       # Don't try to validate wildcard use flags (commonly seen )
       use.end_with?('_*')
     end
     Puppet.notice("Package[#{package_name}] USE flag #{invalid_use.inspect} has been removed") unless invalid_use.empty?
 
-    should_positive = present[:use_valid] & use_neutral(resource_tok(should['use']))
-    should_negative = present[:use_valid] & use_negative(resource_tok(should['use']))
+    should_positive = is[:use_valid] & use_neutral(resource_tok(should['use']))
+    should_negative = is[:use_valid] & use_negative(resource_tok(should['use']))
 
     use_conflict = should_positive & should_negative
     unless use_conflict.empty?
@@ -430,7 +430,7 @@ Puppet::Type.type(:package).provide(
 
     # If the build timestamps match
     # we didn't make changes because of the config
-    old_query[:build_time] == present[:build_time]
+    old_query[:build_time] == is[:build_time]
   end
 
   # void (hash)
@@ -506,6 +506,17 @@ Puppet::Type.type(:package).provide(
     raise Puppet::Error, "Package[#{@resource[:name]}] is ambiguous, specify a slot: #{slots.keys.join(', ')}" if slots.length > 1
 
     slots.values.first
+  end
+
+  # Make sure wildcard packages don't trigger a version change alert because '20*' and '20.1' are different.
+  def insync?(is)
+    if @resource[:ensure].end_with?('*')
+      # new_query depends on the fact that the actual updates happen in the prefetch stage
+      new_query = _query
+      return new_query[:ensure] == old_query[:ensure]
+    end
+
+    @resource[:ensure] == is
   end
 
   # Returns the string for the newest version of a package available
